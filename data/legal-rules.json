@@ -1,0 +1,1152 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-03-24",
+  "description": "10カ国の食品・化粧品法定表示ルール",
+  "countries": {
+    "JP": {
+      "name": "日本",
+      "name_en": "Japan",
+      "lang": "ja",
+      "regulations": {
+        "food": {
+          "authority": "消費者庁",
+          "law": "食品表示法（2015年施行、2025年改正対応）",
+          "required_fields": [
+            "product_name",
+            "ingredients",
+            "allergens",
+            "nutrition",
+            "net_weight",
+            "expiry",
+            "manufacturer",
+            "origin",
+            "storage"
+          ],
+          "allergen_display": {
+            "mandatory_items": [
+              "えび",
+              "かに",
+              "くるみ",
+              "小麦",
+              "そば",
+              "卵",
+              "乳",
+              "落花生"
+            ],
+            "mandatory_count": 8,
+            "recommended_items": [
+              "アーモンド",
+              "あわび",
+              "いか",
+              "いくら",
+              "オレンジ",
+              "カシューナッツ",
+              "キウイフルーツ",
+              "牛肉",
+              "ごま",
+              "さけ",
+              "さば",
+              "大豆",
+              "鶏肉",
+              "バナナ",
+              "豚肉",
+              "まつたけ",
+              "もも",
+              "やまいも",
+              "りんご",
+              "ゼラチン",
+              "魚介類"
+            ],
+            "recommended_count": 21,
+            "format": "括弧書き（一括表示）または個別表示",
+            "rules": [
+              "特定原材料8品目は表示義務",
+              "推奨21品目は任意だが表示が推奨される",
+              "括弧書き例: 原材料名の後に(一部に小麦・卵・乳成分を含む)",
+              "個別表示例: 各原材料名の直後に(小麦由来)等"
+            ]
+          },
+          "ingredient_display": {
+            "order": "配合量の多い順",
+            "separator": "、（読点）",
+            "additive_separator": "／（スラッシュ）で区分",
+            "rules": [
+              "原材料と添加物を明確に区分",
+              "添加物は用途名併記が必要なもの: 甘味料、着色料、保存料、増粘安定剤、酸化防止剤、発色剤、漂白剤、防かび剤"
+            ]
+          },
+          "font_rules": {
+            "min_size_pt": 8,
+            "min_size_mm": 2.4,
+            "small_label_threshold_cm2": 150,
+            "small_label_min_pt": 5.5
+          },
+          "label_format": {
+            "layout": "一括表示枠（枠線で囲む）",
+            "background": "白地推奨",
+            "rules": [
+              "8ポイント以上の日本語活字",
+              "容器包装の面積150cm²以下は5.5pt以上でOK"
+            ]
+          },
+          "nutrition_facts": {
+            "mandatory_items": [
+              "熱量（kcal）",
+              "たんぱく質（g）",
+              "脂質（g）",
+              "炭水化物（g）",
+              "食塩相当量（g）"
+            ],
+            "format": "100g/100ml/1食分/1包装あたり",
+            "rules": [
+              "義務表示5項目は順序固定",
+              "飽和脂肪酸・食物繊維は推奨表示"
+            ]
+          }
+        },
+        "cosmetics": {
+          "authority": "厚生労働省",
+          "law": "医薬品医療機器等法（薬機法）",
+          "required_fields": [
+            "product_name",
+            "ingredients_full_list",
+            "manufacturer",
+            "batch_number",
+            "net_weight",
+            "usage_precautions"
+          ],
+          "rules": [
+            "全成分表示義務（2001年4月〜）",
+            "配合量の多い順に記載",
+            "1%以下の成分は順不同でOK",
+            "着色剤は末尾にまとめて記載可",
+            "医薬部外品は有効成分とその他の成分を分けて表示",
+            "日本語名称（日本化粧品工業連合会の表示名称）を使用"
+          ]
+        }
+      }
+    },
+    "US": {
+      "name": "アメリカ",
+      "name_en": "United States",
+      "lang": "en",
+      "regulations": {
+        "food": {
+          "authority": "FDA (Food and Drug Administration)",
+          "law": "Federal Food, Drug, and Cosmetic Act / FALCPA (2004) / FASTER Act (2023)",
+          "required_fields": [
+            "product_name",
+            "ingredients",
+            "allergens",
+            "nutrition_facts",
+            "net_weight",
+            "manufacturer",
+            "country_of_origin"
+          ],
+          "allergen_display": {
+            "mandatory_items": [
+              "Milk",
+              "Eggs",
+              "Fish",
+              "Crustacean shellfish",
+              "Tree nuts",
+              "Peanuts",
+              "Wheat",
+              "Soybeans",
+              "Sesame"
+            ],
+            "mandatory_count": 9,
+            "format": "Contains: の後に列挙",
+            "rules": [
+              "FALCPA + FASTER Act: 9大アレルゲン表示義務",
+              "Contains: Milk, Wheat, Soy. の形式",
+              "または原材料名内に括弧書きで (milk) 等",
+              "Sesameは2023年1月1日より追加（FASTER Act）"
+            ]
+          },
+          "ingredient_display": {
+            "order": "重量の多い順（descending order of predominance）",
+            "separator": ", (comma)",
+            "rules": [
+              "Common or usual name使用",
+              "Sub-ingredientsは括弧内に列挙",
+              "水は\"Water\"または\"Aqua\"",
+              "着色料はFD&C番号または一般名で記載"
+            ]
+          },
+          "font_rules": {
+            "min_size_pt": 6,
+            "small_package_threshold_in2": 12,
+            "small_package_min_pt": 4.5
+          },
+          "label_format": {
+            "layout": "Nutrition Facts パネル（黒枠線・白地）",
+            "rules": [
+              "Nutrition Factsは21 CFR 101.9準拠のフォーマット",
+              "Serving sizeとServings per containerを冒頭に記載",
+              "Daily Value (%)はFDA基準値ベース"
+            ]
+          },
+          "nutrition_facts": {
+            "mandatory_items": [
+              "Calories",
+              "Total Fat",
+              "Saturated Fat",
+              "Trans Fat",
+              "Cholesterol",
+              "Sodium",
+              "Total Carbohydrate",
+              "Dietary Fiber",
+              "Total Sugars",
+              "Added Sugars",
+              "Protein",
+              "Vitamin D",
+              "Calcium",
+              "Iron",
+              "Potassium"
+            ],
+            "format": "Per serving / Per container",
+            "rules": [
+              "2020年更新フォーマット適用",
+              "Added Sugarsの表示義務化",
+              "Vitamin D, Potassium表示義務化（Vitamin A, Cは任意に変更）"
+            ]
+          }
+        },
+        "cosmetics": {
+          "authority": "FDA",
+          "law": "FD&C Act / Fair Packaging and Labeling Act / MoCRA (2022)",
+          "required_fields": [
+            "product_name",
+            "ingredients_full_list",
+            "net_contents",
+            "manufacturer_distributor",
+            "warnings"
+          ],
+          "rules": [
+            "INCI名称で全成分表示",
+            "配合量の多い順",
+            "1%以下は順不同",
+            "MoCRA (2022): 重篤な有害事象の報告義務追加",
+            "MoCRA (2022): 施設登録・製品リスティング義務化",
+            "MoCRA (2022): GMP遵守義務",
+            "色素はFD&C / D&C名称で記載"
+          ]
+        }
+      }
+    },
+    "EU": {
+      "name": "EU（欧州連合）",
+      "name_en": "European Union",
+      "lang": "multi",
+      "regulations": {
+        "food": {
+          "authority": "European Commission / 各加盟国の食品安全機関",
+          "law": "Regulation (EU) No 1169/2011 (FIC: Food Information to Consumers)",
+          "required_fields": [
+            "product_name",
+            "ingredients",
+            "allergens",
+            "nutrition_declaration",
+            "net_quantity",
+            "date_of_minimum_durability",
+            "storage_conditions",
+            "manufacturer",
+            "country_of_origin",
+            "lot_number"
+          ],
+          "allergen_display": {
+            "mandatory_items": [
+              "Cereals containing gluten",
+              "Crustaceans",
+              "Eggs",
+              "Fish",
+              "Peanuts",
+              "Soybeans",
+              "Milk",
+              "Nuts (tree nuts)",
+              "Celery",
+              "Mustard",
+              "Sesame seeds",
+              "Sulphur dioxide and sulphites (>10mg/kg)",
+              "Lupin",
+              "Molluscs"
+            ],
+            "mandatory_count": 14,
+            "format": "原材料リスト内で太字・斜体・下線等で強調（視覚的区別義務）",
+            "rules": [
+              "Annex II: 14大アレルゲンの表示義務",
+              "原材料リスト内でアレルゲンを太字等で視覚的に強調する義務がある（Article 21）",
+              "非包装食品でもアレルゲン情報提供義務あり",
+              "販売先の加盟国の公用語で表示"
+            ]
+          },
+          "ingredient_display": {
+            "order": "重量の多い順（descending order of weight）",
+            "separator": ", (comma)",
+            "rules": [
+              "QUID表示: 製品名に含まれる原材料等の配合割合を%で表示",
+              "水・揮発性成分は最終製品中の重量で計算",
+              "カテゴリ名使用可（例: 植物油脂、チーズ等）"
+            ]
+          },
+          "font_rules": {
+            "min_size_mm": 1.2,
+            "min_size_pt": 3.4,
+            "small_package_threshold_cm2": 80,
+            "small_package_min_mm": 0.9,
+            "rules": [
+              "x-height（小文字xの高さ）で1.2mm以上",
+              "包装面積80cm²以下は0.9mm以上"
+            ]
+          },
+          "label_format": {
+            "layout": "自由形式（ただし同一視野内に特定項目をまとめる義務あり）",
+            "rules": [
+              "製品名・正味量・アルコール度数は同一視野内",
+              "栄養成分表示は表形式推奨",
+              "販売国の公用語での表示が必須"
+            ]
+          },
+          "nutrition_facts": {
+            "mandatory_items": [
+              "Energy (kJ/kcal)",
+              "Fat",
+              "Saturates",
+              "Carbohydrate",
+              "Sugars",
+              "Protein",
+              "Salt"
+            ],
+            "format": "Per 100g / 100ml（任意で1食分も併記可）",
+            "rules": [
+              "100gまたは100mlあたりの表示が義務",
+              "1食分あたりの表示は任意追加",
+              "表形式での表示を推奨"
+            ]
+          }
+        },
+        "cosmetics": {
+          "authority": "European Commission / 各加盟国の所管機関",
+          "law": "Regulation (EC) No 1223/2009 (EU Cosmetics Regulation)",
+          "required_fields": [
+            "product_name",
+            "ingredients_full_list",
+            "net_contents",
+            "manufacturer_responsible_person",
+            "country_of_origin",
+            "batch_number",
+            "function_description",
+            "precautions",
+            "PAO_symbol",
+            "expiry_date"
+          ],
+          "rules": [
+            "INCI名称で全成分表示",
+            "配合量の多い順",
+            "1%以下は順不同",
+            "着色剤はCI番号で末尾に記載",
+            "PAO（Period After Opening: 開封後使用期間）シンボル表示義務",
+            "CPNP（Cosmetic Products Notification Portal）への届出義務",
+            "Responsible Person（EU域内の責任者）の名前・住所が必須",
+            "ナノマテリアルは(nano)と付記"
+          ]
+        }
+      }
+    },
+    "CN": {
+      "name": "中国",
+      "name_en": "China",
+      "lang": "zh-cn",
+      "regulations": {
+        "food": {
+          "authority": "国家市場監督管理総局 (SAMR) / 国家衛生健康委員会",
+          "law": "GB 7718-2011（预包装食品标签通则）/ GB 28050-2011（预包装食品营养标签通则）",
+          "required_fields": [
+            "product_name",
+            "ingredients",
+            "allergens",
+            "nutrition",
+            "net_weight",
+            "production_date",
+            "expiry_date",
+            "manufacturer",
+            "manufacturer_address",
+            "product_standard_code",
+            "storage_conditions",
+            "food_production_license_number"
+          ],
+          "allergen_display": {
+            "mandatory_items": [
+              "含麸质的谷物（グルテン含有穀物）",
+              "甲壳纲类动物（甲殻類）",
+              "鱼类（魚類）",
+              "蛋类（卵類）",
+              "花生（ピーナッツ）",
+              "大豆（大豆）",
+              "乳制品（乳製品）",
+              "坚果（ナッツ類）"
+            ],
+            "mandatory_count": 8,
+            "format": "原材料名の近くに記載、または別途アレルゲン情報欄",
+            "rules": [
+              "GB 7718-2011: 8大アレルゲン表示を推奨（義務化への移行進行中）",
+              "表示形式: 原材料リスト近傍に明記",
+              "2024年以降のGB改訂で義務化の方向"
+            ]
+          },
+          "ingredient_display": {
+            "order": "配合量の多い順（递减顺序）",
+            "separator": "、（顿号）",
+            "rules": [
+              "簡体字中国語での表示義務",
+              "食品添加剤は通用名称またはINS番号で記載",
+              "配合量2%以下は順不同可"
+            ]
+          },
+          "font_rules": {
+            "min_size_mm": 1.8,
+            "small_package_threshold_cm2": 35,
+            "small_package_min_mm": 1.5,
+            "rules": [
+              "最大面積の文字高さ1.8mm以上",
+              "包装面積35cm²以下は1.5mm以上"
+            ]
+          },
+          "label_format": {
+            "layout": "簡体字中国語での一括表示",
+            "rules": [
+              "輸入食品は中国語ラベル貼付義務（中文标签）",
+              "生産日と賞味期限は同一面に表示",
+              "食品生産許可証番号（SC番号）を表示"
+            ]
+          },
+          "nutrition_facts": {
+            "mandatory_items": [
+              "能量（エネルギー, kJ）",
+              "蛋白质（タンパク質, g）",
+              "脂肪（脂質, g）",
+              "碳水化合物（炭水化物, g）",
+              "钠（ナトリウム, mg）"
+            ],
+            "format": "Per 100g / 100ml / 1食分",
+            "rules": [
+              "NRV%（栄養素参照値の割合）の表示義務",
+              "4+1（エネルギー+4栄養素）が義務"
+            ]
+          }
+        },
+        "cosmetics": {
+          "authority": "国家药品监督管理局 (NMPA)",
+          "law": "化妆品监督管理条例（2021年施行）/ 化妆品标签管理办法",
+          "required_fields": [
+            "product_name",
+            "ingredients_full_list",
+            "net_contents",
+            "manufacturer",
+            "registration_or_filing_number",
+            "production_license_number",
+            "batch_number",
+            "expiry_date",
+            "usage_method",
+            "precautions"
+          ],
+          "rules": [
+            "全成分表示義務（2021年条例で強化）",
+            "INCI名称の中国語訳を使用",
+            "配合量の多い順",
+            "1%以下は順不同",
+            "特殊化粧品（美白、日焼け止め等）はNMPAの登録が必要",
+            "輸入品は中国語ラベル貼付義務",
+            "生産企業の衛生許可証番号を記載"
+          ]
+        }
+      }
+    },
+    "KR": {
+      "name": "韓国",
+      "name_en": "South Korea",
+      "lang": "ko",
+      "regulations": {
+        "food": {
+          "authority": "식품의약품안전처 (MFDS: 食品医薬品安全処)",
+          "law": "식품등의 표시·광고에 관한 법률（食品等の表示・広告に関する法律, 2019年施行）",
+          "required_fields": [
+            "product_name",
+            "ingredients",
+            "allergens",
+            "nutrition",
+            "net_weight",
+            "expiry_date",
+            "manufacturer",
+            "origin",
+            "storage_conditions",
+            "lot_number"
+          ],
+          "allergen_display": {
+            "mandatory_items": [
+              "알류(가금류 등)（卵類）",
+              "우유（牛乳）",
+              "메밀（そば）",
+              "땅콩（落花生）",
+              "대두（大豆）",
+              "밀（小麦）",
+              "고등어（さば）",
+              "게（かに）",
+              "새우（えび）",
+              "돼지고기（豚肉）",
+              "복숭아（もも）",
+              "토마토（トマト）",
+              "아황산류（亜硫酸類）",
+              "호두（くるみ）",
+              "닭고기（鶏肉）",
+              "쇠고기（牛肉）",
+              "오징어（いか）",
+              "조개류（貝類）",
+              "잣（松の実）",
+              "아몬드（アーモンド）",
+              "전복（あわび）",
+              "굴（牡蠣）"
+            ],
+            "mandatory_count": 22,
+            "format": "「含む」表現で原材料名の近くに表示",
+            "rules": [
+              "22品目すべてが表示義務",
+              "原材料名に含まれていても別途アレルゲン表示が必要",
+              "韓国語での表示義務"
+            ]
+          },
+          "ingredient_display": {
+            "order": "配合量の多い順",
+            "separator": ", (쉼표)",
+            "rules": [
+              "韓国語での表示義務",
+              "食品添加物は品名または一般名で記載",
+              "複合原材料は括弧内に構成成分を列挙"
+            ]
+          },
+          "font_rules": {
+            "min_size_pt": 8,
+            "min_size_mm": 2.0,
+            "small_package_threshold_cm2": 100,
+            "small_package_min_pt": 6,
+            "rules": [
+              "表示面積100cm²以下は6pt以上",
+              "ハングルでの表示義務"
+            ]
+          },
+          "label_format": {
+            "layout": "自由形式（ただし必須項目は主表示面または情報表示面に記載）",
+            "rules": [
+              "主表示面: 製品名・内容量",
+              "情報表示面: 原材料名・栄養成分・製造者等",
+              "韓国語表示義務"
+            ]
+          },
+          "nutrition_facts": {
+            "mandatory_items": [
+              "열량（エネルギー, kcal）",
+              "탄수화물（炭水化物, g）",
+              "당류（糖類, g）",
+              "단백질（タンパク質, g）",
+              "지방（脂質, g）",
+              "포화지방（飽和脂肪酸, g）",
+              "트랜스지방（トランス脂肪酸, g）",
+              "콜레스테롤（コレステロール, mg）",
+              "나트륨（ナトリウム, mg）"
+            ],
+            "format": "1回提供量（1회 제공량）あたり",
+            "rules": [
+              "9項目の義務表示",
+              "1日栄養成分基準値に対する割合（%）を表示"
+            ]
+          }
+        },
+        "cosmetics": {
+          "authority": "식품의약품안전처 (MFDS)",
+          "law": "화장품법（化粧品法）/ 화장품법 시행규칙",
+          "required_fields": [
+            "product_name",
+            "ingredients_full_list",
+            "net_contents",
+            "manufacturer",
+            "expiry_date_or_pao",
+            "lot_number",
+            "usage_precautions",
+            "price"
+          ],
+          "rules": [
+            "全成分表示義務",
+            "INCI名称の韓国語訳を使用",
+            "配合量の多い順",
+            "1%以下は順不同",
+            "機能性化粧品はMFDS審査承認が必要",
+            "色素・タール色素はKFDA告示名称で記載",
+            "使用期限または開封後使用期間の表示義務"
+          ]
+        }
+      }
+    },
+    "TH": {
+      "name": "タイ",
+      "name_en": "Thailand",
+      "lang": "th",
+      "regulations": {
+        "food": {
+          "authority": "สำนักงานคณะกรรมการอาหารและยา (อย.) / FDA Thailand",
+          "law": "Food Act B.E. 2522 (1979) / Notification of MOPH（保健省告示各種）",
+          "required_fields": [
+            "product_name",
+            "ingredients",
+            "allergens",
+            "nutrition",
+            "net_weight",
+            "production_date",
+            "expiry_date",
+            "manufacturer",
+            "fda_registration_number",
+            "storage_conditions",
+            "lot_number"
+          ],
+          "allergen_display": {
+            "mandatory_items": [
+              "ธัญพืชที่มีกลูเตน（グルテン含有穀物）",
+              "สัตว์น้ำที่มีเปลือกแข็ง（甲殻類）",
+              "ไข่（卵）",
+              "ปลา（魚）",
+              "ถั่วลิสง（ピーナッツ）",
+              "ถั่วเหลือง（大豆）",
+              "นม（乳）",
+              "ถั่วเปลือกแข็ง（ナッツ類）"
+            ],
+            "mandatory_count": 8,
+            "format": "「含む」旨をタイ語で表示",
+            "rules": [
+              "MOPH告示に基づく8品目の表示義務",
+              "タイ語での表示が必須",
+              "ข้อมูลสำหรับผู้แพ้อาหาร（アレルギー情報）欄に記載"
+            ]
+          },
+          "ingredient_display": {
+            "order": "配合量の多い順",
+            "separator": ", (comma)",
+            "rules": [
+              "タイ語での表示義務",
+              "食品添加物はINS番号またはタイ語名で記載",
+              "輸入食品はタイ語ラベル貼付義務"
+            ]
+          },
+          "font_rules": {
+            "min_size_mm": 2.0,
+            "rules": [
+              "タイ語の文字高さ2mm以上",
+              "タイ語は英語より大きいか同等のサイズで表示"
+            ]
+          },
+          "label_format": {
+            "layout": "タイ語表示義務（英語併記可だがタイ語が優先）",
+            "rules": [
+              "タイFDA登録番号（อย.番号）の表示義務",
+              "GDA（Guideline Daily Amount）表示の義務化（一部カテゴリ）",
+              "タイ語が英語より目立つように表示"
+            ]
+          },
+          "nutrition_facts": {
+            "mandatory_items": [
+              "พลังงาน（エネルギー, kcal）",
+              "ไขมันทั้งหมด（総脂質, g）",
+              "โปรตีน（タンパク質, g）",
+              "คาร์โบไฮเดรตทั้งหมด（総炭水化物, g）",
+              "น้ำตาล（糖類, g）",
+              "โซเดียม（ナトリウム, mg）"
+            ],
+            "format": "1食分あたり",
+            "rules": [
+              "GDAフロントラベル: エネルギー・糖類・脂質・ナトリウムの旗型マーク表示（スナック菓子等で義務）",
+              "Healthier Choice ロゴ（任意取得）"
+            ]
+          }
+        },
+        "cosmetics": {
+          "authority": "อย. (FDA Thailand)",
+          "law": "Cosmetics Act B.E. 2558 (2015)",
+          "required_fields": [
+            "product_name",
+            "ingredients_full_list",
+            "net_contents",
+            "manufacturer_or_importer",
+            "fda_notification_number",
+            "batch_number",
+            "production_date_or_expiry",
+            "usage_directions",
+            "precautions"
+          ],
+          "rules": [
+            "全成分表示義務",
+            "INCI名称を使用（タイ語訳の併記推奨）",
+            "配合量の多い順",
+            "1%以下は順不同",
+            "タイFDAへの届出義務（コントロール化粧品は許可制）",
+            "タイ語でのラベル表示義務"
+          ]
+        }
+      }
+    },
+    "VN": {
+      "name": "ベトナム",
+      "name_en": "Vietnam",
+      "lang": "vi",
+      "regulations": {
+        "food": {
+          "authority": "Bộ Y tế (保健省) / Cục An toàn thực phẩm (食品安全局, VFA)",
+          "law": "Decree 43/2017/ND-CP（商品ラベルに関する政令）/ Food Safety Law 2010",
+          "required_fields": [
+            "product_name",
+            "ingredients",
+            "net_weight",
+            "production_date",
+            "expiry_date",
+            "manufacturer",
+            "manufacturer_address",
+            "origin",
+            "storage_conditions",
+            "usage_instructions"
+          ],
+          "allergen_display": {
+            "mandatory_items": [],
+            "mandatory_count": 0,
+            "format": "法的義務なし（ただしCodex準拠の自主表示を推奨）",
+            "rules": [
+              "現行法ではアレルゲン表示の義務規定はない",
+              "Codex Alimentarius準拠の表示が推奨される",
+              "輸出向け製品はCodex 8大アレルゲンの表示を推奨"
+            ]
+          },
+          "ingredient_display": {
+            "order": "配合量の多い順",
+            "separator": ", (comma)",
+            "rules": [
+              "ベトナム語での表示義務",
+              "輸入食品はベトナム語ラベル貼付義務",
+              "食品添加物はINS番号またはベトナム語名で記載"
+            ]
+          },
+          "font_rules": {
+            "min_size_mm": 1.5,
+            "rules": [
+              "ベトナム語の文字高さ1.5mm以上",
+              "ベトナム語は他言語より大きいか同等のサイズで表示"
+            ]
+          },
+          "label_format": {
+            "layout": "ベトナム語表示義務",
+            "rules": [
+              "Decree 43/2017/ND-CP準拠",
+              "輸入品はベトナム語補助ラベル（phụ nhãn）貼付義務",
+              "原産国の表示義務"
+            ]
+          },
+          "nutrition_facts": {
+            "mandatory_items": [],
+            "format": "法的義務なし（自主表示の場合はCodex準拠）",
+            "rules": [
+              "一般食品の栄養成分表示は義務ではない",
+              "栄養強調表示（例: 低脂肪）を行う場合のみ裏付けデータ必要",
+              "健康食品・特殊栄養食品は栄養成分表示義務あり"
+            ]
+          }
+        },
+        "cosmetics": {
+          "authority": "Cục Quản lý Dược (薬務局) / Bộ Y tế (保健省)",
+          "law": "Circular 06/2011/TT-BYT / ASEAN Cosmetic Directive準拠",
+          "required_fields": [
+            "product_name",
+            "ingredients_full_list",
+            "net_contents",
+            "manufacturer",
+            "country_of_origin",
+            "notification_number",
+            "batch_number",
+            "expiry_date",
+            "usage_directions",
+            "precautions"
+          ],
+          "rules": [
+            "ASEAN Cosmetic Directive（ACD）に準拠",
+            "INCI名称で全成分表示",
+            "配合量の多い順",
+            "1%以下は順不同",
+            "ベトナム保健省への届出義務",
+            "ベトナム語でのラベル表示義務"
+          ]
+        }
+      }
+    },
+    "ID": {
+      "name": "インドネシア",
+      "name_en": "Indonesia",
+      "lang": "id",
+      "regulations": {
+        "food": {
+          "authority": "BPOM (Badan Pengawas Obat dan Makanan / 国家食品医薬品監督庁)",
+          "law": "PP No. 69/1999 (食品ラベル・広告に関する政令) / BPOM Regulation各種",
+          "required_fields": [
+            "product_name",
+            "ingredients",
+            "allergens",
+            "nutrition",
+            "net_weight",
+            "production_date",
+            "expiry_date",
+            "manufacturer",
+            "distributor",
+            "bpom_registration_number",
+            "halal_certification",
+            "origin"
+          ],
+          "allergen_display": {
+            "mandatory_items": [
+              "Serealia mengandung gluten（グルテン含有穀物）",
+              "Udang（えび）",
+              "Ikan（魚）",
+              "Telur（卵）",
+              "Kacang tanah（ピーナッツ）",
+              "Susu（乳）",
+              "Kacang pohon（ナッツ類）",
+              "Kedelai（大豆）"
+            ],
+            "mandatory_count": 8,
+            "format": "「Mengandung:」の後に列挙、または原材料リスト近傍に記載",
+            "rules": [
+              "BPOM規則に基づく8品目の表示義務",
+              "インドネシア語（Bahasa Indonesia）での表示義務",
+              "「意図せぬ混入の可能性」表示も推奨"
+            ]
+          },
+          "ingredient_display": {
+            "order": "配合量の多い順",
+            "separator": ", (comma)",
+            "rules": [
+              "インドネシア語（Bahasa Indonesia）での表示義務",
+              "食品添加物はINS番号またはインドネシア語名で記載",
+              "輸入食品はインドネシア語ラベル貼付義務"
+            ]
+          },
+          "font_rules": {
+            "min_size_mm": 1.5,
+            "rules": [
+              "文字高さ1.5mm以上",
+              "背景色とのコントラスト確保義務"
+            ]
+          },
+          "label_format": {
+            "layout": "インドネシア語表示義務",
+            "rules": [
+              "BPOM登録番号（MD/ML番号）の表示義務",
+              "ハラール認証マーク表示義務（Law No. 33/2014, 段階的施行中）",
+              "輸入品はインドネシア語補助ラベル貼付義務"
+            ]
+          },
+          "nutrition_facts": {
+            "mandatory_items": [
+              "Energi（エネルギー, kkal）",
+              "Lemak total（総脂質, g）",
+              "Lemak jenuh（飽和脂肪酸, g）",
+              "Protein（タンパク質, g）",
+              "Karbohidrat total（総炭水化物, g）",
+              "Gula（糖類, g）",
+              "Garam / Natrium（ナトリウム, mg）"
+            ],
+            "format": "Per serving (per sajian)",
+            "rules": [
+              "Informasi Nilai Gizi（栄養成分情報）パネル形式",
+              "% AKG（1日の栄養素充足率）の表示義務"
+            ]
+          },
+          "special_requirements": {
+            "halal": {
+              "description": "ハラール認証義務化（Jaminan Produk Halal法）",
+              "rules": [
+                "2024年10月17日より段階的義務化",
+                "BPJPH（ハラール製品保証実施機関）による認証",
+                "食品・飲料・化粧品・医薬品が対象"
+              ]
+            }
+          }
+        },
+        "cosmetics": {
+          "authority": "BPOM",
+          "law": "BPOM Regulation on Cosmetics / ASEAN Cosmetic Directive準拠",
+          "required_fields": [
+            "product_name",
+            "ingredients_full_list",
+            "net_contents",
+            "manufacturer",
+            "country_of_origin",
+            "bpom_notification_number",
+            "batch_number",
+            "expiry_date",
+            "usage_directions",
+            "precautions"
+          ],
+          "rules": [
+            "ASEAN Cosmetic Directive（ACD）に準拠",
+            "INCI名称で全成分表示",
+            "配合量の多い順",
+            "1%以下は順不同",
+            "BPOMへの届出義務",
+            "インドネシア語でのラベル表示義務",
+            "ハラール認証の取得推奨（段階的義務化）"
+          ]
+        }
+      }
+    },
+    "MY": {
+      "name": "マレーシア",
+      "name_en": "Malaysia",
+      "lang": "ms",
+      "regulations": {
+        "food": {
+          "authority": "MOH (Kementerian Kesihatan Malaysia / 保健省) / FSQD (Food Safety and Quality Division)",
+          "law": "Food Act 1983 / Food Regulations 1985（各改正含む）",
+          "required_fields": [
+            "product_name",
+            "ingredients",
+            "allergens",
+            "nutrition",
+            "net_weight",
+            "expiry_date",
+            "manufacturer",
+            "manufacturer_address",
+            "origin",
+            "storage_conditions"
+          ],
+          "allergen_display": {
+            "mandatory_items": [
+              "Gluten-containing cereals（グルテン含有穀物）",
+              "Crustacean（甲殻類）",
+              "Egg（卵）",
+              "Fish（魚）",
+              "Peanut（ピーナッツ）",
+              "Soybean（大豆）",
+              "Milk（乳）",
+              "Tree nut（ナッツ類）",
+              "Sulphite >10ppm（亜硫酸塩）"
+            ],
+            "mandatory_count": 9,
+            "format": "原材料リスト内に記載、または「Contains:」欄で別途表示",
+            "rules": [
+              "Food Regulations 1985, Regulation 11に基づく表示義務",
+              "マレー語（Bahasa Malaysia）での表示義務",
+              "英語併記可"
+            ]
+          },
+          "ingredient_display": {
+            "order": "配合量の多い順（descending order of proportion）",
+            "separator": ", (comma)",
+            "rules": [
+              "マレー語（Bahasa Malaysia）での表示義務",
+              "食品添加物はINS番号またはマレー語名で記載",
+              "輸入食品はマレー語ラベル貼付義務",
+              "複合原材料は括弧内に構成成分を記載"
+            ]
+          },
+          "font_rules": {
+            "min_size_mm": 1.5,
+            "min_size_pt": 4.5,
+            "rules": [
+              "文字高さ1.5mm以上",
+              "背景色とのコントラスト確保"
+            ]
+          },
+          "label_format": {
+            "layout": "マレー語表示義務（英語併記可）",
+            "rules": [
+              "マレー語が最優先の表示言語",
+              "製造日または消費期限のフォーマット指定あり",
+              "輸入品はマレー語補助ラベル貼付義務"
+            ]
+          },
+          "nutrition_facts": {
+            "mandatory_items": [
+              "Tenaga（エネルギー, kcal）",
+              "Protein（タンパク質, g）",
+              "Jumlah lemak（総脂質, g）",
+              "Jumlah karbohidrat（総炭水化物, g）",
+              "Jumlah gula（総糖類, g）",
+              "Natrium（ナトリウム, mg）"
+            ],
+            "format": "Per serving / Per 100g or 100ml",
+            "rules": [
+              "表形式（Maklumat Pemakanan パネル）",
+              "2003年より一部カテゴリで義務化、順次拡大"
+            ]
+          },
+          "special_requirements": {
+            "halal": {
+              "description": "JAKIM（マレーシア・イスラム開発局）によるハラール認証",
+              "rules": [
+                "法的義務ではないが、マレーシア市場では事実上必須",
+                "JAKIM認証は世界的に高い信頼性",
+                "Halal ロゴの不正使用は刑事罰の対象"
+              ]
+            }
+          }
+        },
+        "cosmetics": {
+          "authority": "NPRA (National Pharmaceutical Regulatory Agency) / MOH",
+          "law": "Control of Drugs and Cosmetics Regulations 1984 / ASEAN Cosmetic Directive準拠",
+          "required_fields": [
+            "product_name",
+            "ingredients_full_list",
+            "net_contents",
+            "manufacturer",
+            "country_of_origin",
+            "notification_number",
+            "batch_number",
+            "expiry_date",
+            "usage_directions",
+            "precautions"
+          ],
+          "rules": [
+            "ASEAN Cosmetic Directive（ACD）に準拠",
+            "INCI名称で全成分表示",
+            "配合量の多い順",
+            "1%以下は順不同",
+            "NPRAへの届出義務（QUEST 3+システム）",
+            "マレー語と英語でのラベル表示",
+            "NOT番号（Notification Number）の表示義務"
+          ]
+        }
+      }
+    },
+    "TW": {
+      "name": "台湾",
+      "name_en": "Taiwan",
+      "lang": "zh-tw",
+      "regulations": {
+        "food": {
+          "authority": "衛生福利部食品藥物管理署 (TFDA)",
+          "law": "食品安全衛生管理法 / 食品及其相關產品標示辦法",
+          "required_fields": [
+            "product_name",
+            "ingredients",
+            "allergens",
+            "nutrition",
+            "net_weight",
+            "expiry_date",
+            "manufacturer",
+            "manufacturer_address",
+            "origin",
+            "storage_conditions"
+          ],
+          "allergen_display": {
+            "mandatory_items": [
+              "甲殼類及其製品（甲殻類）",
+              "芒果及其製品（マンゴー）",
+              "花生及其製品（ピーナッツ）",
+              "牛奶/羊奶及其製品（乳）",
+              "蛋及其製品（卵）",
+              "堅果類及其製品（ナッツ類）",
+              "芝麻及其製品（ごま）",
+              "含麩質之穀物及其製品（グルテン含有穀物）",
+              "大豆及其製品（大豆）",
+              "魚類及其製品（魚類）",
+              "亞硫酸鹽類（亜硫酸塩類）"
+            ],
+            "mandatory_count": 11,
+            "format": "「本產品含有○○」または「本產品之製造廠房處理○○」",
+            "rules": [
+              "TFDA公告の11品目が表示義務",
+              "繁体字中国語での表示義務",
+              "「本製品は○○を含む」形式",
+              "意図せぬ混入リスクの注意喚起表示も推奨"
+            ]
+          },
+          "ingredient_display": {
+            "order": "配合量の多い順",
+            "separator": "、（頓号）",
+            "rules": [
+              "繁体字中国語での表示義務",
+              "食品添加物は品名で記載（用途名併記推奨）",
+              "輸入食品は中国語ラベル貼付義務",
+              "2%以上含有する原材料はすべて個別記載"
+            ]
+          },
+          "font_rules": {
+            "min_size_mm": 2.0,
+            "rules": [
+              "繁体字中国語の文字高さ2mm以上",
+              "最大面積面の40%以上を表示スペースに充てる場合は緩和あり"
+            ]
+          },
+          "label_format": {
+            "layout": "繁体字中国語表示義務",
+            "rules": [
+              "輸入品は中国語ラベル貼付義務",
+              "製造日期（製造日）と有效日期（有効期限）の表示義務",
+              "TFDA食品業者登録番号の表示（一部カテゴリ）"
+            ]
+          },
+          "nutrition_facts": {
+            "mandatory_items": [
+              "熱量（kcal）",
+              "蛋白質（タンパク質, g）",
+              "脂肪（脂質, g）",
+              "飽和脂肪（飽和脂肪酸, g）",
+              "反式脂肪（トランス脂肪酸, g）",
+              "碳水化合物（炭水化物, g）",
+              "糖（糖類, g）",
+              "鈉（ナトリウム, mg）"
+            ],
+            "format": "每份（1食分あたり）/ 每100公克(毫升)",
+            "rules": [
+              "8大項目の義務表示",
+              "每日參考值百分比（%Daily Value）の表示義務",
+              "包装食品は原則すべて栄養成分表示義務"
+            ]
+          }
+        },
+        "cosmetics": {
+          "authority": "衛生福利部食品藥物管理署 (TFDA)",
+          "law": "化粧品衛生安全管理法（2019年施行）",
+          "required_fields": [
+            "product_name",
+            "ingredients_full_list",
+            "net_contents",
+            "manufacturer",
+            "country_of_origin",
+            "batch_number",
+            "expiry_date_or_pao",
+            "usage_directions",
+            "precautions"
+          ],
+          "rules": [
+            "全成分表示義務（2024年7月より段階的施行）",
+            "INCI名称で記載（繁体字中国語名の併記推奨）",
+            "配合量の多い順",
+            "1%以下は順不同",
+            "特定用途化粧品はTFDAへの許可申請が必要",
+            "一般化粧品は届出制",
+            "繁体字中国語でのラベル表示義務"
+          ]
+        }
+      }
+    }
+  },
+  "metadata": {
+    "sources": [
+      "消費者庁 食品表示基準",
+      "FDA 21 CFR Part 101",
+      "Regulation (EU) No 1169/2011",
+      "GB 7718-2011 / GB 28050-2011",
+      "MFDS 식품등의 표시기준",
+      "Thai FDA Notification",
+      "Vietnam Decree 43/2017/ND-CP",
+      "BPOM Regulation (Indonesia)",
+      "Malaysia Food Regulations 1985",
+      "TFDA 食品安全衛生管理法"
+    ],
+    "disclaimer": "本データは各国の法規制を参考にまとめたものであり、最新の法改正が反映されていない可能性があります。実際のラベル作成時は各国の監督官庁の最新情報を確認してください。"
+  }
+}

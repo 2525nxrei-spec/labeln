@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ラベルンの料金プラン。ライト月額300円・スタンダード月額500円・プロ月額2,000円。無料枠あり。">
+  <meta name="theme-color" content="#0f766e">
+  <title>料金プラン | ラベルン - 製品ラベル多言語化サブスク</title>
+  <link rel="canonical" href="https://labeln.app/pricing.html">
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- ===== ヘッダー ===== -->
+  <header class="header" id="header" role="banner">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo" aria-label="ラベルン トップページ">
+        <span class="header__logo-icon" aria-hidden="true">&#127991;</span>
+        ラベルン
+      </a>
+
+      <nav class="header__nav" aria-label="メインナビゲーション">
+        <a href="index.html#features" class="header__nav-link">機能</a>
+        <a href="#plans" class="header__nav-link">料金</a>
+        <a href="#faq" class="header__nav-link">FAQ</a>
+      </nav>
+
+      <div class="header__actions">
+        <a href="login.html" class="btn btn--ghost btn--sm">ログイン</a>
+        <a href="signup.html" class="btn btn--primary btn--sm">新規登録</a>
+        <button class="header__hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-menu">
+          <span class="header__hamburger-line" aria-hidden="true"></span>
+          <span class="header__hamburger-line" aria-hidden="true"></span>
+          <span class="header__hamburger-line" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- モバイルメニュー -->
+  <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="モバイルナビゲーション">
+    <a href="index.html#features" class="mobile-menu__link">機能</a>
+    <a href="#plans" class="mobile-menu__link">料金</a>
+    <a href="#faq" class="mobile-menu__link">FAQ</a>
+    <div class="mobile-menu__actions">
+      <a href="login.html" class="btn btn--outline btn--full">ログイン</a>
+      <a href="signup.html" class="btn btn--primary btn--full">新規登録</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== 料金ヒーロー ===== -->
+    <section class="hero" style="padding-bottom:var(--spacing-2xl);">
+      <div class="container">
+        <h1 class="hero__catch" style="font-size:var(--font-size-3xl);">料金プラン</h1>
+        <p class="hero__sub">初期費用なし。いつでも解約OK。まずは無料で試せます。</p>
+      </div>
+    </section>
+
+    <!-- ===== 料金プラン ===== -->
+    <section class="section" id="plans" style="padding-top:var(--spacing-xl);">
+      <div class="container">
+        <div class="pricing-grid">
+          <!-- ライトプラン -->
+          <div class="pricing-card">
+            <p class="pricing-card__name">ライト</p>
+            <p class="pricing-card__price">¥300<span class="pricing-card__price-unit">/月（税込）</span></p>
+            <p class="pricing-card__description">個人セラー・小規模ECに</p>
+            <div class="pricing-card__features">
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>月10ラベルまで</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>5言語まで選択可</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>PDF出力（標準解像度 150dpi）</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>法定表示自動生成</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>ラベルプレビュー</span>
+              </div>
+              <div class="pricing-card__feature pricing-card__feature--disabled">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#8212;</span>
+                <span>CSVインポート</span>
+              </div>
+              <div class="pricing-card__feature pricing-card__feature--disabled">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#8212;</span>
+                <span>API連携</span>
+              </div>
+              <div class="pricing-card__feature pricing-card__feature--disabled">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#8212;</span>
+                <span>優先サポート</span>
+              </div>
+            </div>
+            <button class="btn btn--outline btn--full" id="checkout-light" data-plan="light">
+              このプランで始める
+            </button>
+            <div class="payment-badges">
+              <span class="payment-badge"><span class="payment-badge__icon">&#128179;</span>カード</span>
+              <span class="payment-badge"><span class="payment-badge__icon payment-badge__icon--paypay">P</span>PayPay</span>
+              <span class="payment-badge">Apple Pay</span>
+              <span class="payment-badge">Google Pay</span>
+            </div>
+          </div>
+
+          <!-- スタンダードプラン -->
+          <div class="pricing-card pricing-card--recommended">
+            <span class="pricing-card__badge">おすすめ</span>
+            <p class="pricing-card__name">スタンダード</p>
+            <p class="pricing-card__price">¥500<span class="pricing-card__price-unit">/月（税込）</span></p>
+            <p class="pricing-card__description">本格的な越境EC運営に</p>
+            <div class="pricing-card__features">
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>月50ラベルまで</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>18言語すべて利用可</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>PDF出力（高解像度 300dpi）</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>法定表示自動生成</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>ラベルプレビュー</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>CSVインポート</span>
+              </div>
+              <div class="pricing-card__feature pricing-card__feature--disabled">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#8212;</span>
+                <span>API連携</span>
+              </div>
+              <div class="pricing-card__feature pricing-card__feature--disabled">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#8212;</span>
+                <span>優先サポート</span>
+              </div>
+            </div>
+            <button class="btn btn--primary btn--full" id="checkout-standard" data-plan="standard">
+              このプランで始める
+            </button>
+            <div class="payment-badges">
+              <span class="payment-badge"><span class="payment-badge__icon">&#128179;</span>カード</span>
+              <span class="payment-badge"><span class="payment-badge__icon payment-badge__icon--paypay">P</span>PayPay</span>
+              <span class="payment-badge">Apple Pay</span>
+              <span class="payment-badge">Google Pay</span>
+            </div>
+          </div>
+
+          <!-- プロプラン -->
+          <div class="pricing-card">
+            <p class="pricing-card__name">プロ <span class="badge badge--coming-soon">Coming Soon</span></p>
+            <p class="pricing-card__price">¥2,000<span class="pricing-card__price-unit">/月（税込）</span></p>
+            <p class="pricing-card__description">大規模EC・メーカー向け</p>
+            <div class="pricing-card__features">
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>ラベル数無制限</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>18言語すべて利用可</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>PDF出力（高解像度 300dpi）</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>法定表示自動生成</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>ラベルプレビュー</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>CSVインポート</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>API連携</span>
+              </div>
+              <div class="pricing-card__feature">
+                <span class="pricing-card__feature-icon" aria-hidden="true">&#10003;</span>
+                <span>優先サポート</span>
+              </div>
+            </div>
+            <button class="btn btn--secondary btn--full btn--disabled" disabled>準備中</button>
+            <div class="payment-badges">
+              <span class="payment-badge"><span class="payment-badge__icon">&#128179;</span>カード</span>
+              <span class="payment-badge"><span class="payment-badge__icon payment-badge__icon--paypay">P</span>PayPay</span>
+              <span class="payment-badge">Apple Pay</span>
+              <span class="payment-badge">Google Pay</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 無料枠 -->
+        <div class="free-tier">
+          <p class="free-tier__title">無料枠について</p>
+          <p class="free-tier__text">
+            アカウント作成だけで、月3ラベル × 1言語を無料でご利用いただけます。<br>
+            クレジットカード登録不要。機能制限なく全ての機能をお試しいただけます。
+          </p>
+        </div>
+
+        <!-- 対応決済方法 -->
+        <div class="payment-methods" style="text-align:center;margin-top:var(--spacing-xl);">
+          <p style="font-size:var(--font-size-sm);color:var(--color-text-muted);margin-bottom:var(--spacing-sm);">対応決済方法</p>
+          <div class="payment-badges" style="justify-content:center;">
+            <span class="payment-badge"><span class="payment-badge__icon">&#128179;</span>カード</span>
+            <span class="payment-badge"><span class="payment-badge__icon payment-badge__icon--paypay">P</span>PayPay</span>
+            <span class="payment-badge">Apple Pay</span>
+            <span class="payment-badge">Google Pay</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 機能比較表 ===== -->
+    <section class="section section--pale" id="compare">
+      <div class="container">
+        <h2 class="section__title">プラン機能比較</h2>
+
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>機能</th>
+                <th>無料</th>
+                <th>ライト</th>
+                <th>スタンダード</th>
+                <th>プロ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>月間ラベル数</td>
+                <td>3</td>
+                <td>10</td>
+                <td>50</td>
+                <td>無制限</td>
+              </tr>
+              <tr>
+                <td>対応言語数</td>
+                <td>1</td>
+                <td>5</td>
+                <td>18</td>
+                <td>18</td>
+              </tr>
+              <tr>
+                <td>PDF解像度</td>
+                <td>150dpi</td>
+                <td>150dpi</td>
+                <td>300dpi</td>
+                <td>300dpi</td>
+              </tr>
+              <tr>
+                <td>法定表示自動生成</td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+              </tr>
+              <tr>
+                <td>ラベルプレビュー</td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+              </tr>
+              <tr>
+                <td>CSVインポート</td>
+                <td><span class="table__cross" aria-label="非対応">&#8212;</span></td>
+                <td><span class="table__cross" aria-label="非対応">&#8212;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+              </tr>
+              <tr>
+                <td>トンボ（トリムマーク）</td>
+                <td><span class="table__cross" aria-label="非対応">&#8212;</span></td>
+                <td><span class="table__cross" aria-label="非対応">&#8212;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+              </tr>
+              <tr>
+                <td>API連携</td>
+                <td><span class="table__cross" aria-label="非対応">&#8212;</span></td>
+                <td><span class="table__cross" aria-label="非対応">&#8212;</span></td>
+                <td><span class="table__cross" aria-label="非対応">&#8212;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+              </tr>
+              <tr>
+                <td>優先サポート</td>
+                <td><span class="table__cross" aria-label="非対応">&#8212;</span></td>
+                <td><span class="table__cross" aria-label="非対応">&#8212;</span></td>
+                <td><span class="table__cross" aria-label="非対応">&#8212;</span></td>
+                <td><span class="table__check" aria-label="対応">&#10003;</span></td>
+              </tr>
+              <tr>
+                <td>データ保持期間</td>
+                <td>7日間</td>
+                <td>30日間</td>
+                <td>90日間</td>
+                <td>無制限</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FAQ（料金関連） ===== -->
+    <section class="section" id="faq">
+      <div class="container">
+        <h2 class="section__title">料金に関するよくある質問</h2>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-item__question" aria-expanded="false">
+              <span>支払い方法は何がありますか？</span>
+              <span class="faq-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-item__answer">
+              クレジットカード（Visa / Mastercard / JCB / American Express）、PayPay、Apple Pay（Safari）、Google Pay（Android Chrome）に対応しています。決済はStripeを通じて安全に処理され、カード情報は当社サーバーには保存されません。
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__question" aria-expanded="false">
+              <span>プランの変更はいつでもできますか？</span>
+              <span class="faq-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-item__answer">
+              はい、マイページからいつでもプランの変更が可能です。アップグレードは即時反映、ダウングレードは次回請求日から適用されます。差額は日割り計算で調整します。
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__question" aria-expanded="false">
+              <span>年払い割引はありますか？</span>
+              <span class="faq-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-item__answer">
+              現在は月払いのみのご提供ですが、年払い（2ヶ月分無料）の導入を予定しています。開始時にはメールでお知らせいたします。
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__question" aria-expanded="false">
+              <span>月間ラベル数を超えた場合はどうなりますか？</span>
+              <span class="faq-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-item__answer">
+              上限に達した場合、その月は新規ラベルの作成ができなくなります。追加課金は一切発生しません。上位プランへのアップグレードをご検討ください。ラベル数は毎月1日にリセットされます。
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__question" aria-expanded="false">
+              <span>領収書は発行できますか？</span>
+              <span class="faq-item__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-item__answer">
+              はい、マイページの請求履歴から毎月の領収書をPDFでダウンロードいただけます。法人名義での発行にも対応しています。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="section section--dark">
+      <div class="container text-center">
+        <h2 class="section__title section__title--light">まずは無料で体験してみませんか？</h2>
+        <p class="section__subtitle section__subtitle--light">クレジットカード不要。3分で始められます。</p>
+        <a href="signup.html" class="btn btn--primary btn--lg">無料アカウントを作成</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== フッター ===== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <p class="footer__logo">ラベルン</p>
+          <p class="footer__description">製品ラベル多言語化サブスク。<br>18言語対応・法定表示準拠・PDF即出力。</p>
+        </div>
+        <div>
+          <p class="footer__nav-title">サービス</p>
+          <a href="index.html#features" class="footer__nav-link">機能紹介</a>
+          <a href="#plans" class="footer__nav-link">料金プラン</a>
+          <a href="index.html#languages" class="footer__nav-link">対応言語</a>
+          <a href="#faq" class="footer__nav-link">FAQ</a>
+        </div>
+        <div>
+          <p class="footer__nav-title">サポート</p>
+          <a href="help.html" class="footer__nav-link">ヘルプセンター</a>
+          <a href="contact.html" class="footer__nav-link">お問い合わせ</a>
+          <a href="changelog.html" class="footer__nav-link">更新履歴</a>
+        </div>
+        <div>
+          <p class="footer__nav-title">会社情報</p>
+          <a href="company.html" class="footer__nav-link">礼株式会社</a>
+          <a href="https://rei-inc.jp" class="footer__nav-link" target="_blank" rel="noopener noreferrer">コーポレートサイト</a>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p>&copy; 2026 礼株式会社. All rights reserved.</p>
+        <div class="footer__legal">
+          <a href="terms.html" class="footer__legal-link">利用規約</a>
+          <a href="privacy.html" class="footer__legal-link">プライバシーポリシー</a>
+          <a href="legal.html" class="footer__legal-link">特定商取引法に基づく表記</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/stripe.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      /* ハンバーガーメニュー */
+      var hamburger = document.getElementById('hamburger');
+      var mobileMenu = document.getElementById('mobile-menu');
+      var header = document.getElementById('header');
+
+      if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', function () {
+          var isOpen = mobileMenu.classList.toggle('is-open');
+          hamburger.classList.toggle('is-active');
+          hamburger.setAttribute('aria-expanded', isOpen);
+        });
+        mobileMenu.querySelectorAll('.mobile-menu__link').forEach(function (link) {
+          link.addEventListener('click', function () {
+            mobileMenu.classList.remove('is-open');
+            hamburger.classList.remove('is-active');
+            hamburger.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+
+      /* ヘッダースクロール影 */
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 10) {
+          header.classList.add('header--scrolled');
+        } else {
+          header.classList.remove('header--scrolled');
+        }
+      });
+
+      /* FAQ アコーディオン */
+      document.querySelectorAll('.faq-item__question').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var item = btn.closest('.faq-item');
+          var isOpen = item.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', isOpen);
+        });
+      });
+
+      /* フェードイン（不要なため無効化済み） */
+    });
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    }
+  </script>
+</body>
+</html>

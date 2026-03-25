@@ -1,0 +1,26 @@
+{
+  "name": "ラベルン - 製品ラベル多言語化",
+  "short_name": "ラベルン",
+  "description": "製品ラベルを18言語に自動翻訳。法定表示準拠のPDFを即時生成。",
+  "start_url": "/app.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f766e",
+  "orientation": "any",
+  "scope": "/",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

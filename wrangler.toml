@@ -1,0 +1,24 @@
+name = "labelun-api"
+main = "workers/api.js"
+compatibility_date = "2024-12-01"
+
+[vars]
+ENVIRONMENT = "development"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "labelun-db"
+database_id = "placeholder-id"
+
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "labelun-storage"
+
+# Secrets（wrangler secret put で設定）
+# wrangler secret put GEMINI_API_KEY
+# wrangler secret put STRIPE_SECRET_KEY
+# wrangler secret put STRIPE_WEBHOOK_SECRET
+# wrangler secret put JWT_SECRET
+# wrangler secret put STRIPE_PRICE_LITE
+# wrangler secret put STRIPE_PRICE_STANDARD
+# wrangler secret put STRIPE_PRICE_PRO

@@ -1,0 +1,488 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-03-24",
+  "description": "10カ国の栄養成分表示フォーマット定義",
+  "formats": {
+    "JP": {
+      "name": "栄養成分表示",
+      "name_en": "Nutrition Labeling",
+      "basis": ["per_100g", "per_serving"],
+      "basis_label": {
+        "per_100g": "100gあたり",
+        "per_serving": "1食○gあたり"
+      },
+      "required_nutrients": [
+        { "key": "energy", "label": "エネルギー", "unit": "kcal", "order": 1 },
+        { "key": "protein", "label": "たんぱく質", "unit": "g", "order": 2 },
+        { "key": "fat", "label": "脂質", "unit": "g", "order": 3 },
+        { "key": "carbohydrate", "label": "炭水化物", "unit": "g", "order": 4 },
+        { "key": "sodium_eq", "label": "食塩相当量", "unit": "g", "order": 5 }
+      ],
+      "optional_nutrients": [
+        { "key": "saturated_fat", "label": "飽和脂肪酸", "unit": "g" },
+        { "key": "trans_fat", "label": "トランス脂肪酸", "unit": "g" },
+        { "key": "cholesterol", "label": "コレステロール", "unit": "mg" },
+        { "key": "dietary_fiber", "label": "食物繊維", "unit": "g" },
+        { "key": "sugar", "label": "糖質", "unit": "g" },
+        { "key": "calcium", "label": "カルシウム", "unit": "mg" },
+        { "key": "iron", "label": "鉄", "unit": "mg" },
+        { "key": "vitamin_a", "label": "ビタミンA", "unit": "μg" },
+        { "key": "vitamin_c", "label": "ビタミンC", "unit": "mg" },
+        { "key": "vitamin_d", "label": "ビタミンD", "unit": "μg" }
+      ],
+      "daily_value_basis": null,
+      "layout": {
+        "style": "vertical_table",
+        "border": true,
+        "header_text": "栄養成分表示",
+        "width_mm": null,
+        "rules": ["枠線で囲む", "見やすい文字サイズ"]
+      },
+      "law": "食品表示基準（内閣府令第10号）",
+      "notes": [
+        "ナトリウムは食塩相当量で表示（2020年4月完全移行）"
+      ]
+    },
+    "US": {
+      "name": "Nutrition Facts",
+      "name_en": "Nutrition Facts",
+      "basis": ["per_serving"],
+      "basis_label": {
+        "per_serving": "Serving Size"
+      },
+      "required_nutrients": [
+        { "key": "calories", "label": "Calories", "unit": "kcal", "order": 1, "bold": true },
+        { "key": "total_fat", "label": "Total Fat", "unit": "g", "order": 2, "dv": true },
+        { "key": "saturated_fat", "label": "Saturated Fat", "unit": "g", "order": 3, "indent": 1, "dv": true },
+        { "key": "trans_fat", "label": "Trans Fat", "unit": "g", "order": 4, "indent": 1 },
+        { "key": "cholesterol", "label": "Cholesterol", "unit": "mg", "order": 5, "dv": true },
+        { "key": "sodium", "label": "Sodium", "unit": "mg", "order": 6, "dv": true },
+        { "key": "total_carbohydrate", "label": "Total Carbohydrate", "unit": "g", "order": 7, "dv": true },
+        { "key": "dietary_fiber", "label": "Dietary Fiber", "unit": "g", "order": 8, "indent": 1, "dv": true },
+        { "key": "total_sugars", "label": "Total Sugars", "unit": "g", "order": 9, "indent": 1 },
+        { "key": "added_sugars", "label": "Includes Added Sugars", "unit": "g", "order": 10, "indent": 2, "dv": true },
+        { "key": "protein", "label": "Protein", "unit": "g", "order": 11 },
+        { "key": "vitamin_d", "label": "Vitamin D", "unit": "mcg", "order": 12, "dv": true },
+        { "key": "calcium", "label": "Calcium", "unit": "mg", "order": 13, "dv": true },
+        { "key": "iron", "label": "Iron", "unit": "mg", "order": 14, "dv": true },
+        { "key": "potassium", "label": "Potassium", "unit": "mg", "order": 15, "dv": true }
+      ],
+      "optional_nutrients": [
+        { "key": "vitamin_a", "label": "Vitamin A", "unit": "mcg" },
+        { "key": "vitamin_c", "label": "Vitamin C", "unit": "mg" },
+        { "key": "thiamin", "label": "Thiamin", "unit": "mg" },
+        { "key": "riboflavin", "label": "Riboflavin", "unit": "mg" },
+        { "key": "niacin", "label": "Niacin", "unit": "mg" },
+        { "key": "vitamin_b6", "label": "Vitamin B6", "unit": "mg" },
+        { "key": "folate", "label": "Folate", "unit": "mcg DFE" },
+        { "key": "vitamin_b12", "label": "Vitamin B12", "unit": "mcg" },
+        { "key": "phosphorus", "label": "Phosphorus", "unit": "mg" },
+        { "key": "magnesium", "label": "Magnesium", "unit": "mg" },
+        { "key": "zinc", "label": "Zinc", "unit": "mg" }
+      ],
+      "daily_value_basis": "2,000 calorie diet",
+      "layout": {
+        "style": "fda_standard",
+        "border": true,
+        "header_text": "Nutrition Facts",
+        "thick_lines": [1, 7],
+        "rules": [
+          "太線でCaloriesとビタミン/ミネラル欄を分離",
+          "% Daily Value右寄せ"
+        ]
+      },
+      "law": "21 CFR 101.9 (Updated 2020 label format)",
+      "notes": [
+        "2020年新フォーマット: Added Sugars追加、Vitamin D/Potassium義務化",
+        "Vitamin A/Vitamin Cは任意表示に変更"
+      ]
+    },
+    "EU": {
+      "name": "Nutrition Declaration",
+      "name_en": "Nutrition Declaration",
+      "basis": ["per_100g", "per_100ml"],
+      "basis_label": {
+        "per_100g": "per 100 g",
+        "per_100ml": "per 100 ml",
+        "per_serving": "per portion (voluntary)"
+      },
+      "required_nutrients": [
+        { "key": "energy_kj", "label": "Energy", "unit": "kJ", "order": 1 },
+        { "key": "energy_kcal", "label": "Energy", "unit": "kcal", "order": 2 },
+        { "key": "fat", "label": "Fat", "unit": "g", "order": 3 },
+        { "key": "saturated_fat", "label": "of which saturates", "unit": "g", "order": 4, "indent": 1 },
+        { "key": "carbohydrate", "label": "Carbohydrate", "unit": "g", "order": 5 },
+        { "key": "sugars", "label": "of which sugars", "unit": "g", "order": 6, "indent": 1 },
+        { "key": "protein", "label": "Protein", "unit": "g", "order": 7 },
+        { "key": "salt", "label": "Salt", "unit": "g", "order": 8 }
+      ],
+      "optional_nutrients": [
+        { "key": "mono_unsaturated_fat", "label": "of which mono-unsaturates", "unit": "g" },
+        { "key": "poly_unsaturated_fat", "label": "of which polyunsaturates", "unit": "g" },
+        { "key": "polyols", "label": "of which polyols", "unit": "g" },
+        { "key": "starch", "label": "of which starch", "unit": "g" },
+        { "key": "dietary_fiber", "label": "Fibre", "unit": "g" },
+        { "key": "vitamin_a", "label": "Vitamin A", "unit": "μg" },
+        { "key": "vitamin_d", "label": "Vitamin D", "unit": "μg" },
+        { "key": "vitamin_c", "label": "Vitamin C", "unit": "mg" },
+        { "key": "calcium", "label": "Calcium", "unit": "mg" },
+        { "key": "iron", "label": "Iron", "unit": "mg" },
+        { "key": "potassium", "label": "Potassium", "unit": "mg" },
+        { "key": "zinc", "label": "Zinc", "unit": "mg" }
+      ],
+      "daily_value_basis": "Reference Intakes (RI) based on 8,400 kJ / 2,000 kcal",
+      "layout": {
+        "style": "vertical_table",
+        "border": true,
+        "header_text": "Nutrition Declaration",
+        "rules": [
+          "per 100g/100mlが義務、per portionは任意で併記可",
+          "エネルギーはkJとkcal両方を表示",
+          "% RIは任意だがper portionと併記する場合が多い"
+        ]
+      },
+      "law": "Regulation (EU) No 1169/2011 on the provision of food information to consumers",
+      "notes": [
+        "saltはナトリウム×2.5で算出",
+        "加盟国の公用語で表示する義務あり",
+        "Fibre（食物繊維）は任意だが表示頻度が高い"
+      ]
+    },
+    "CN": {
+      "name": "营养成分表",
+      "name_en": "Nutrition Facts Table",
+      "basis": ["per_100g", "per_100ml", "per_serving"],
+      "basis_label": {
+        "per_100g": "每100克",
+        "per_100ml": "每100毫升",
+        "per_serving": "每份"
+      },
+      "required_nutrients": [
+        { "key": "energy", "label": "能量", "unit": "kJ", "order": 1, "nrv": true },
+        { "key": "protein", "label": "蛋白质", "unit": "g", "order": 2, "nrv": true },
+        { "key": "fat", "label": "脂肪", "unit": "g", "order": 3, "nrv": true },
+        { "key": "carbohydrate", "label": "碳水化合物", "unit": "g", "order": 4, "nrv": true },
+        { "key": "sodium", "label": "钠", "unit": "mg", "order": 5, "nrv": true }
+      ],
+      "optional_nutrients": [
+        { "key": "saturated_fat", "label": "饱和脂肪酸", "unit": "g" },
+        { "key": "trans_fat", "label": "反式脂肪酸", "unit": "g" },
+        { "key": "cholesterol", "label": "胆固醇", "unit": "mg" },
+        { "key": "dietary_fiber", "label": "膳食纤维", "unit": "g" },
+        { "key": "sugar", "label": "糖", "unit": "g" },
+        { "key": "vitamin_a", "label": "维生素A", "unit": "μg RE" },
+        { "key": "vitamin_d", "label": "维生素D", "unit": "μg" },
+        { "key": "vitamin_c", "label": "维生素C", "unit": "mg" },
+        { "key": "calcium", "label": "钙", "unit": "mg" },
+        { "key": "iron", "label": "铁", "unit": "mg" },
+        { "key": "zinc", "label": "锌", "unit": "mg" },
+        { "key": "potassium", "label": "钾", "unit": "mg" }
+      ],
+      "daily_value_basis": "NRV（营养素参考值）based on 8,400 kJ",
+      "layout": {
+        "style": "three_column_table",
+        "border": true,
+        "header_text": "营养成分表",
+        "columns": ["项目", "每100g（或每份）", "NRV%"],
+        "rules": [
+          "3列構成（項目・含有量・NRV%）",
+          "NRV%は必須表示",
+          "簡体字で表示"
+        ]
+      },
+      "law": "GB 28050-2011 食品安全国家标准 预包装食品营养标签通则",
+      "notes": [
+        "エネルギー単位はkJ（kcal不可）",
+        "「4+1」が基本必須項目（energy + protein, fat, carbohydrate, sodium）",
+        "GB 28050改定（2024年公開草案）でsugar/saturated fat義務化の動きあり"
+      ]
+    },
+    "KR": {
+      "name": "영양성분",
+      "name_en": "Nutrition Information",
+      "basis": ["per_serving", "per_100g"],
+      "basis_label": {
+        "per_serving": "1회 제공량 (○g)",
+        "per_100g": "100g당"
+      },
+      "required_nutrients": [
+        { "key": "calories", "label": "열량", "unit": "kcal", "order": 1 },
+        { "key": "sodium", "label": "나트륨", "unit": "mg", "order": 2, "dv": true },
+        { "key": "carbohydrate", "label": "탄수화물", "unit": "g", "order": 3, "dv": true },
+        { "key": "sugars", "label": "당류", "unit": "g", "order": 4, "indent": 1, "dv": true },
+        { "key": "fat", "label": "지방", "unit": "g", "order": 5, "dv": true },
+        { "key": "trans_fat", "label": "트랜스지방", "unit": "g", "order": 6, "indent": 1 },
+        { "key": "saturated_fat", "label": "포화지방", "unit": "g", "order": 7, "indent": 1, "dv": true },
+        { "key": "cholesterol", "label": "콜레스테롤", "unit": "mg", "order": 8, "dv": true },
+        { "key": "protein", "label": "단백질", "unit": "g", "order": 9, "dv": true }
+      ],
+      "optional_nutrients": [
+        { "key": "dietary_fiber", "label": "식이섬유", "unit": "g" },
+        { "key": "vitamin_a", "label": "비타민 A", "unit": "μg RE" },
+        { "key": "vitamin_c", "label": "비타민 C", "unit": "mg" },
+        { "key": "vitamin_d", "label": "비타민 D", "unit": "μg" },
+        { "key": "calcium", "label": "칼슘", "unit": "mg" },
+        { "key": "iron", "label": "철", "unit": "mg" },
+        { "key": "potassium", "label": "칼륨", "unit": "mg" }
+      ],
+      "daily_value_basis": "%영양성분기준치: 1일 영양성분 기준치에 대한 비율 (2,000 kcal 기준)",
+      "layout": {
+        "style": "vertical_table",
+        "border": true,
+        "header_text": "영양성분",
+        "rules": [
+          "1회 제공량と総 제공횟수を上部に表示",
+          "%영양성분기준치を右列に表示",
+          "トランス脂肪のDV無し（量のみ表示）"
+        ]
+      },
+      "law": "식품등의 표시·광고에 관한 법률 및 식품등의 표시기준 (식품의약품안전처)",
+      "notes": [
+        "2023年改正で당류（糖類）の%기준치が追加",
+        "1회 제공량（1回提供量）ベースが基本"
+      ]
+    },
+    "TH": {
+      "name": "ข้อมูลโภชนาการ",
+      "name_en": "Nutrition Information",
+      "basis": ["per_serving"],
+      "basis_label": {
+        "per_serving": "หนึ่งหน่วยบริโภค (Serving Size)"
+      },
+      "required_nutrients": [
+        { "key": "energy", "label": "พลังงานทั้งหมด", "label_en": "Total Energy", "unit": "kcal", "order": 1 },
+        { "key": "fat", "label": "ไขมันทั้งหมด", "label_en": "Total Fat", "unit": "g", "order": 2, "dv": true },
+        { "key": "saturated_fat", "label": "ไขมันอิ่มตัว", "label_en": "Saturated Fat", "unit": "g", "order": 3, "indent": 1, "dv": true },
+        { "key": "cholesterol", "label": "โคเลสเตอรอล", "label_en": "Cholesterol", "unit": "mg", "order": 4, "dv": true },
+        { "key": "protein", "label": "โปรตีน", "label_en": "Protein", "unit": "g", "order": 5 },
+        { "key": "total_carbohydrate", "label": "คาร์โบไฮเดรตทั้งหมด", "label_en": "Total Carbohydrate", "unit": "g", "order": 6, "dv": true },
+        { "key": "dietary_fiber", "label": "ใยอาหาร", "label_en": "Dietary Fiber", "unit": "g", "order": 7, "indent": 1, "dv": true },
+        { "key": "sugars", "label": "น้ำตาล", "label_en": "Sugars", "unit": "g", "order": 8, "indent": 1 },
+        { "key": "sodium", "label": "โซเดียม", "label_en": "Sodium", "unit": "mg", "order": 9, "dv": true },
+        { "key": "vitamin_a", "label": "วิตามินเอ", "label_en": "Vitamin A", "unit": "% Thai RDI", "order": 10 },
+        { "key": "vitamin_b1", "label": "วิตามินบี 1", "label_en": "Vitamin B1", "unit": "% Thai RDI", "order": 11 },
+        { "key": "vitamin_b2", "label": "วิตามินบี 2", "label_en": "Vitamin B2", "unit": "% Thai RDI", "order": 12 },
+        { "key": "calcium", "label": "แคลเซียม", "label_en": "Calcium", "unit": "% Thai RDI", "order": 13 },
+        { "key": "iron", "label": "เหล็ก", "label_en": "Iron", "unit": "% Thai RDI", "order": 14 }
+      ],
+      "optional_nutrients": [
+        { "key": "trans_fat", "label": "ไขมันทรานส์", "label_en": "Trans Fat", "unit": "g" },
+        { "key": "vitamin_c", "label": "วิตามินซี", "label_en": "Vitamin C", "unit": "mg" },
+        { "key": "potassium", "label": "โพแทสเซียม", "label_en": "Potassium", "unit": "mg" }
+      ],
+      "daily_value_basis": "% Thai RDI based on 2,000 kcal diet",
+      "gda_front_of_pack": {
+        "enabled": true,
+        "nutrients": ["energy", "sugar", "fat", "sodium"],
+        "label": "GDA (Guideline Daily Amounts)",
+        "note": "前面GDA表示（สัญลักษณ์โภชนาการ）推奨、snack/beverageで義務化の動き"
+      },
+      "layout": {
+        "style": "vertical_table",
+        "border": true,
+        "header_text": "ข้อมูลโภชนาการ",
+        "rules": [
+          "タイ語での表示が義務",
+          "英語併記は任意",
+          "前面GDA（旗マーク）で energy/sugar/fat/sodium を表示推奨"
+        ]
+      },
+      "law": "ประกาศกระทรวงสาธารณสุข ฉบับที่ 182 (พ.ศ. 2541) 及び関連改正告示 (Thai FDA)",
+      "notes": [
+        "前面GDAラベル（สัญลักษณ์โภชนาการ ทางเลือกสุขภาพ）は Healthier Choice Logo として普及",
+        "タイ語表示が法的義務、英語は補助"
+      ]
+    },
+    "VN": {
+      "name": "Thông tin dinh dưỡng",
+      "name_en": "Nutrition Information",
+      "basis": ["per_100g", "per_100ml", "per_serving"],
+      "basis_label": {
+        "per_100g": "Trên 100g",
+        "per_100ml": "Trên 100ml",
+        "per_serving": "Trên một khẩu phần (Serving)"
+      },
+      "required_nutrients": [
+        { "key": "energy", "label": "Năng lượng", "label_en": "Energy", "unit": "kcal", "order": 1 },
+        { "key": "protein", "label": "Chất đạm (Protein)", "label_en": "Protein", "unit": "g", "order": 2 },
+        { "key": "fat", "label": "Chất béo (Fat)", "label_en": "Total Fat", "unit": "g", "order": 3 },
+        { "key": "carbohydrate", "label": "Chất bột đường (Carbohydrate)", "label_en": "Carbohydrate", "unit": "g", "order": 4 },
+        { "key": "sodium", "label": "Natri (Sodium)", "label_en": "Sodium", "unit": "mg", "order": 5 }
+      ],
+      "optional_nutrients": [
+        { "key": "saturated_fat", "label": "Chất béo bão hòa", "label_en": "Saturated Fat", "unit": "g" },
+        { "key": "trans_fat", "label": "Chất béo chuyển hóa", "label_en": "Trans Fat", "unit": "g" },
+        { "key": "sugar", "label": "Đường", "label_en": "Sugars", "unit": "g" },
+        { "key": "dietary_fiber", "label": "Chất xơ", "label_en": "Dietary Fiber", "unit": "g" },
+        { "key": "cholesterol", "label": "Cholesterol", "label_en": "Cholesterol", "unit": "mg" },
+        { "key": "calcium", "label": "Canxi", "label_en": "Calcium", "unit": "mg" },
+        { "key": "iron", "label": "Sắt", "label_en": "Iron", "unit": "mg" },
+        { "key": "vitamin_a", "label": "Vitamin A", "label_en": "Vitamin A", "unit": "μg" },
+        { "key": "vitamin_c", "label": "Vitamin C", "label_en": "Vitamin C", "unit": "mg" }
+      ],
+      "daily_value_basis": "% Giá trị dinh dưỡng tham chiếu (voluntary)",
+      "layout": {
+        "style": "vertical_table",
+        "border": true,
+        "header_text": "Thông tin dinh dưỡng",
+        "rules": [
+          "ベトナム語での表示が義務",
+          "表形式（枠線付き）が一般的"
+        ]
+      },
+      "law": "QCVN 8-1:2011/BYT（ベトナム保健省技術規則）及び Nghị định 43/2017/NĐ-CP（食品表示）",
+      "notes": [
+        "栄養表示義務は健康強調表示がある場合に適用",
+        "一般加工食品は基本5項目の表示が推奨",
+        "ベトナム語と英語の併記が一般的"
+      ]
+    },
+    "ID": {
+      "name": "Informasi Nilai Gizi",
+      "name_en": "Nutrition Facts",
+      "basis": ["per_serving"],
+      "basis_label": {
+        "per_serving": "Takaran saji (Serving Size)"
+      },
+      "required_nutrients": [
+        { "key": "energy_total", "label": "Energi total", "label_en": "Total Energy", "unit": "kkal", "order": 1 },
+        { "key": "energy_from_fat", "label": "Energi dari lemak", "label_en": "Energy from Fat", "unit": "kkal", "order": 2 },
+        { "key": "total_fat", "label": "Lemak total", "label_en": "Total Fat", "unit": "g", "order": 3, "akg": true },
+        { "key": "saturated_fat", "label": "Lemak jenuh", "label_en": "Saturated Fat", "unit": "g", "order": 4, "indent": 1, "akg": true },
+        { "key": "trans_fat", "label": "Lemak trans", "label_en": "Trans Fat", "unit": "g", "order": 5, "indent": 1 },
+        { "key": "cholesterol", "label": "Kolesterol", "label_en": "Cholesterol", "unit": "mg", "order": 6, "akg": true },
+        { "key": "protein", "label": "Protein", "label_en": "Protein", "unit": "g", "order": 7, "akg": true },
+        { "key": "total_carbohydrate", "label": "Karbohidrat total", "label_en": "Total Carbohydrate", "unit": "g", "order": 8, "akg": true },
+        { "key": "dietary_fiber", "label": "Serat pangan", "label_en": "Dietary Fiber", "unit": "g", "order": 9, "indent": 1, "akg": true },
+        { "key": "sugar", "label": "Gula total", "label_en": "Total Sugar", "unit": "g", "order": 10, "indent": 1, "akg": true },
+        { "key": "sodium", "label": "Natrium", "label_en": "Sodium", "unit": "mg", "order": 11, "akg": true },
+        { "key": "vitamin_a", "label": "Vitamin A", "label_en": "Vitamin A", "unit": "% AKG", "order": 12 },
+        { "key": "vitamin_c", "label": "Vitamin C", "label_en": "Vitamin C", "unit": "% AKG", "order": 13 },
+        { "key": "calcium", "label": "Kalsium", "label_en": "Calcium", "unit": "% AKG", "order": 14 },
+        { "key": "iron", "label": "Zat besi", "label_en": "Iron", "unit": "% AKG", "order": 15 }
+      ],
+      "optional_nutrients": [
+        { "key": "vitamin_d", "label": "Vitamin D", "label_en": "Vitamin D", "unit": "μg" },
+        { "key": "potassium", "label": "Kalium", "label_en": "Potassium", "unit": "mg" },
+        { "key": "added_sugars", "label": "Gula tambahan", "label_en": "Added Sugars", "unit": "g" }
+      ],
+      "daily_value_basis": "% AKG (Angka Kecukupan Gizi) berdasarkan kebutuhan energi 2,150 kkal",
+      "layout": {
+        "style": "vertical_table",
+        "border": true,
+        "header_text": "Informasi Nilai Gizi",
+        "rules": [
+          "Takaran saji（1回提供量）を上部に明記",
+          "Jumlah sajian per kemasan（容器あたりの提供回数）を記載",
+          "%AKGを右列に表示",
+          "インドネシア語表記が義務"
+        ]
+      },
+      "law": "Peraturan BPOM No. 22 Tahun 2019 tentang Informasi Nilai Gizi pada Label Pangan Olahan",
+      "notes": [
+        "AKG基準値は2,150 kcal（FDAの2,000 kcalと異なる）",
+        "2020年以降の新ラベル規則でGula total（総糖）表示が義務化",
+        "前面パッケージに「Gula, Garam, Lemak」ロゴ表示推奨"
+      ]
+    },
+    "MY": {
+      "name": "Maklumat Pemakanan",
+      "name_en": "Nutrition Information",
+      "basis": ["per_serving", "per_100g", "per_100ml"],
+      "basis_label": {
+        "per_serving": "Per Hidangan (Per Serving)",
+        "per_100g": "Per 100 g",
+        "per_100ml": "Per 100 ml"
+      },
+      "required_nutrients": [
+        { "key": "energy", "label": "Tenaga / Energy", "unit": "kcal", "order": 1 },
+        { "key": "protein", "label": "Protein", "unit": "g", "order": 2 },
+        { "key": "carbohydrate", "label": "Karbohidrat / Carbohydrate", "unit": "g", "order": 3 },
+        { "key": "fat", "label": "Lemak / Fat", "unit": "g", "order": 4 }
+      ],
+      "optional_nutrients": [
+        { "key": "saturated_fat", "label": "Lemak tepu / Saturated Fat", "unit": "g" },
+        { "key": "trans_fat", "label": "Lemak trans / Trans Fat", "unit": "g" },
+        { "key": "cholesterol", "label": "Kolesterol / Cholesterol", "unit": "mg" },
+        { "key": "sugar", "label": "Jumlah gula / Total Sugars", "unit": "g" },
+        { "key": "dietary_fiber", "label": "Serat diet / Dietary Fibre", "unit": "g" },
+        { "key": "sodium", "label": "Natrium / Sodium", "unit": "mg" },
+        { "key": "vitamin_a", "label": "Vitamin A", "unit": "μg" },
+        { "key": "vitamin_c", "label": "Vitamin C", "unit": "mg" },
+        { "key": "calcium", "label": "Kalsium / Calcium", "unit": "mg" },
+        { "key": "iron", "label": "Ferum / Iron", "unit": "mg" },
+        { "key": "vitamin_d", "label": "Vitamin D", "unit": "μg" },
+        { "key": "potassium", "label": "Kalium / Potassium", "unit": "mg" }
+      ],
+      "daily_value_basis": "% Nutrien Rujukan (NRV) / % Nutrient Reference Values (voluntary)",
+      "layout": {
+        "style": "two_column_table",
+        "border": true,
+        "header_text": "Maklumat Pemakanan / Nutrition Information",
+        "rules": [
+          "per servingとper 100g/100mlの両方を併記",
+          "マレー語と英語のバイリンガル表示が一般的",
+          "栄養強調表示がある場合はその栄養素も必須"
+        ]
+      },
+      "law": "Food Regulations 1985 (P.U.(A) 437/1985) — Regulation 18B, 及び関連改正",
+      "notes": [
+        "基本4項目（energy, protein, carbohydrate, fat）が必須",
+        "栄養強調表示や健康強調表示を行う場合は関連栄養素も義務",
+        "マレー語・英語のバイリンガル表示が実務上標準",
+        "Healthier Choice Logoプログラムあり（任意）"
+      ]
+    },
+    "TW": {
+      "name": "營養標示",
+      "name_en": "Nutrition Label",
+      "basis": ["per_serving", "per_100g", "per_100ml"],
+      "basis_label": {
+        "per_serving": "每份",
+        "per_100g": "每100公克",
+        "per_100ml": "每100毫升",
+        "per_daily_reference": "每日參考值百分比"
+      },
+      "required_nutrients": [
+        { "key": "energy", "label": "熱量", "unit": "大卡", "order": 1 },
+        { "key": "protein", "label": "蛋白質", "unit": "公克", "order": 2, "dv": true },
+        { "key": "fat", "label": "脂肪", "unit": "公克", "order": 3, "dv": true },
+        { "key": "saturated_fat", "label": "飽和脂肪", "unit": "公克", "order": 4, "indent": 1, "dv": true },
+        { "key": "trans_fat", "label": "反式脂肪", "unit": "公克", "order": 5, "indent": 1 },
+        { "key": "carbohydrate", "label": "碳水化合物", "unit": "公克", "order": 6, "dv": true },
+        { "key": "sugar", "label": "糖", "unit": "公克", "order": 7, "indent": 1 },
+        { "key": "sodium", "label": "鈉", "unit": "毫克", "order": 8, "dv": true }
+      ],
+      "optional_nutrients": [
+        { "key": "dietary_fiber", "label": "膳食纖維", "unit": "公克" },
+        { "key": "cholesterol", "label": "膽固醇", "unit": "毫克" },
+        { "key": "vitamin_a", "label": "維生素A", "unit": "微克" },
+        { "key": "vitamin_c", "label": "維生素C", "unit": "毫克" },
+        { "key": "vitamin_d", "label": "維生素D", "unit": "微克" },
+        { "key": "calcium", "label": "鈣", "unit": "毫克" },
+        { "key": "iron", "label": "鐵", "unit": "毫克" },
+        { "key": "potassium", "label": "鉀", "unit": "毫克" }
+      ],
+      "daily_value_basis": "每日參考值: 熱量2,000大卡、蛋白質60公克、脂肪60公克、飽和脂肪18公克、碳水化合物300公克、鈉2,000毫克",
+      "layout": {
+        "style": "vertical_table",
+        "border": true,
+        "header_text": "營養標示",
+        "columns": ["每份", "每日參考值百分比"],
+        "rules": [
+          "每份とper 100g/100mlを併記",
+          "本包裝含○份（容器あたりの提供回数）を記載",
+          "每日參考值百分比を右列に表示",
+          "繁体字（正體中文）で表示"
+        ]
+      },
+      "law": "食品安全衛生管理法 第22條 及「包裝食品營養標示應遵行事項」（衛生福利部食品藥物管理署）",
+      "notes": [
+        "8項目必須（熱量、蛋白質、脂肪、飽和脂肪、反式脂肪、碳水化合物、糖、鈉）",
+        "反式脂肪0.3g未満は「0」表示可",
+        "繁体字（正體中文）表記が義務",
+        "単位は「公克」（グラム）、「毫克」（ミリグラム）、「大卡」（kcal）"
+      ]
+    }
+  }
+}

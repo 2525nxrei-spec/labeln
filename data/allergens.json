@@ -1,0 +1,638 @@
+{
+  "version": "1.0.0",
+  "updated": "2025-05-01",
+  "description": "アレルゲン特化DB。各国の表示義務・推奨アレルゲンを18言語で管理。命に関わるため正確性最優先。",
+  "allergens": [
+    {
+      "id": "ALG001",
+      "category": "mandatory",
+      "scientific_name": "Triticum",
+      "translations": {
+        "ja": "小麦", "en": "Wheat", "zh-CN": "小麦", "zh-TW": "小麥", "ko": "밀",
+        "th": "ข้าวสาลี", "vi": "Lúa mì", "id": "Gandum", "ms": "Gandum",
+        "fr": "Blé", "de": "Weizen", "es": "Trigo", "pt": "Trigo", "it": "Frumento",
+        "ar": "قمح", "hi": "गेहूं", "ru": "Пшеница", "nl": "Tarwe"
+      },
+      "countries_mandatory": ["JP", "US", "EU", "CN", "KR", "TH", "TW", "MY", "ID", "VN"],
+      "countries_recommended": [],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG002",
+      "category": "mandatory",
+      "scientific_name": "Gallus gallus domesticus (ovum)",
+      "translations": {
+        "ja": "卵", "en": "Egg", "zh-CN": "鸡蛋", "zh-TW": "雞蛋", "ko": "계란",
+        "th": "ไข่", "vi": "Trứng", "id": "Telur", "ms": "Telur",
+        "fr": "Œuf", "de": "Ei", "es": "Huevo", "pt": "Ovo", "it": "Uovo",
+        "ar": "بيض", "hi": "अंडा", "ru": "Яйцо", "nl": "Ei"
+      },
+      "countries_mandatory": ["JP", "US", "EU", "CN", "KR", "TH", "TW", "MY", "ID", "VN"],
+      "countries_recommended": [],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG003",
+      "category": "mandatory",
+      "scientific_name": "Bos taurus (lac)",
+      "translations": {
+        "ja": "乳", "en": "Milk", "zh-CN": "牛奶", "zh-TW": "牛奶", "ko": "우유",
+        "th": "นม", "vi": "Sữa", "id": "Susu", "ms": "Susu",
+        "fr": "Lait", "de": "Milch", "es": "Leche", "pt": "Leite", "it": "Latte",
+        "ar": "حليب", "hi": "दूध", "ru": "Молоко", "nl": "Melk"
+      },
+      "countries_mandatory": ["JP", "US", "EU", "CN", "KR", "TH", "TW", "MY", "ID", "VN"],
+      "countries_recommended": [],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG004",
+      "category": "mandatory",
+      "scientific_name": "Arachis hypogaea",
+      "translations": {
+        "ja": "落花生", "en": "Peanut", "zh-CN": "花生", "zh-TW": "花生", "ko": "땅콩",
+        "th": "ถั่วลิสง", "vi": "Đậu phộng", "id": "Kacang tanah", "ms": "Kacang tanah",
+        "fr": "Arachide", "de": "Erdnuss", "es": "Cacahuete", "pt": "Amendoim", "it": "Arachide",
+        "ar": "فول سوداني", "hi": "मूंगफली", "ru": "Арахис", "nl": "Pinda"
+      },
+      "countries_mandatory": ["JP", "US", "EU", "CN", "KR", "TH", "TW", "MY", "ID", "VN"],
+      "countries_recommended": [],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG005",
+      "category": "mandatory",
+      "scientific_name": "Crustacea",
+      "translations": {
+        "ja": "えび", "en": "Shrimp/Prawn", "zh-CN": "虾", "zh-TW": "蝦", "ko": "새우",
+        "th": "กุ้ง", "vi": "Tôm", "id": "Udang", "ms": "Udang",
+        "fr": "Crevette", "de": "Garnele", "es": "Camarón", "pt": "Camarão", "it": "Gambero",
+        "ar": "روبيان", "hi": "झींगा", "ru": "Креветка", "nl": "Garnaal"
+      },
+      "countries_mandatory": ["JP", "US", "EU", "CN", "KR", "TH", "TW", "MY", "VN"],
+      "countries_recommended": ["ID"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG006",
+      "category": "mandatory",
+      "scientific_name": "Crustacea (Brachyura)",
+      "translations": {
+        "ja": "かに", "en": "Crab", "zh-CN": "螃蟹", "zh-TW": "螃蟹", "ko": "게",
+        "th": "ปู", "vi": "Cua", "id": "Kepiting", "ms": "Ketam",
+        "fr": "Crabe", "de": "Krabbe", "es": "Cangrejo", "pt": "Caranguejo", "it": "Granchio",
+        "ar": "سلطعون", "hi": "केकड़ा", "ru": "Краб", "nl": "Krab"
+      },
+      "countries_mandatory": ["JP", "US", "EU", "CN", "KR", "TH", "TW", "MY", "VN"],
+      "countries_recommended": ["ID"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG007",
+      "category": "mandatory",
+      "scientific_name": "Juglans regia",
+      "translations": {
+        "ja": "くるみ", "en": "Walnut", "zh-CN": "核桃", "zh-TW": "核桃", "ko": "호두",
+        "th": "วอลนัท", "vi": "Quả óc chó", "id": "Kenari", "ms": "Walnut",
+        "fr": "Noix", "de": "Walnuss", "es": "Nuez", "pt": "Noz", "it": "Noce",
+        "ar": "جوز", "hi": "अखरोट", "ru": "Грецкий орех", "nl": "Walnoot"
+      },
+      "countries_mandatory": ["JP", "US", "EU", "CN", "KR", "TW"],
+      "countries_recommended": ["TH", "MY", "ID", "VN"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG008",
+      "category": "mandatory",
+      "scientific_name": "Fagopyrum esculentum",
+      "translations": {
+        "ja": "そば", "en": "Buckwheat", "zh-CN": "荞麦", "zh-TW": "蕎麥", "ko": "메밀",
+        "th": "บัควีท", "vi": "Kiều mạch", "id": "Soba", "ms": "Soba",
+        "fr": "Sarrasin", "de": "Buchweizen", "es": "Alforfón", "pt": "Trigo-sarraceno", "it": "Grano saraceno",
+        "ar": "الحنطة السوداء", "hi": "कुट्टू", "ru": "Гречка", "nl": "Boekweit"
+      },
+      "countries_mandatory": ["JP", "KR"],
+      "countries_recommended": ["EU"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG009",
+      "category": "mandatory",
+      "scientific_name": "Glycine max",
+      "translations": {
+        "ja": "大豆", "en": "Soybean", "zh-CN": "大豆", "zh-TW": "大豆", "ko": "대두",
+        "th": "ถั่วเหลือง", "vi": "Đậu nành", "id": "Kedelai", "ms": "Kacang soya",
+        "fr": "Soja", "de": "Sojabohne", "es": "Soja", "pt": "Soja", "it": "Soia",
+        "ar": "فول الصويا", "hi": "सोयाबीन", "ru": "Соя", "nl": "Sojaboon"
+      },
+      "countries_mandatory": ["US", "EU", "CN", "KR", "TH", "TW", "MY", "ID", "VN"],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG010",
+      "category": "mandatory",
+      "scientific_name": "Pisces",
+      "translations": {
+        "ja": "魚介類", "en": "Fish", "zh-CN": "鱼", "zh-TW": "魚", "ko": "생선",
+        "th": "ปลา", "vi": "Cá", "id": "Ikan", "ms": "Ikan",
+        "fr": "Poisson", "de": "Fisch", "es": "Pescado", "pt": "Peixe", "it": "Pesce",
+        "ar": "سمك", "hi": "मछली", "ru": "Рыба", "nl": "Vis"
+      },
+      "countries_mandatory": ["US", "EU", "CN", "KR", "TH", "TW", "MY", "VN"],
+      "countries_recommended": ["JP", "ID"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG011",
+      "category": "mandatory",
+      "scientific_name": "Various (Prunus dulcis, Juglans, Corylus, etc.)",
+      "note": "EU/USではツリーナッツとして一括管理。各ナッツ個別に以下で定義。",
+      "translations": {
+        "ja": "木の実類", "en": "Tree nuts", "zh-CN": "坚果类", "zh-TW": "堅果類", "ko": "견과류",
+        "th": "ถั่วเปลือกแข็ง", "vi": "Các loại hạt", "id": "Kacang pohon", "ms": "Kacang pokok",
+        "fr": "Fruits à coque", "de": "Schalenfrüchte", "es": "Frutos de cáscara", "pt": "Frutos de casca rija", "it": "Frutta a guscio",
+        "ar": "المكسرات", "hi": "ट्री नट्स", "ru": "Древесные орехи", "nl": "Noten"
+      },
+      "countries_mandatory": ["US", "EU", "CN", "TW"],
+      "countries_recommended": ["JP", "KR", "TH", "MY", "ID", "VN"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG012",
+      "category": "mandatory",
+      "scientific_name": "Prunus dulcis",
+      "translations": {
+        "ja": "アーモンド", "en": "Almond", "zh-CN": "杏仁", "zh-TW": "杏仁", "ko": "아몬드",
+        "th": "อัลมอนด์", "vi": "Hạnh nhân", "id": "Almond", "ms": "Badam",
+        "fr": "Amande", "de": "Mandel", "es": "Almendra", "pt": "Amêndoa", "it": "Mandorla",
+        "ar": "لوز", "hi": "बादाम", "ru": "Миндаль", "nl": "Amandel"
+      },
+      "countries_mandatory": ["US", "EU", "CN", "TW"],
+      "countries_recommended": ["JP", "KR"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG013",
+      "category": "mandatory",
+      "scientific_name": "Anacardium occidentale",
+      "translations": {
+        "ja": "カシューナッツ", "en": "Cashew nut", "zh-CN": "腰果", "zh-TW": "腰果", "ko": "캐슈넛",
+        "th": "มะม่วงหิมพานต์", "vi": "Hạt điều", "id": "Kacang mete", "ms": "Gajus",
+        "fr": "Noix de cajou", "de": "Cashewnuss", "es": "Anacardo", "pt": "Castanha de caju", "it": "Anacardo",
+        "ar": "كاجو", "hi": "काजू", "ru": "Кешью", "nl": "Cashewnoot"
+      },
+      "countries_mandatory": ["US", "EU", "CN", "TW"],
+      "countries_recommended": ["JP", "KR"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG014",
+      "category": "mandatory",
+      "scientific_name": "Corylus avellana",
+      "translations": {
+        "ja": "ヘーゼルナッツ", "en": "Hazelnut", "zh-CN": "榛子", "zh-TW": "榛果", "ko": "헤이즐넛",
+        "th": "เฮเซลนัท", "vi": "Hạt phỉ", "id": "Hazelnut", "ms": "Hazelnut",
+        "fr": "Noisette", "de": "Haselnuss", "es": "Avellana", "pt": "Avelã", "it": "Nocciola",
+        "ar": "بندق", "hi": "हेज़लनट", "ru": "Фундук", "nl": "Hazelnoot"
+      },
+      "countries_mandatory": ["US", "EU", "CN", "TW"],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG015",
+      "category": "mandatory",
+      "scientific_name": "Macadamia integrifolia",
+      "translations": {
+        "ja": "マカダミアナッツ", "en": "Macadamia nut", "zh-CN": "澳洲坚果", "zh-TW": "夏威夷果", "ko": "마카다미아",
+        "th": "แมคคาเดเมีย", "vi": "Hạt mắc ca", "id": "Kacang makadamia", "ms": "Kacang makadamia",
+        "fr": "Noix de macadamia", "de": "Macadamianuss", "es": "Nuez de macadamia", "pt": "Noz-macadâmia", "it": "Noce di macadamia",
+        "ar": "مكاديميا", "hi": "मैकाडेमिया", "ru": "Макадамия", "nl": "Macadamianoot"
+      },
+      "countries_mandatory": ["US", "EU", "TW"],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG016",
+      "category": "mandatory",
+      "scientific_name": "Carya illinoinensis",
+      "translations": {
+        "ja": "ペカンナッツ", "en": "Pecan", "zh-CN": "山核桃", "zh-TW": "胡桃", "ko": "피칸",
+        "th": "พีแคน", "vi": "Hồ đào", "id": "Pecan", "ms": "Pecan",
+        "fr": "Noix de pécan", "de": "Pekannuss", "es": "Pecana", "pt": "Noz-pecã", "it": "Noce pecan",
+        "ar": "بيكان", "hi": "पेकान", "ru": "Пекан", "nl": "Pecannoot"
+      },
+      "countries_mandatory": ["US", "EU", "TW"],
+      "countries_recommended": [],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG017",
+      "category": "mandatory",
+      "scientific_name": "Pistacia vera",
+      "translations": {
+        "ja": "ピスタチオ", "en": "Pistachio", "zh-CN": "开心果", "zh-TW": "開心果", "ko": "피스타치오",
+        "th": "พิสตาชิโอ", "vi": "Hạt dẻ cười", "id": "Pistachio", "ms": "Pistachio",
+        "fr": "Pistache", "de": "Pistazie", "es": "Pistacho", "pt": "Pistache", "it": "Pistacchio",
+        "ar": "فستق", "hi": "पिस्ता", "ru": "Фисташка", "nl": "Pistache"
+      },
+      "countries_mandatory": ["US", "EU", "TW"],
+      "countries_recommended": [],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG018",
+      "category": "mandatory",
+      "scientific_name": "Bertholletia excelsa",
+      "translations": {
+        "ja": "ブラジルナッツ", "en": "Brazil nut", "zh-CN": "巴西坚果", "zh-TW": "巴西堅果", "ko": "브라질너트",
+        "th": "บราซิลนัท", "vi": "Hạt Brazil", "id": "Kacang Brazil", "ms": "Kacang Brazil",
+        "fr": "Noix du Brésil", "de": "Paranuss", "es": "Nuez de Brasil", "pt": "Castanha-do-pará", "it": "Noce del Brasile",
+        "ar": "جوز برازيلي", "hi": "ब्राज़ील नट", "ru": "Бразильский орех", "nl": "Paranoot"
+      },
+      "countries_mandatory": ["US", "EU"],
+      "countries_recommended": [],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG019",
+      "category": "mandatory",
+      "scientific_name": "Sesamum indicum",
+      "translations": {
+        "ja": "ごま", "en": "Sesame", "zh-CN": "芝麻", "zh-TW": "芝麻", "ko": "참깨",
+        "th": "งา", "vi": "Mè", "id": "Wijen", "ms": "Bijan",
+        "fr": "Sésame", "de": "Sesam", "es": "Sésamo", "pt": "Gergelim", "it": "Sesamo",
+        "ar": "سمسم", "hi": "तिल", "ru": "Кунжут", "nl": "Sesam"
+      },
+      "countries_mandatory": ["US", "EU", "CN", "KR", "TW"],
+      "countries_recommended": ["JP", "TH", "MY"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG020",
+      "category": "mandatory",
+      "scientific_name": "Apium graveolens",
+      "translations": {
+        "ja": "セロリ", "en": "Celery", "zh-CN": "芹菜", "zh-TW": "芹菜", "ko": "셀러리",
+        "th": "คื่นฉ่าย", "vi": "Cần tây", "id": "Seledri", "ms": "Saderi",
+        "fr": "Céleri", "de": "Sellerie", "es": "Apio", "pt": "Aipo", "it": "Sedano",
+        "ar": "كرفس", "hi": "अजवाइन", "ru": "Сельдерей", "nl": "Selderij"
+      },
+      "countries_mandatory": ["EU"],
+      "countries_recommended": [],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG021",
+      "category": "mandatory",
+      "scientific_name": "Sinapis/Brassica",
+      "translations": {
+        "ja": "マスタード（からし）", "en": "Mustard", "zh-CN": "芥末", "zh-TW": "芥末", "ko": "겨자",
+        "th": "มัสตาร์ด", "vi": "Mù tạt", "id": "Mustard", "ms": "Mustard",
+        "fr": "Moutarde", "de": "Senf", "es": "Mostaza", "pt": "Mostarda", "it": "Senape",
+        "ar": "خردل", "hi": "सरसों", "ru": "Горчица", "nl": "Mosterd"
+      },
+      "countries_mandatory": ["EU"],
+      "countries_recommended": [],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG022",
+      "category": "mandatory",
+      "scientific_name": "Lupinus",
+      "translations": {
+        "ja": "ルーピン", "en": "Lupin", "zh-CN": "羽扇豆", "zh-TW": "羽扇豆", "ko": "루핀",
+        "th": "ลูพิน", "vi": "Đậu lupin", "id": "Lupin", "ms": "Lupin",
+        "fr": "Lupin", "de": "Lupine", "es": "Altramuz", "pt": "Tremoço", "it": "Lupino",
+        "ar": "ترمس", "hi": "ल्यूपिन", "ru": "Люпин", "nl": "Lupine"
+      },
+      "countries_mandatory": ["EU"],
+      "countries_recommended": [],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG023",
+      "category": "mandatory",
+      "scientific_name": "Mollusca",
+      "translations": {
+        "ja": "軟体動物", "en": "Mollusks", "zh-CN": "软体动物", "zh-TW": "軟體動物", "ko": "연체동물",
+        "th": "หอย", "vi": "Nhuyễn thể", "id": "Moluska", "ms": "Moluska",
+        "fr": "Mollusques", "de": "Weichtiere", "es": "Moluscos", "pt": "Moluscos", "it": "Molluschi",
+        "ar": "رخويات", "hi": "मोलस्क", "ru": "Моллюски", "nl": "Weekdieren"
+      },
+      "countries_mandatory": ["EU", "KR", "TW"],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG024",
+      "category": "mandatory",
+      "scientific_name": "Sulphur dioxide / Sulphites",
+      "translations": {
+        "ja": "亜硫酸塩", "en": "Sulphites", "zh-CN": "亚硫酸盐", "zh-TW": "亞硫酸鹽", "ko": "아황산염",
+        "th": "ซัลไฟต์", "vi": "Sulfit", "id": "Sulfit", "ms": "Sulfit",
+        "fr": "Sulfites", "de": "Sulfite", "es": "Sulfitos", "pt": "Sulfitos", "it": "Solfiti",
+        "ar": "كبريتيت", "hi": "सल्फाइट्स", "ru": "Сульфиты", "nl": "Sulfieten"
+      },
+      "countries_mandatory": ["EU", "US", "CN", "KR", "TW"],
+      "countries_recommended": [],
+      "cross_contamination_note": false,
+      "threshold_note": "EU: 10mg/kg以上で表示義務。US: 10ppm以上。"
+    },
+    {
+      "id": "ALG025",
+      "category": "recommended",
+      "scientific_name": "Various (Hordeum, Secale, Avena, Triticum spelta)",
+      "note": "EU規制では小麦と同グループ（グルテン含有穀物）として義務表示",
+      "translations": {
+        "ja": "グルテン含有穀物（大麦・ライ麦・オーツ麦等）", "en": "Gluten-containing cereals (barley, rye, oats, etc.)", "zh-CN": "含麸质谷物（大麦、黑麦、燕麦等）", "zh-TW": "含麩質穀物（大麥、黑麥、燕麥等）", "ko": "글루텐 함유 곡물(보리, 호밀, 귀리 등)",
+        "th": "ธัญพืชที่มีกลูเตน (ข้าวบาร์เลย์, ข้าวไรย์, ข้าวโอ๊ต ฯลฯ)", "vi": "Ngũ cốc chứa gluten (lúa mạch, lúa mạch đen, yến mạch, v.v.)", "id": "Sereal mengandung gluten (barli, gandum hitam, oat, dll.)", "ms": "Bijirin mengandungi gluten (barli, rai, oat, dll.)",
+        "fr": "Céréales contenant du gluten (orge, seigle, avoine, etc.)", "de": "Glutenhaltiges Getreide (Gerste, Roggen, Hafer usw.)", "es": "Cereales con gluten (cebada, centeno, avena, etc.)", "pt": "Cereais com glúten (cevada, centeio, aveia, etc.)", "it": "Cereali contenenti glutine (orzo, segale, avena, ecc.)",
+        "ar": "حبوب تحتوي على الغلوتين (شعير، جاودار، شوفان، إلخ)", "hi": "ग्लूटेन युक्त अनाज (जौ, राई, जई, आदि)", "ru": "Злаки, содержащие глютен (ячмень, рожь, овёс и др.)", "nl": "Glutenbevattende granen (gerst, rogge, haver, enz.)"
+      },
+      "countries_mandatory": ["EU", "CN", "KR", "TW"],
+      "countries_recommended": ["US", "TH", "MY"],
+      "cross_contamination_note": true
+    },
+    {
+      "id": "ALG026",
+      "category": "recommended",
+      "scientific_name": "Various",
+      "translations": {
+        "ja": "いくら", "en": "Salmon roe", "zh-CN": "三文鱼子", "zh-TW": "鮭魚卵", "ko": "연어알",
+        "th": "ไข่ปลาแซลมอน", "vi": "Trứng cá hồi", "id": "Telur ikan salmon", "ms": "Telur ikan salmon",
+        "fr": "Œufs de saumon", "de": "Lachsrogen", "es": "Huevas de salmón", "pt": "Ovas de salmão", "it": "Uova di salmone",
+        "ar": "بيض السلمون", "hi": "सैल्मन रो", "ru": "Икра лососевая", "nl": "Zalmeieren"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG027",
+      "category": "recommended",
+      "scientific_name": "Citrus sinensis",
+      "translations": {
+        "ja": "オレンジ", "en": "Orange", "zh-CN": "橙子", "zh-TW": "柳橙", "ko": "오렌지",
+        "th": "ส้ม", "vi": "Cam", "id": "Jeruk", "ms": "Oren",
+        "fr": "Orange", "de": "Orange", "es": "Naranja", "pt": "Laranja", "it": "Arancia",
+        "ar": "برتقال", "hi": "संतरा", "ru": "Апельсин", "nl": "Sinaasappel"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG028",
+      "category": "recommended",
+      "scientific_name": "Actinidia deliciosa",
+      "translations": {
+        "ja": "キウイフルーツ", "en": "Kiwifruit", "zh-CN": "猕猴桃", "zh-TW": "奇異果", "ko": "키위",
+        "th": "กีวี", "vi": "Kiwi", "id": "Kiwi", "ms": "Kiwi",
+        "fr": "Kiwi", "de": "Kiwi", "es": "Kiwi", "pt": "Kiwi", "it": "Kiwi",
+        "ar": "كيوي", "hi": "कीवी", "ru": "Киви", "nl": "Kiwi"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG029",
+      "category": "recommended",
+      "scientific_name": "Bos taurus",
+      "translations": {
+        "ja": "牛肉", "en": "Beef", "zh-CN": "牛肉", "zh-TW": "牛肉", "ko": "소고기",
+        "th": "เนื้อวัว", "vi": "Thịt bò", "id": "Daging sapi", "ms": "Daging lembu",
+        "fr": "Bœuf", "de": "Rindfleisch", "es": "Carne de res", "pt": "Carne bovina", "it": "Manzo",
+        "ar": "لحم بقر", "hi": "गोमांस", "ru": "Говядина", "nl": "Rundvlees"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG030",
+      "category": "recommended",
+      "scientific_name": "Gallus gallus domesticus",
+      "translations": {
+        "ja": "鶏肉", "en": "Chicken", "zh-CN": "鸡肉", "zh-TW": "雞肉", "ko": "닭고기",
+        "th": "เนื้อไก่", "vi": "Thịt gà", "id": "Daging ayam", "ms": "Daging ayam",
+        "fr": "Poulet", "de": "Hühnerfleisch", "es": "Pollo", "pt": "Frango", "it": "Pollo",
+        "ar": "دجاج", "hi": "मुर्गी का मांस", "ru": "Курица", "nl": "Kip"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG031",
+      "category": "recommended",
+      "scientific_name": "Sus scrofa domesticus",
+      "translations": {
+        "ja": "豚肉", "en": "Pork", "zh-CN": "猪肉", "zh-TW": "豬肉", "ko": "돼지고기",
+        "th": "เนื้อหมู", "vi": "Thịt heo", "id": "Daging babi", "ms": "Daging babi",
+        "fr": "Porc", "de": "Schweinefleisch", "es": "Cerdo", "pt": "Carne de porco", "it": "Maiale",
+        "ar": "لحم خنزير", "hi": "सूअर का मांस", "ru": "Свинина", "nl": "Varkensvlees"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG032",
+      "category": "recommended",
+      "scientific_name": "Haliotis",
+      "translations": {
+        "ja": "あわび", "en": "Abalone", "zh-CN": "鲍鱼", "zh-TW": "鮑魚", "ko": "전복",
+        "th": "หอยเป๋าฮื้อ", "vi": "Bào ngư", "id": "Abalon", "ms": "Abalone",
+        "fr": "Ormeau", "de": "Abalone", "es": "Abulón", "pt": "Abalone", "it": "Abalone",
+        "ar": "أذن البحر", "hi": "एबलोन", "ru": "Морское ушко", "nl": "Abalone"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG033",
+      "category": "recommended",
+      "scientific_name": "Teuthida",
+      "translations": {
+        "ja": "いか", "en": "Squid", "zh-CN": "鱿鱼", "zh-TW": "魷魚", "ko": "오징어",
+        "th": "ปลาหมึก", "vi": "Mực", "id": "Cumi-cumi", "ms": "Sotong",
+        "fr": "Calmar", "de": "Tintenfisch", "es": "Calamar", "pt": "Lula", "it": "Calamaro",
+        "ar": "حبار", "hi": "स्क्विड", "ru": "Кальмар", "nl": "Inktvis"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG034",
+      "category": "recommended",
+      "scientific_name": "Oncorhynchus / Salmo",
+      "translations": {
+        "ja": "さけ", "en": "Salmon", "zh-CN": "三文鱼", "zh-TW": "鮭魚", "ko": "연어",
+        "th": "ปลาแซลมอน", "vi": "Cá hồi", "id": "Ikan salmon", "ms": "Ikan salmon",
+        "fr": "Saumon", "de": "Lachs", "es": "Salmón", "pt": "Salmão", "it": "Salmone",
+        "ar": "سلمون", "hi": "सैल्मन", "ru": "Лосось", "nl": "Zalm"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG035",
+      "category": "recommended",
+      "scientific_name": "Scomber",
+      "translations": {
+        "ja": "さば", "en": "Mackerel", "zh-CN": "鲭鱼", "zh-TW": "鯖魚", "ko": "고등어",
+        "th": "ปลาแมคเคอเรล", "vi": "Cá thu", "id": "Ikan makarel", "ms": "Ikan kembung",
+        "fr": "Maquereau", "de": "Makrele", "es": "Caballa", "pt": "Cavala", "it": "Sgombro",
+        "ar": "ماكريل", "hi": "मैकेरल", "ru": "Скумбрия", "nl": "Makreel"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG036",
+      "category": "recommended",
+      "scientific_name": "Musa",
+      "translations": {
+        "ja": "バナナ", "en": "Banana", "zh-CN": "香蕉", "zh-TW": "香蕉", "ko": "바나나",
+        "th": "กล้วย", "vi": "Chuối", "id": "Pisang", "ms": "Pisang",
+        "fr": "Banane", "de": "Banane", "es": "Plátano", "pt": "Banana", "it": "Banana",
+        "ar": "موز", "hi": "केला", "ru": "Банан", "nl": "Banaan"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG037",
+      "category": "recommended",
+      "scientific_name": "Tricholoma matsutake",
+      "translations": {
+        "ja": "まつたけ", "en": "Matsutake mushroom", "zh-CN": "松茸", "zh-TW": "松茸", "ko": "송이버섯",
+        "th": "เห็ดมัตสึทาเกะ", "vi": "Nấm matsutake", "id": "Jamur matsutake", "ms": "Cendawan matsutake",
+        "fr": "Champignon matsutake", "de": "Matsutake-Pilz", "es": "Seta matsutake", "pt": "Cogumelo matsutake", "it": "Fungo matsutake",
+        "ar": "فطر ماتسوتاكي", "hi": "मात्सुटाके मशरूम", "ru": "Мацутакэ", "nl": "Matsutake-paddenstoel"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG038",
+      "category": "recommended",
+      "scientific_name": "Prunus persica",
+      "translations": {
+        "ja": "もも", "en": "Peach", "zh-CN": "桃", "zh-TW": "桃", "ko": "복숭아",
+        "th": "ลูกพีช", "vi": "Đào", "id": "Persik", "ms": "Pic",
+        "fr": "Pêche", "de": "Pfirsich", "es": "Melocotón", "pt": "Pêssego", "it": "Pesca",
+        "ar": "خوخ", "hi": "आड़ू", "ru": "Персик", "nl": "Perzik"
+      },
+      "countries_mandatory": ["KR"],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG039",
+      "category": "recommended",
+      "scientific_name": "Dioscorea",
+      "translations": {
+        "ja": "やまいも", "en": "Yam", "zh-CN": "山药", "zh-TW": "山藥", "ko": "마",
+        "th": "มันเทศ", "vi": "Khoai mỡ", "id": "Ubi", "ms": "Ubi",
+        "fr": "Igname", "de": "Yamswurzel", "es": "Ñame", "pt": "Inhame", "it": "Igname",
+        "ar": "بطاطا حلوة", "hi": "रतालू", "ru": "Ямс", "nl": "Yam"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG040",
+      "category": "recommended",
+      "scientific_name": "Malus domestica",
+      "translations": {
+        "ja": "りんご", "en": "Apple", "zh-CN": "苹果", "zh-TW": "蘋果", "ko": "사과",
+        "th": "แอปเปิ้ล", "vi": "Táo", "id": "Apel", "ms": "Epal",
+        "fr": "Pomme", "de": "Apfel", "es": "Manzana", "pt": "Maçã", "it": "Mela",
+        "ar": "تفاح", "hi": "सेब", "ru": "Яблоко", "nl": "Appel"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    },
+    {
+      "id": "ALG041",
+      "category": "recommended",
+      "scientific_name": "Collagen hydrolysate",
+      "translations": {
+        "ja": "ゼラチン", "en": "Gelatin", "zh-CN": "明胶", "zh-TW": "明膠", "ko": "젤라틴",
+        "th": "เจลาติน", "vi": "Gelatin", "id": "Gelatin", "ms": "Gelatin",
+        "fr": "Gélatine", "de": "Gelatine", "es": "Gelatina", "pt": "Gelatina", "it": "Gelatina",
+        "ar": "جيلاتين", "hi": "जेलाटिन", "ru": "Желатин", "nl": "Gelatine"
+      },
+      "countries_mandatory": [],
+      "countries_recommended": ["JP"],
+      "cross_contamination_note": false
+    }
+  ],
+  "country_summary": {
+    "JP": {
+      "mandatory_count": 8,
+      "mandatory_items": ["えび", "かに", "くるみ", "小麦", "そば", "卵", "乳", "落花生"],
+      "recommended_count": 20,
+      "recommended_items": ["アーモンド", "あわび", "いか", "いくら", "オレンジ", "カシューナッツ", "キウイフルーツ", "牛肉", "ごま", "さけ", "さば", "大豆", "鶏肉", "バナナ", "豚肉", "まつたけ", "もも", "やまいも", "りんご", "ゼラチン"],
+      "note": "特定原材料8品目（2023年くるみ追加）は表示義務。推奨20品目は任意だが表示推奨。"
+    },
+    "US": {
+      "mandatory_count": 9,
+      "mandatory_items": ["Milk", "Eggs", "Fish", "Crustacean shellfish", "Tree nuts", "Peanuts", "Wheat", "Soybeans", "Sesame"],
+      "note": "FALCPA+FASTER Act (2023年セサミ追加)。9大アレルゲン義務表示。"
+    },
+    "EU": {
+      "mandatory_count": 14,
+      "mandatory_items": ["Cereals containing gluten", "Crustaceans", "Eggs", "Fish", "Peanuts", "Soybeans", "Milk", "Nuts", "Celery", "Mustard", "Sesame", "Sulphur dioxide/Sulphites", "Lupin", "Molluscs"],
+      "note": "EU Regulation 1169/2011 Annex II。14アレルゲン義務表示。"
+    },
+    "CN": {
+      "mandatory_count": 8,
+      "mandatory_items": ["虾（えび）", "蟹（かに）", "鱼（魚）", "蛋（卵）", "花生（落花生）", "大豆", "乳", "坚果类（ナッツ）"],
+      "note": "GB 7718-2011。8大アレルゲン義務表示（2024年改訂で小麦・ごま追加予定）。"
+    },
+    "KR": {
+      "mandatory_count": 22,
+      "mandatory_items": ["卵", "牛乳", "メミル（そば）", "落花生", "大豆", "小麦", "さば", "かに", "えび", "豚肉", "もも", "トマト", "亜硫酸塩", "くるみ", "鶏肉", "牛肉", "いか", "貝類", "二枚貝", "松の実", "ごま", "牡蠣"],
+      "note": "食品等の表示基準。22品目義務表示（世界で最も多い）。"
+    },
+    "TH": {
+      "mandatory_count": 8,
+      "mandatory_items": ["Cereals containing gluten", "Crustaceans", "Eggs", "Fish", "Peanuts", "Milk", "Soybeans", "Tree nuts"],
+      "note": "ประกาศกระทรวงสาธารณสุข。Codex準拠8品目。"
+    },
+    "TW": {
+      "mandatory_count": 11,
+      "mandatory_items": ["甲殻類", "芒果", "花生", "牛乳/乳製品", "卵", "堅果類", "芝麻", "含麩質穀物", "大豆", "魚類", "亜硫酸塩"],
+      "note": "食品安全衛生管理法。11品目義務表示。マンゴーは台湾独自。"
+    },
+    "MY": {
+      "mandatory_count": 7,
+      "mandatory_items": ["Cereals containing gluten", "Crustaceans", "Eggs", "Fish", "Peanuts", "Milk", "Soybeans"],
+      "note": "Food Regulations 1985。Codex準拠。"
+    },
+    "ID": {
+      "mandatory_count": 4,
+      "mandatory_items": ["卵", "牛乳", "落花生", "小麦"],
+      "note": "BPOM規制。最低限の義務表示。ハラール認証も重要。"
+    },
+    "VN": {
+      "mandatory_count": 7,
+      "mandatory_items": ["穀物（グルテン含有）", "甲殻類", "卵", "魚", "落花生", "大豆", "牛乳"],
+      "note": "QCVN 8:2019/BYT。Codex準拠。"
+    }
+  }
+}

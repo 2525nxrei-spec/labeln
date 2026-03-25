@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="ラベルン - 製品ラベル多言語化アプリケーション">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#0f766e">
+  <title>ラベルン - ラベル作成</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
+  <style>
+    /* =============================================
+       app.html 内蔵スタイル（app.css が未完成でも動作）
+       app.css が完成次第、このブロックは削除可能
+       ============================================= */
+    :root {
+      --color-primary: #0f766e;
+      --color-primary-hover: #0d6359;
+      --color-secondary: #1e293b;
+      --color-accent: #14b8a6;
+      --color-bg: #ffffff;
+      --color-bg-warm: #f0fdfa;
+      --color-bg-sidebar: #1e293b;
+      --color-text: #1e293b;
+      --color-text-muted: #64748b;
+      --color-border: #e2e8f0;
+      --color-success: #16a34a;
+      --color-warning: #d97706;
+      --color-error: #dc2626;
+      --sidebar-width: 260px;
+      --header-height: 64px;
+      --step-bar-height: 72px;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+      --transition: .2s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--color-text);
+      background: var(--color-bg-warm);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ---------- レイアウト ---------- */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* サイドバー */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--color-bg-sidebar);
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 100;
+      transition: transform var(--transition);
+    }
+    .sidebar__brand {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .sidebar__brand span { color: var(--color-accent); }
+    .sidebar__nav { flex: 1; padding: 16px 12px; }
+    .sidebar__nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: .9rem;
+      transition: background var(--transition), color var(--transition);
+      cursor: pointer;
+    }
+    .sidebar__nav-item:hover,
+    .sidebar__nav-item[aria-current="page"] {
+      background: rgba(255,255,255,.1);
+      color: #fff;
+    }
+    .sidebar__nav-item[aria-current="page"] {
+      border-left: 3px solid var(--color-accent);
+    }
+    .sidebar__nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .sidebar__footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      font-size: .8rem;
+      color: #64748b;
+    }
+
+    /* メインエリア */
+    .main-area {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ヘッダー */
+    .app-header {
+      height: var(--header-height);
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .app-header__title { font-size: 1.1rem; font-weight: 700; }
+    .app-header__actions { display: flex; align-items: center; gap: 16px; }
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--color-text);
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger-btn svg { width: 28px; height: 28px; }
+
+    /* ステップインジケーター */
+    .step-indicator {
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+    .step-indicator__item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .85rem;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      transition: color var(--transition);
+      white-space: nowrap;
+    }
+    .step-indicator__item:hover { color: var(--color-text); }
+    .step-indicator__number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-border);
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .85rem;
+      transition: background var(--transition), color var(--transition);
+    }
+    .step-indicator__item[aria-selected="true"] .step-indicator__number {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    .step-indicator__item[aria-selected="true"] {
+      color: var(--color-text);
+      font-weight: 500;
+    }
+    .step-indicator__item[data-completed="true"] .step-indicator__number {
+      background: var(--color-success);
+      color: #fff;
+    }
+    .step-indicator__connector {
+      width: 40px;
+      height: 2px;
+      background: var(--color-border);
+      flex-shrink: 0;
+    }
+    .step-indicator__connector[data-completed="true"] {
+      background: var(--color-success);
+    }
+
+    /* コンテンツ */
+    .step-content-wrapper {
+      flex: 1;
+      padding: 32px;
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .step-panel {
+      display: none;
+      animation: fadeIn .3s ease;
+    }
+    .step-panel[aria-hidden="false"] { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .step-panel__heading {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .step-panel__description {
+      color: var(--color-text-muted);
+      margin-bottom: 28px;
+      font-size: .95rem;
+    }
+
+    /* フォーム共通 */
+    .form-section {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .form-section__title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label {
+      display: block;
+      font-size: .875rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--color-text);
+    }
+    .form-label--required::after {
+      content: ' *';
+      color: var(--color-error);
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: .9rem;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-bg);
+      color: var(--color-text);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(194,65,12,.15);
+    }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    .form-hint {
+      font-size: .78rem;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-row--three {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    /* チェックボックスグリッド */
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 8px;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .85rem;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .checkbox-item:hover { background: var(--color-bg-warm); }
+    .checkbox-item input[type="checkbox"] {
+      accent-color: var(--color-primary);
+      width: 16px;
+      height: 16px;
+    }
+    .checkbox-item--mandatory {
+      border-color: var(--color-warning);
+      background: #fffbeb;
+    }
+
+    /* 栄養成分テーブル */
+    .nutrition-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .nutrition-table th,
+    .nutrition-table td {
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+      font-size: .875rem;
+    }
+    .nutrition-table th {
+      font-weight: 500;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+    .nutrition-table input {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: .85rem;
+      font-family: inherit;
+    }
+    .nutrition-table input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(194,65,12,.15);
+    }
+
+    /* ラベルサイズプリセット */
+    .size-presets {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .size-preset-btn {
+      padding: 10px 20px;
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-bg);
+      font-family: inherit;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .size-preset-btn:hover { border-color: var(--color-primary); }
+    .size-preset-btn[aria-pressed="true"] {
+      border-color: var(--color-primary);
+      background: #f0fdfa;
+      font-weight: 600;
+    }
+
+    /* 言語グリッド */
+    .language-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .language-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+      position: relative;
+      background: var(--color-bg);
+    }
+    .language-card:hover {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .language-card[aria-checked="true"] {
+      border-color: var(--color-primary);
+      background: #f0fdfa;
+    }
+    .language-card input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .language-card__flag {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    .language-card__info {
+      flex: 1;
+    }
+    .language-card__name {
+      font-size: .85rem;
+      font-weight: 600;
+    }
+    .language-card__code {
+      font-size: .75rem;
+      color: var(--color-text-muted);
+    }
+    .language-card__badge {
+      font-size: .65rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .language-card__badge--compliant {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .language-card__badge--partial {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .language-card__check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--transition), border-color var(--transition);
+      flex-shrink: 0;
+    }
+    .language-card[aria-checked="true"] .language-card__check {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    .language-card__check svg { width: 14px; height: 14px; color: #fff; opacity: 0; }
+    .language-card[aria-checked="true"] .language-card__check svg { opacity: 1; }
+
+    /* 翻訳結果 */
+    .translation-result-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .translation-result-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--color-bg-warm);
+      border-bottom: 1px solid var(--color-border);
+      cursor: pointer;
+    }
+    .translation-result-card__lang {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: .9rem;
+    }
+    .translation-result-card__body {
+      padding: 20px;
+    }
+    .translation-result-card__body .form-group {
+      margin-bottom: 14px;
+    }
+
+    /* プレビュー */
+    .preview-tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 2px solid var(--color-border);
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+    .preview-tab {
+      padding: 10px 18px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      font-family: inherit;
+      font-size: .85rem;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .preview-tab:hover { color: var(--color-text); }
+    .preview-tab[aria-selected="true"] {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+      font-weight: 600;
+    }
+    .preview-container {
+      background: #f8fafc;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+    }
+    .label-preview-frame {
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      box-shadow: var(--shadow-md);
+      padding: 16px;
+      position: relative;
+    }
+    .label-preview-frame__placeholder {
+      color: var(--color-text-muted);
+      text-align: center;
+      font-size: .9rem;
+    }
+
+    /* ボタン */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+    }
+    .btn:active { transform: scale(.98); }
+    .btn--primary {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    .btn--primary:hover { background: var(--color-primary-hover); }
+    .btn--secondary {
+      background: var(--color-bg);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+    }
+    .btn--secondary:hover { background: #f1f5f9; }
+    .btn--accent {
+      background: var(--color-accent);
+      color: #fff;
+    }
+    .btn--accent:hover { background: var(--color-primary); }
+    .btn--ghost {
+      background: transparent;
+      color: var(--color-primary);
+    }
+    .btn--ghost:hover { background: var(--color-bg-warm); }
+    .btn--block { width: 100%; justify-content: center; }
+    .btn svg { width: 18px; height: 18px; }
+
+    .step-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    /* プリセットボタン群 */
+    .preset-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    /* 成分サジェスト */
+    .autocomplete-wrapper { position: relative; }
+    .autocomplete-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-top: none;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 20;
+      display: none;
+      box-shadow: var(--shadow-md);
+    }
+    .autocomplete-list[data-visible="true"] { display: block; }
+    .autocomplete-list__item {
+      padding: 8px 14px;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+    .autocomplete-list__item:hover,
+    .autocomplete-list__item[aria-selected="true"] {
+      background: var(--color-bg-warm);
+    }
+
+    /* 色入力 */
+    .color-input-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .color-input-group input[type="color"] {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+      cursor: pointer;
+    }
+
+    /* ファイルアップロード */
+    .file-upload-area {
+      border: 2px dashed var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .file-upload-area:hover {
+      border-color: var(--color-primary);
+      background: var(--color-bg-warm);
+    }
+    .file-upload-area svg { width: 40px; height: 40px; color: var(--color-text-muted); margin-bottom: 8px; }
+    .file-upload-area__text { font-size: .85rem; color: var(--color-text-muted); }
+    .file-upload-area__text strong { color: var(--color-primary); }
+
+    /* オーバーレイ（モバイル） */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,.4);
+      z-index: 99;
+    }
+    .sidebar-overlay[data-visible="true"],
+    .sidebar-overlay.is-visible { display: block; }
+
+    /* モバイルボトムナビ */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(56px + env(safe-area-inset-bottom, 0px));
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: #fff;
+      border-top: 1px solid var(--color-border);
+      z-index: 100;
+      box-shadow: 0 -2px 10px rgba(0,0,0,.06);
+    }
+    .mobile-bottom-nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      height: 56px;
+    }
+    .mobile-bottom-nav__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 12px;
+      font-size: 10px;
+      font-family: inherit;
+      color: var(--color-text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      min-width: 56px;
+      min-height: 48px;
+      transition: color var(--transition);
+    }
+    .mobile-bottom-nav__item.is-active {
+      color: var(--color-primary);
+    }
+    .mobile-bottom-nav__item svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 767px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar[data-open="true"],
+      .sidebar.is-open {
+        transform: translateX(0);
+      }
+      .main-area { margin-left: 0; }
+      .hamburger-btn { display: flex !important; }
+      .mobile-bottom-nav { display: block; }
+      .step-content-wrapper {
+        padding: 16px;
+        padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+      }
+      .step-indicator {
+        padding: 12px 16px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .step-indicator::-webkit-scrollbar { display: none; }
+      .step-indicator__connector { width: 20px; }
+      .form-section { padding: 16px; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-row--three { grid-template-columns: 1fr 1fr; }
+      .language-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .language-card { padding: 10px 12px; gap: 8px; }
+      .preview-container { padding: 16px; }
+      .step-actions { flex-direction: column; gap: 12px; }
+      .step-actions .btn { width: 100%; justify-content: center; }
+      /* フォームiOSズーム防止 */
+      .form-input, .form-select, .form-textarea {
+        font-size: 16px;
+      }
+      .app-header {
+        padding: 0 16px;
+      }
+      .app-header__title {
+        font-size: .95rem;
+      }
+      .checkbox-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .language-grid { grid-template-columns: 1fr; }
+      .checkbox-grid { grid-template-columns: 1fr; }
+      .step-indicator__item span:not(.step-indicator__number) { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- サイドバーオーバーレイ（モバイル用） -->
+  <div class="sidebar-overlay" data-visible="false" id="sidebar-overlay" aria-hidden="true"></div>
+
+  <div class="app-layout">
+    <!-- ========== サイドバー ========== -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="メインナビゲーション">
+      <div class="sidebar__brand">
+        <span>L</span>abelne
+      </div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__nav-item" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          ダッシュボード
+        </a>
+        <a href="app.html" class="sidebar__nav-item" aria-current="page" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          新規ラベル作成
+        </a>
+        <a href="history.html" class="sidebar__nav-item" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          履歴
+        </a>
+        <a href="account.html" class="sidebar__nav-item" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          アカウント設定
+        </a>
+      </nav>
+      <div class="sidebar__footer">
+        &copy; 2026 ラベルン by 礼株式会社
+      </div>
+    </aside>
+
+    <!-- ========== メインエリア ========== -->
+    <main class="main-area" role="main">
+      <!-- ヘッダー -->
+      <header class="app-header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="hamburger-btn" id="hamburger-btn" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="sidebar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h1 class="app-header__title">新規ラベル作成</h1>
+        </div>
+        <div class="app-header__actions">
+          <button type="button" class="btn btn--ghost" id="btn-save-draft" aria-label="下書き保存">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:18px;height:18px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            下書き保存
+          </button>
+        </div>
+      </header>
+
+      <!-- ステップインジケーター -->
+      <div class="step-indicator" role="tablist" aria-label="作成ステップ">
+        <button class="step-indicator__item" role="tab" aria-selected="true" data-step="1" id="step-tab-1" aria-controls="step-panel-1">
+          <span class="step-indicator__number">1</span>
+          <span>製品情報</span>
+        </button>
+        <div class="step-indicator__connector" data-after-step="1" aria-hidden="true"></div>
+        <button class="step-indicator__item" role="tab" aria-selected="false" data-step="2" id="step-tab-2" aria-controls="step-panel-2">
+          <span class="step-indicator__number">2</span>
+          <span>ラベル設定</span>
+        </button>
+        <div class="step-indicator__connector" data-after-step="2" aria-hidden="true"></div>
+        <button class="step-indicator__item" role="tab" aria-selected="false" data-step="3" id="step-tab-3" aria-controls="step-panel-3">
+          <span class="step-indicator__number">3</span>
+          <span>言語・翻訳</span>
+        </button>
+        <div class="step-indicator__connector" data-after-step="3" aria-hidden="true"></div>
+        <button class="step-indicator__item" role="tab" aria-selected="false" data-step="4" id="step-tab-4" aria-controls="step-panel-4">
+          <span class="step-indicator__number">4</span>
+          <span>プレビュー・出力</span>
+        </button>
+      </div>
+
+      <!-- ステップコンテンツ -->
+      <div class="step-content-wrapper">
+
+        <!-- ==================== ステップ1: 製品情報入力 ==================== -->
+        <section class="step-panel" id="step-panel-1" role="tabpanel" aria-labelledby="step-tab-1" aria-hidden="false" data-step="1">
+          <h2 class="step-panel__heading">製品情報を入力</h2>
+          <p class="step-panel__description">ラベルに表示する製品の基本情報を入力してください。</p>
+
+          <!-- カテゴリ・商品名 -->
+          <div class="form-section">
+            <h3 class="form-section__title">基本情報</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="product-category" class="form-label form-label--required">カテゴリ</label>
+                <select id="product-category" name="product-category" class="form-select" data-field="category" required>
+                  <option value="">選択してください</option>
+                  <option value="food">食品</option>
+                  <option value="cosmetics">化粧品</option>
+                  <option value="other">その他</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="product-name" class="form-label form-label--required">商品名（日本語）</label>
+                <input type="text" id="product-name" name="product-name" class="form-input" data-field="productName" placeholder="例: 有機グリーンティー" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="origin-country" class="form-label form-label--required">原産国</label>
+                <input type="text" id="origin-country" name="origin-country" class="form-input" data-field="originCountry" placeholder="例: 日本">
+              </div>
+              <div class="form-group">
+                <label for="manufacturer" class="form-label form-label--required">製造者/販売者</label>
+                <input type="text" id="manufacturer" name="manufacturer" class="form-input" data-field="manufacturer" placeholder="例: 株式会社〇〇">
+              </div>
+            </div>
+            <div class="form-row--three form-row">
+              <div class="form-group">
+                <label for="net-content" class="form-label form-label--required">内容量</label>
+                <input type="number" id="net-content" name="net-content" class="form-input" data-field="netContent" placeholder="例: 500" min="0" step="any">
+              </div>
+              <div class="form-group">
+                <label for="content-unit" class="form-label form-label--required">単位</label>
+                <select id="content-unit" name="content-unit" class="form-select" data-field="contentUnit">
+                  <option value="g">g</option>
+                  <option value="mg">mg</option>
+                  <option value="kg">kg</option>
+                  <option value="ml">ml</option>
+                  <option value="L">L</option>
+                  <option value="個">個</option>
+                  <option value="枚">枚</option>
+                  <option value="本">本</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="expiry-format" class="form-label">期限表記形式</label>
+                <select id="expiry-format" name="expiry-format" class="form-select" data-field="expiryFormat">
+                  <option value="best-before">賞味期限</option>
+                  <option value="use-by">消費期限</option>
+                  <option value="best-before-ymd">賞味期限（年月日）</option>
+                  <option value="best-before-ym">賞味期限（年月）</option>
+                  <option value="use-by-ymd">消費期限（年月日）</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 成分リスト -->
+          <div class="form-section">
+            <h3 class="form-section__title">成分リスト</h3>
+            <div class="form-group">
+              <label for="ingredients" class="form-label form-label--required">成分（1行1成分、またはカンマ区切り）</label>
+              <div class="autocomplete-wrapper">
+                <textarea id="ingredients" name="ingredients" class="form-textarea" data-field="ingredients" rows="6" placeholder="例:&#10;砂糖&#10;食塩&#10;大豆（遺伝子組換えでない）&#10;乳化剤"></textarea>
+                <div class="autocomplete-list" id="ingredient-suggestions" role="listbox" aria-label="成分候補"></div>
+              </div>
+              <p class="form-hint">data/dictionary.json に登録された成分名を自動補完します。</p>
+            </div>
+          </div>
+
+          <!-- アレルゲン -->
+          <div class="form-section">
+            <h3 class="form-section__title">アレルゲン表示</h3>
+
+            <div class="form-group">
+              <p class="form-label form-label--required">特定原材料（義務8品目）</p>
+              <div class="checkbox-grid" data-allergen-group="mandatory">
+                <label class="checkbox-item checkbox-item--mandatory">
+                  <input type="checkbox" name="allergen" value="egg" data-allergen="egg"> えび
+                </label>
+                <label class="checkbox-item checkbox-item--mandatory">
+                  <input type="checkbox" name="allergen" value="crab" data-allergen="crab"> かに
+                </label>
+                <label class="checkbox-item checkbox-item--mandatory">
+                  <input type="checkbox" name="allergen" value="wheat" data-allergen="wheat"> 小麦
+                </label>
+                <label class="checkbox-item checkbox-item--mandatory">
+                  <input type="checkbox" name="allergen" value="buckwheat" data-allergen="buckwheat"> そば
+                </label>
+                <label class="checkbox-item checkbox-item--mandatory">
+                  <input type="checkbox" name="allergen" value="egg-hen" data-allergen="egg-hen"> 卵
+                </label>
+                <label class="checkbox-item checkbox-item--mandatory">
+                  <input type="checkbox" name="allergen" value="milk" data-allergen="milk"> 乳
+                </label>
+                <label class="checkbox-item checkbox-item--mandatory">
+                  <input type="checkbox" name="allergen" value="peanut" data-allergen="peanut"> 落花生
+                </label>
+                <label class="checkbox-item checkbox-item--mandatory">
+                  <input type="checkbox" name="allergen" value="walnut" data-allergen="walnut"> くるみ
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <p class="form-label">特定原材料に準ずるもの（推奨21品目）</p>
+              <div class="checkbox-grid" data-allergen-group="recommended">
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="almond" data-allergen="almond"> アーモンド
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="abalone" data-allergen="abalone"> あわび
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="squid" data-allergen="squid"> いか
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="salmon-roe" data-allergen="salmon-roe"> いくら
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="orange" data-allergen="orange"> オレンジ
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="cashew" data-allergen="cashew"> カシューナッツ
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="kiwi" data-allergen="kiwi"> キウイフルーツ
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="beef" data-allergen="beef"> 牛肉
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="sesame" data-allergen="sesame"> ごま
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="salmon" data-allergen="salmon"> さけ
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="mackerel" data-allergen="mackerel"> さば
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="soybean" data-allergen="soybean"> 大豆
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="chicken" data-allergen="chicken"> 鶏肉
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="banana" data-allergen="banana"> バナナ
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="pork" data-allergen="pork"> 豚肉
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="matsutake" data-allergen="matsutake"> まつたけ
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="peach" data-allergen="peach"> もも
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="yam" data-allergen="yam"> やまいも
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="apple" data-allergen="apple"> りんご
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="gelatin" data-allergen="gelatin"> ゼラチン
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="allergen" value="fish" data-allergen="fish"> 魚介類
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 栄養成分 -->
+          <div class="form-section">
+            <h3 class="form-section__title">栄養成分表示</h3>
+            <p class="form-hint" style="margin-bottom:12px;">100gあたり、または1食分あたりの値を入力してください。</p>
+
+            <div class="form-group" style="margin-bottom:16px;">
+              <label for="nutrition-per" class="form-label">表示基準</label>
+              <select id="nutrition-per" name="nutrition-per" class="form-select" data-field="nutritionPer" style="max-width:240px;">
+                <option value="100g">100gあたり</option>
+                <option value="100ml">100mlあたり</option>
+                <option value="serving">1食分あたり</option>
+              </select>
+            </div>
+
+            <table class="nutrition-table" aria-label="栄養成分入力">
+              <thead>
+                <tr>
+                  <th scope="col">栄養成分</th>
+                  <th scope="col">含有量</th>
+                  <th scope="col">単位</th>
+                </tr>
+              </thead>
+              <tbody id="nutrition-tbody">
+                <tr data-nutrition="energy">
+                  <td><label for="nut-energy">エネルギー</label></td>
+                  <td><input type="number" id="nut-energy" name="nut-energy" data-field="nutrition-energy" step="any" min="0"></td>
+                  <td>kcal</td>
+                </tr>
+                <tr data-nutrition="protein">
+                  <td><label for="nut-protein">たんぱく質</label></td>
+                  <td><input type="number" id="nut-protein" name="nut-protein" data-field="nutrition-protein" step="any" min="0"></td>
+                  <td>g</td>
+                </tr>
+                <tr data-nutrition="fat">
+                  <td><label for="nut-fat">脂質</label></td>
+                  <td><input type="number" id="nut-fat" name="nut-fat" data-field="nutrition-fat" step="any" min="0"></td>
+                  <td>g</td>
+                </tr>
+                <tr data-nutrition="carbohydrate">
+                  <td><label for="nut-carb">炭水化物</label></td>
+                  <td><input type="number" id="nut-carb" name="nut-carb" data-field="nutrition-carbohydrate" step="any" min="0"></td>
+                  <td>g</td>
+                </tr>
+                <tr data-nutrition="sodium">
+                  <td><label for="nut-sodium">食塩相当量</label></td>
+                  <td><input type="number" id="nut-sodium" name="nut-sodium" data-field="nutrition-sodium" step="any" min="0"></td>
+                  <td>g</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <button type="button" class="btn btn--ghost" id="btn-add-nutrition" style="margin-top:12px;" aria-label="栄養成分を追加">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              項目を追加
+            </button>
+          </div>
+
+          <!-- ステップアクション -->
+          <div class="step-actions">
+            <div></div>
+            <button type="button" class="btn btn--primary" data-action="next-step" aria-label="次のステップへ">
+              次へ：ラベル設定
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- ==================== ステップ2: ラベル設定 ==================== -->
+        <section class="step-panel" id="step-panel-2" role="tabpanel" aria-labelledby="step-tab-2" aria-hidden="true" data-step="2">
+          <h2 class="step-panel__heading">ラベル設定</h2>
+          <p class="step-panel__description">ラベルのサイズやデザインを設定してください。</p>
+
+          <!-- サイズ -->
+          <div class="form-section">
+            <h3 class="form-section__title">ラベルサイズ</h3>
+            <div class="form-group">
+              <p class="form-label form-label--required">プリセットサイズ</p>
+              <div class="size-presets" role="radiogroup" aria-label="ラベルサイズ選択">
+                <button type="button" class="size-preset-btn" data-size="50x30" aria-pressed="false" role="radio" aria-checked="false">50 x 30 mm</button>
+                <button type="button" class="size-preset-btn" data-size="80x50" aria-pressed="true" role="radio" aria-checked="true">80 x 50 mm</button>
+                <button type="button" class="size-preset-btn" data-size="100x70" aria-pressed="false" role="radio" aria-checked="false">100 x 70 mm</button>
+                <button type="button" class="size-preset-btn" data-size="custom" aria-pressed="false" role="radio" aria-checked="false">カスタム</button>
+              </div>
+            </div>
+            <div class="form-row" id="custom-size-fields" style="display:none;margin-top:16px;">
+              <div class="form-group">
+                <label for="label-width" class="form-label">幅（mm）</label>
+                <input type="number" id="label-width" name="label-width" class="form-input" data-field="labelWidth" placeholder="幅" min="10" max="300">
+              </div>
+              <div class="form-group">
+                <label for="label-height" class="form-label">高さ（mm）</label>
+                <input type="number" id="label-height" name="label-height" class="form-input" data-field="labelHeight" placeholder="高さ" min="10" max="300">
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:16px;">
+              <p class="form-label">向き</p>
+              <div style="display:flex;gap:12px;">
+                <label class="checkbox-item" style="flex:1;justify-content:center;">
+                  <input type="radio" name="label-orientation" value="landscape" data-field="orientation" checked> 横
+                </label>
+                <label class="checkbox-item" style="flex:1;justify-content:center;">
+                  <input type="radio" name="label-orientation" value="portrait" data-field="orientation"> 縦
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- デザイン -->
+          <div class="form-section">
+            <h3 class="form-section__title">デザイン設定</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="font-family" class="form-label">フォント</label>
+                <select id="font-family" name="font-family" class="form-select" data-field="fontFamily">
+                  <option value="NotoSans">Noto Sans（全言語対応）</option>
+                  <option value="NotoSerif">Noto Serif（全言語対応）</option>
+                  <option value="NotoSansJP">Noto Sans JP</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="font-size-auto" class="form-label">文字サイズ自動調整</label>
+                <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+                  <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;">
+                    <input type="checkbox" id="font-size-auto" name="font-size-auto" data-field="fontSizeAuto" checked style="accent-color:var(--color-primary);width:18px;height:18px;">
+                    有効
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="bg-color" class="form-label">背景色</label>
+                <div class="color-input-group">
+                  <input type="color" id="bg-color" name="bg-color" data-field="bgColor" value="#ffffff">
+                  <span id="bg-color-hex" style="font-size:.85rem;color:var(--color-text-muted);">#ffffff</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="show-border" class="form-label">枠線</label>
+                <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+                  <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;">
+                    <input type="checkbox" id="show-border" name="show-border" data-field="showBorder" checked style="accent-color:var(--color-primary);width:18px;height:18px;">
+                    表示する
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:8px;">
+              <label class="form-label">ロゴ画像（任意）</label>
+              <div class="file-upload-area" id="logo-upload-area" role="button" tabindex="0" aria-label="ロゴ画像をアップロード">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <p class="file-upload-area__text">クリックまたはドラッグ&amp;ドロップで<strong>画像をアップロード</strong></p>
+                <p class="form-hint">PNG, JPG, SVG（最大2MB）</p>
+              </div>
+              <input type="file" id="logo-file" name="logo-file" data-field="logoFile" accept="image/png,image/jpeg,image/svg+xml" style="display:none;" aria-label="ロゴ画像ファイル">
+              <div id="logo-preview" style="display:none;margin-top:12px;"></div>
+            </div>
+          </div>
+
+          <!-- ステップアクション -->
+          <div class="step-actions">
+            <button type="button" class="btn btn--secondary" data-action="prev-step" aria-label="前のステップへ">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+              戻る
+            </button>
+            <button type="button" class="btn btn--primary" data-action="next-step" aria-label="次のステップへ">
+              次へ：言語・翻訳
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- ==================== ステップ3: 言語選択 + 翻訳 ==================== -->
+        <section class="step-panel" id="step-panel-3" role="tabpanel" aria-labelledby="step-tab-3" aria-hidden="true" data-step="3">
+          <h2 class="step-panel__heading">言語選択と翻訳</h2>
+          <p class="step-panel__description">翻訳する言語を選択し、翻訳を開始してください。</p>
+
+          <!-- 言語選択 -->
+          <div class="form-section">
+            <h3 class="form-section__title">対象言語を選択</h3>
+            <div class="preset-buttons">
+              <button type="button" class="btn btn--secondary" id="btn-select-all-langs" aria-label="全言語を選択">全選択</button>
+              <button type="button" class="btn btn--secondary" id="btn-select-major-langs" aria-label="主要言語のみ選択">主要言語のみ</button>
+              <button type="button" class="btn btn--secondary" id="btn-deselect-all-langs" aria-label="全選択解除">全解除</button>
+            </div>
+
+            <div class="language-grid" id="language-grid" role="group" aria-label="言語選択">
+              <!-- 日本語 -->
+              <label class="language-card" aria-checked="false" data-lang="ja">
+                <input type="checkbox" name="target-lang" value="ja">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1EF;&#x1F1F5;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">日本語</span>
+                  <span class="language-card__code">ja</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- 英語 -->
+              <label class="language-card" aria-checked="false" data-lang="en">
+                <input type="checkbox" name="target-lang" value="en">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1EC;&#x1F1E7;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">English</span>
+                  <span class="language-card__code">en</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- 中国語（簡体） -->
+              <label class="language-card" aria-checked="false" data-lang="zh-CN">
+                <input type="checkbox" name="target-lang" value="zh-CN">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1E8;&#x1F1F3;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">简体中文</span>
+                  <span class="language-card__code">zh-CN</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- 中国語（繁体） -->
+              <label class="language-card" aria-checked="false" data-lang="zh-TW">
+                <input type="checkbox" name="target-lang" value="zh-TW">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1F9;&#x1F1FC;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">繁體中文</span>
+                  <span class="language-card__code">zh-TW</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- 韓国語 -->
+              <label class="language-card" aria-checked="false" data-lang="ko">
+                <input type="checkbox" name="target-lang" value="ko">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1F0;&#x1F1F7;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">한국어</span>
+                  <span class="language-card__code">ko</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- タイ語 -->
+              <label class="language-card" aria-checked="false" data-lang="th">
+                <input type="checkbox" name="target-lang" value="th">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1F9;&#x1F1ED;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">ไทย</span>
+                  <span class="language-card__code">th</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- ベトナム語 -->
+              <label class="language-card" aria-checked="false" data-lang="vi">
+                <input type="checkbox" name="target-lang" value="vi">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1FB;&#x1F1F3;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">Tiếng Việt</span>
+                  <span class="language-card__code">vi</span>
+                </span>
+                <span class="language-card__badge language-card__badge--partial">一部対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- インドネシア語 -->
+              <label class="language-card" aria-checked="false" data-lang="id">
+                <input type="checkbox" name="target-lang" value="id">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1EE;&#x1F1E9;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">Bahasa Indonesia</span>
+                  <span class="language-card__code">id</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- マレー語 -->
+              <label class="language-card" aria-checked="false" data-lang="ms">
+                <input type="checkbox" name="target-lang" value="ms">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1F2;&#x1F1FE;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">Bahasa Melayu</span>
+                  <span class="language-card__code">ms</span>
+                </span>
+                <span class="language-card__badge language-card__badge--partial">一部対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- フランス語 -->
+              <label class="language-card" aria-checked="false" data-lang="fr">
+                <input type="checkbox" name="target-lang" value="fr">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1EB;&#x1F1F7;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">Francais</span>
+                  <span class="language-card__code">fr</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- ドイツ語 -->
+              <label class="language-card" aria-checked="false" data-lang="de">
+                <input type="checkbox" name="target-lang" value="de">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1E9;&#x1F1EA;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">Deutsch</span>
+                  <span class="language-card__code">de</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- スペイン語 -->
+              <label class="language-card" aria-checked="false" data-lang="es">
+                <input type="checkbox" name="target-lang" value="es">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1EA;&#x1F1F8;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">Espanol</span>
+                  <span class="language-card__code">es</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- ポルトガル語 -->
+              <label class="language-card" aria-checked="false" data-lang="pt">
+                <input type="checkbox" name="target-lang" value="pt">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1F5;&#x1F1F9;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">Portugues</span>
+                  <span class="language-card__code">pt</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- イタリア語 -->
+              <label class="language-card" aria-checked="false" data-lang="it">
+                <input type="checkbox" name="target-lang" value="it">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1EE;&#x1F1F9;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">Italiano</span>
+                  <span class="language-card__code">it</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- アラビア語 -->
+              <label class="language-card" aria-checked="false" data-lang="ar">
+                <input type="checkbox" name="target-lang" value="ar">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1F8;&#x1F1E6;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">العربية</span>
+                  <span class="language-card__code">ar</span>
+                </span>
+                <span class="language-card__badge language-card__badge--partial">一部対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- ヒンディー語 -->
+              <label class="language-card" aria-checked="false" data-lang="hi">
+                <input type="checkbox" name="target-lang" value="hi">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1EE;&#x1F1F3;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">हिन्दी</span>
+                  <span class="language-card__code">hi</span>
+                </span>
+                <span class="language-card__badge language-card__badge--partial">一部対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- ロシア語 -->
+              <label class="language-card" aria-checked="false" data-lang="ru">
+                <input type="checkbox" name="target-lang" value="ru">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1F7;&#x1F1FA;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">Русский</span>
+                  <span class="language-card__code">ru</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <!-- オランダ語 -->
+              <label class="language-card" aria-checked="false" data-lang="nl">
+                <input type="checkbox" name="target-lang" value="nl">
+                <span class="language-card__flag" aria-hidden="true">&#x1F1F3;&#x1F1F1;</span>
+                <span class="language-card__info">
+                  <span class="language-card__name">Nederlands</span>
+                  <span class="language-card__code">nl</span>
+                </span>
+                <span class="language-card__badge language-card__badge--compliant">法定対応</span>
+                <span class="language-card__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 翻訳アクション -->
+          <div class="form-section">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+              <div>
+                <p style="font-size:.9rem;font-weight:600;">選択中: <span id="selected-lang-count">0</span> 言語</p>
+              </div>
+              <button type="button" class="btn btn--accent" id="btn-start-translation" aria-label="翻訳を開始">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                翻訳開始
+              </button>
+            </div>
+          </div>
+
+          <!-- 翻訳結果 -->
+          <div id="translation-results" aria-live="polite" aria-label="翻訳結果">
+            <!-- JSが動的に翻訳結果カードを挿入 -->
+            <!--
+            テンプレート構造:
+            <div class="translation-result-card" data-lang="en">
+              <div class="translation-result-card__header">
+                <span class="translation-result-card__lang">
+                  <span>🇬🇧</span> English
+                </span>
+                <svg (toggle icon)/>
+              </div>
+              <div class="translation-result-card__body">
+                <div class="form-group">
+                  <label>商品名</label>
+                  <input type="text" data-field="translated-name" data-lang="en">
+                </div>
+                <div class="form-group">
+                  <label>成分リスト</label>
+                  <textarea data-field="translated-ingredients" data-lang="en"></textarea>
+                </div>
+              </div>
+            </div>
+            -->
+          </div>
+
+          <!-- ステップアクション -->
+          <div class="step-actions">
+            <button type="button" class="btn btn--secondary" data-action="prev-step" aria-label="前のステップへ">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+              戻る
+            </button>
+            <button type="button" class="btn btn--primary" data-action="next-step" aria-label="次のステップへ">
+              次へ：プレビュー・出力
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- ==================== ステップ4: プレビュー + PDF出力 ==================== -->
+        <section class="step-panel" id="step-panel-4" role="tabpanel" aria-labelledby="step-tab-4" aria-hidden="true" data-step="4">
+          <h2 class="step-panel__heading">プレビューとPDF出力</h2>
+          <p class="step-panel__description">ラベルの仕上がりを確認し、PDFを出力してください。</p>
+
+          <!-- 言語タブ -->
+          <div class="form-section">
+            <h3 class="form-section__title">ラベルプレビュー</h3>
+            <div class="preview-tabs" id="preview-tabs" role="tablist" aria-label="言語別プレビュー切替">
+              <!-- JSが動的にタブを挿入 -->
+              <!-- 例:
+              <button class="preview-tab" role="tab" aria-selected="true" data-preview-lang="ja">日本語</button>
+              <button class="preview-tab" role="tab" aria-selected="false" data-preview-lang="en">English</button>
+              -->
+            </div>
+
+            <!-- ラベルプレビュー領域 -->
+            <div class="preview-container">
+              <div class="label-preview-frame" id="label-preview" data-label-width="80" data-label-height="50" aria-label="ラベルプレビュー">
+                <div class="label-preview-frame__placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;color:#94a3b8;margin-bottom:12px;" aria-hidden="true"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="8" y1="3" x2="8" y2="21"/></svg>
+                  <p>言語を選択して翻訳を実行すると、ここにラベルのプレビューが表示されます。</p>
+                </div>
+                <!--
+                JSがレンダリングする要素:
+                - 商品名（翻訳済み）
+                - 成分表示（法定表示形式）
+                - アレルゲン表示（義務品目を強調）
+                - 栄養成分表（各国フォーマット）
+                - 原産国表示
+                - 製造者/販売者
+                - 内容量
+                - バーコード領域（プレースホルダー）
+                -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 出力オプション -->
+          <div class="form-section">
+            <h3 class="form-section__title">PDF出力</h3>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <button type="button" class="btn btn--primary" id="btn-download-all-pdf" aria-label="全言語のPDFを一括ダウンロード">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                PDF一括ダウンロード
+              </button>
+              <button type="button" class="btn btn--secondary" id="btn-download-single-pdf" aria-label="表示中の言語のPDFをダウンロード">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                個別言語ダウンロード
+              </button>
+            </div>
+            <p class="form-hint" style="margin-top:12px;">一括ダウンロードの場合、全言語のラベルがまとめてZIPで出力されます。</p>
+            <div id="payment-request-button" style="margin-top:12px;"></div>
+            <div id="payment-method-badges"></div>
+          </div>
+
+          <!-- ステップアクション -->
+          <div class="step-actions">
+            <button type="button" class="btn btn--secondary" data-action="prev-step" aria-label="前のステップへ">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+              戻る
+            </button>
+            <div></div>
+          </div>
+        </section>
+
+      </div><!-- /.step-content-wrapper -->
+
+      <!-- モバイルボトムナビ -->
+      <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="モバイルナビゲーション">
+        <div class="mobile-bottom-nav__inner">
+          <button class="mobile-bottom-nav__item is-active" data-step="1" aria-label="入力">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <span>入力</span>
+          </button>
+          <button class="mobile-bottom-nav__item" data-step="2" aria-label="言語">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            <span>言語</span>
+          </button>
+          <button class="mobile-bottom-nav__item" data-step="3" aria-label="プレビュー">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>確認</span>
+          </button>
+          <button class="mobile-bottom-nav__item" data-step="4" aria-label="PDF出力">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            <span>出力</span>
+          </button>
+        </div>
+      </nav>
+    </main>
+  </div><!-- /.app-layout -->
+
+  <!-- ========== インラインUI制御（app.jsが読み込まれるまでの最低限動作） ========== -->
+  <script>
+    /* サイドバー開閉（モバイル） */
+    (function() {
+      var hamburger = document.getElementById('hamburger-btn');
+      var sidebar = document.getElementById('sidebar');
+      var overlay = document.getElementById('sidebar-overlay');
+
+      function openSidebar() {
+        sidebar.setAttribute('data-open', 'true');
+        overlay.setAttribute('data-visible', 'true');
+        overlay.setAttribute('aria-hidden', 'false');
+        hamburger.setAttribute('aria-expanded', 'true');
+      }
+      function closeSidebar() {
+        sidebar.setAttribute('data-open', 'false');
+        overlay.setAttribute('data-visible', 'false');
+        overlay.setAttribute('aria-hidden', 'true');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+
+      hamburger.addEventListener('click', function() {
+        var isOpen = sidebar.getAttribute('data-open') === 'true';
+        if (isOpen) { closeSidebar(); } else { openSidebar(); }
+      });
+      overlay.addEventListener('click', closeSidebar);
+    })();
+
+    /* ステップ切替 */
+    (function() {
+      var totalSteps = 4;
+      var currentStep = 1;
+      var tabs = document.querySelectorAll('.step-indicator__item');
+      var panels = document.querySelectorAll('.step-panel');
+      var connectors = document.querySelectorAll('.step-indicator__connector');
+
+      function goToStep(step) {
+        if (step < 1 || step > totalSteps) return;
+        currentStep = step;
+        tabs.forEach(function(tab) {
+          var s = parseInt(tab.getAttribute('data-step'), 10);
+          tab.setAttribute('aria-selected', s === step ? 'true' : 'false');
+        });
+        panels.forEach(function(panel) {
+          var s = parseInt(panel.getAttribute('data-step'), 10);
+          panel.setAttribute('aria-hidden', s === step ? 'false' : 'true');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      /* タブクリック */
+      tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          goToStep(parseInt(this.getAttribute('data-step'), 10));
+        });
+      });
+
+      /* 次へ/戻るボタン */
+      document.addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-action]');
+        if (!btn) return;
+        var action = btn.getAttribute('data-action');
+        if (action === 'next-step') goToStep(currentStep + 1);
+        if (action === 'prev-step') goToStep(currentStep - 1);
+      });
+
+      /* グローバルアクセス用 */
+      window.labelneGoToStep = goToStep;
+    })();
+
+    /* ラベルサイズプリセット切替 */
+    (function() {
+      var buttons = document.querySelectorAll('.size-preset-btn');
+      var customFields = document.getElementById('custom-size-fields');
+      buttons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          buttons.forEach(function(b) {
+            b.setAttribute('aria-pressed', 'false');
+            b.setAttribute('aria-checked', 'false');
+          });
+          this.setAttribute('aria-pressed', 'true');
+          this.setAttribute('aria-checked', 'true');
+          var size = this.getAttribute('data-size');
+          if (size === 'custom') {
+            customFields.style.display = '';
+          } else {
+            customFields.style.display = 'none';
+          }
+        });
+      });
+    })();
+
+    /* 言語カード選択 */
+    (function() {
+      var grid = document.getElementById('language-grid');
+      var countEl = document.getElementById('selected-lang-count');
+
+      function updateCount() {
+        var checked = grid.querySelectorAll('input[name="target-lang"]:checked');
+        if (countEl) countEl.textContent = checked.length;
+      }
+
+      grid.addEventListener('change', function(e) {
+        if (e.target.matches('input[name="target-lang"]')) {
+          var card = e.target.closest('.language-card');
+          card.setAttribute('aria-checked', e.target.checked ? 'true' : 'false');
+          updateCount();
+        }
+      });
+
+      /* 全選択 */
+      document.getElementById('btn-select-all-langs').addEventListener('click', function() {
+        grid.querySelectorAll('input[name="target-lang"]').forEach(function(cb) {
+          cb.checked = true;
+          cb.closest('.language-card').setAttribute('aria-checked', 'true');
+        });
+        updateCount();
+      });
+
+      /* 主要言語のみ（ja, en, zh-CN, ko, th, fr, de, es） */
+      var majorLangs = ['ja','en','zh-CN','ko','th','fr','de','es'];
+      document.getElementById('btn-select-major-langs').addEventListener('click', function() {
+        grid.querySelectorAll('input[name="target-lang"]').forEach(function(cb) {
+          var isM = majorLangs.indexOf(cb.value) !== -1;
+          cb.checked = isM;
+          cb.closest('.language-card').setAttribute('aria-checked', isM ? 'true' : 'false');
+        });
+        updateCount();
+      });
+
+      /* 全解除 */
+      document.getElementById('btn-deselect-all-langs').addEventListener('click', function() {
+        grid.querySelectorAll('input[name="target-lang"]').forEach(function(cb) {
+          cb.checked = false;
+          cb.closest('.language-card').setAttribute('aria-checked', 'false');
+        });
+        updateCount();
+      });
+    })();
+
+    /* 背景色プレビュー */
+    (function() {
+      var colorInput = document.getElementById('bg-color');
+      var hexLabel = document.getElementById('bg-color-hex');
+      if (colorInput && hexLabel) {
+        colorInput.addEventListener('input', function() {
+          hexLabel.textContent = this.value;
+        });
+      }
+    })();
+
+    /* ロゴアップロードエリア */
+    (function() {
+      var area = document.getElementById('logo-upload-area');
+      var fileInput = document.getElementById('logo-file');
+      var preview = document.getElementById('logo-preview');
+
+      area.addEventListener('click', function() { fileInput.click(); });
+      area.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+      });
+
+      /* ドラッグ&ドロップ */
+      area.addEventListener('dragover', function(e) { e.preventDefault(); area.style.borderColor = 'var(--color-primary)'; });
+      area.addEventListener('dragleave', function() { area.style.borderColor = ''; });
+      area.addEventListener('drop', function(e) {
+        e.preventDefault();
+        area.style.borderColor = '';
+        if (e.dataTransfer.files.length) {
+          fileInput.files = e.dataTransfer.files;
+          fileInput.dispatchEvent(new Event('change'));
+        }
+      });
+
+      fileInput.addEventListener('change', function() {
+        if (!this.files || !this.files[0]) return;
+        var file = this.files[0];
+        if (file.size > 2 * 1024 * 1024) { alert('ファイルサイズは2MB以下にしてください。'); this.value = ''; return; }
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          preview.innerHTML = '<img src="' + ev.target.result + '" alt="ロゴプレビュー" style="max-width:120px;max-height:80px;border:1px solid var(--color-border);border-radius:var(--radius-sm);">' +
+            '<button type="button" style="margin-left:12px;font-size:.8rem;color:var(--color-error);background:none;border:none;cursor:pointer;" id="btn-remove-logo">削除</button>';
+          preview.style.display = 'flex';
+          preview.style.alignItems = 'center';
+          document.getElementById('btn-remove-logo').addEventListener('click', function() {
+            fileInput.value = '';
+            preview.style.display = 'none';
+            preview.innerHTML = '';
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+    })();
+
+    /* 栄養成分 追加 */
+    (function() {
+      var btn = document.getElementById('btn-add-nutrition');
+      var tbody = document.getElementById('nutrition-tbody');
+      var counter = 0;
+      btn.addEventListener('click', function() {
+        counter++;
+        var tr = document.createElement('tr');
+        tr.setAttribute('data-nutrition', 'custom-' + counter);
+        tr.innerHTML =
+          '<td><input type="text" class="form-input" placeholder="成分名" aria-label="カスタム栄養成分名" data-field="nutrition-custom-name-' + counter + '" style="padding:6px 10px;font-size:.85rem;"></td>' +
+          '<td><input type="number" aria-label="カスタム栄養成分値" data-field="nutrition-custom-value-' + counter + '" step="any" min="0"></td>' +
+          '<td><input type="text" aria-label="カスタム栄養成分単位" data-field="nutrition-custom-unit-' + counter + '" value="g" style="width:60px;padding:6px;font-size:.85rem;border:1px solid var(--color-border);border-radius:var(--radius-sm);"></td>';
+        tbody.appendChild(tr);
+      });
+    })();
+
+    /* モバイルボトムナビ */
+    (function() {
+      var bottomNav = document.getElementById('mobile-bottom-nav');
+      if (bottomNav) {
+        bottomNav.querySelectorAll('.mobile-bottom-nav__item').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var step = parseInt(btn.dataset.step);
+            if (typeof window.labelneGoToStep === 'function') {
+              window.labelneGoToStep(step);
+            }
+            /* アクティブ状態更新 */
+            bottomNav.querySelectorAll('.mobile-bottom-nav__item').forEach(function(b) {
+              b.classList.remove('is-active');
+            });
+            btn.classList.add('is-active');
+          });
+        });
+      }
+    })();
+  </script>
+
+  <!-- 外部JS（defer） -->
+  <script src="js/auth.js" defer></script>
+  <script src="js/translation.js" defer></script>
+  <script src="js/legal-display.js" defer></script>
+  <script src="js/pdf-generator.js" defer></script>
+  <script src="js/stripe.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
