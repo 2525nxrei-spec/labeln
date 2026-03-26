@@ -1235,7 +1235,7 @@ const LabelunApp = {
     let limit = 3; // 無料プラン
     if (typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
       const plan = Auth.getPlan();
-      const planLimits = { free: 3, lite: 30, standard: 100, pro: 9999 };
+      const planLimits = { free: 3, lite: 10, standard: 50, pro: 9999 };
       limit = planLimits[plan] || 3;
     }
 

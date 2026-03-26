@@ -11,7 +11,7 @@ const AUTH_API_ENDPOINTS = {
   REGISTER: '/api/auth/register',
   LOGOUT: '/api/auth/logout',
   ME: '/api/auth/me',
-  USAGE: '/api/auth/usage',
+  USAGE: '/api/usage',
 };
 
 /**
@@ -30,17 +30,17 @@ const PLANS = {
     id: 'lite',
     name: 'ライトプラン',
     price: 300,
-    monthlyLabels: 30,
+    monthlyLabels: 10,
     maxLanguages: 5,
-    features: ['月30ラベル', '5言語まで', '全テンプレート', 'PDF一括出力'],
+    features: ['月10ラベル', '5言語まで', 'PDF出力（150dpi）', '法定表示自動生成'],
   },
   standard: {
     id: 'standard',
     name: 'スタンダードプラン',
     price: 500,
-    monthlyLabels: 100,
+    monthlyLabels: 50,
     maxLanguages: 18,
-    features: ['月100ラベル', '18言語対応', '全テンプレート', 'PDF一括出力', '優先サポート'],
+    features: ['月50ラベル', '18言語対応', 'PDF出力（300dpi）', 'CSVインポート'],
   },
   pro: {
     id: 'pro',
@@ -48,7 +48,7 @@ const PLANS = {
     price: 2000,
     monthlyLabels: 9999,
     maxLanguages: 18,
-    features: ['無制限ラベル', '18言語対応', 'API連携', '専任サポート', 'カスタムテンプレート'],
+    features: ['ラベル数無制限', '18言語対応', 'API連携', '優先サポート'],
     comingSoon: true,
   },
 };
@@ -120,7 +120,7 @@ const Auth = {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'ログインに失敗しました。');
+        throw new Error(errorData.error || errorData.message || 'ログインに失敗しました。');
       }
 
       const data = await res.json();
@@ -168,7 +168,7 @@ const Auth = {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || '登録に失敗しました。');
+        throw new Error(errorData.error || errorData.message || '登録に失敗しました。');
       }
 
       const data = await res.json();
@@ -333,7 +333,8 @@ const Auth = {
 
       if (res.ok) {
         const data = await res.json();
-        this.currentUser = data.user;
+        // /api/auth/me は { id, email, plan, ... } を直接返す（userラッパーなし）
+        this.currentUser = data.user || data;
         this._saveSession();
       } else {
         // トークン無効 → セッションクリア

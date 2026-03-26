@@ -245,6 +245,9 @@ const StripePayment = {
         <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:#f1f5f9;border-radius:20px;font-size:12px;font-weight:500;">
           Google Pay
         </span>
+        <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:#f1f5f9;border-radius:20px;font-size:12px;font-weight:500;">
+          コンビニ払い
+        </span>
       </div>
     `;
   },
@@ -295,7 +298,6 @@ const StripePayment = {
         body: JSON.stringify({
           planId: planId,
           priceId: plan.priceId,
-          payment_methods: ['card', 'paypay'],
           successUrl: window.location.origin + '/app.html?payment=success',
           cancelUrl: window.location.origin + '/app.html?payment=cancel',
         }),

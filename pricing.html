@@ -6,7 +6,7 @@
   <meta name="description" content="ラベルンの料金プラン。ライト月額300円・スタンダード月額500円・プロ月額2,000円。無料枠あり。">
   <meta name="theme-color" content="#0f766e">
   <title>料金プラン | ラベルン - 製品ラベル多言語化サブスク</title>
-  <link rel="canonical" href="https://labeln.app/pricing.html">
+  <link rel="canonical" href="https://mylabeln.com/pricing.html">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -104,7 +104,7 @@
                 <span>優先サポート</span>
               </div>
             </div>
-            <button class="btn btn--outline btn--full" id="checkout-light" data-plan="light">
+            <button class="btn btn--outline btn--full" id="checkout-light" data-plan="lite">
               このプランで始める
             </button>
             <div class="payment-badges">
@@ -422,13 +422,13 @@
         </div>
         <div>
           <p class="footer__nav-title">会社情報</p>
-          <a href="company.html" class="footer__nav-link">礼株式会社</a>
-          <a href="https://rei-inc.jp" class="footer__nav-link" target="_blank" rel="noopener noreferrer">コーポレートサイト</a>
+          <a href="company.html" class="footer__nav-link">濱田礼</a>
+          <a href="https://rei-inc.jp" class="footer__nav-link" target="_blank" rel="noopener noreferrer">Webサイト</a>
         </div>
       </div>
 
       <div class="footer__bottom">
-        <p>&copy; 2026 礼株式会社. All rights reserved.</p>
+        <p>&copy; 2026 濱田礼. All rights reserved.</p>
         <div class="footer__legal">
           <a href="terms.html" class="footer__legal-link">利用規約</a>
           <a href="privacy.html" class="footer__legal-link">プライバシーポリシー</a>
@@ -439,9 +439,10 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/app.js" defer></script>
+  <script src="https://js.stripe.com/v3/" defer></script>
   <script src="js/auth.js" defer></script>
   <script src="js/stripe.js" defer></script>
+  <script src="js/app.js" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       /* ハンバーガーメニュー */
@@ -483,12 +484,41 @@
       });
 
       /* フェードイン（不要なため無効化済み） */
+
+      /* チェックアウトボタンのクリックイベント */
+      document.querySelectorAll('[data-plan]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var planId = btn.getAttribute('data-plan');
+          // ログインチェック
+          if (typeof Auth !== 'undefined' && !Auth.isLoggedIn()) {
+            // 未ログインならapp.htmlのログイン画面へ誘導
+            window.location.href = 'app.html?redirect=pricing&plan=' + planId;
+            return;
+          }
+          // Stripe決済モジュールが利用可能なら呼び出し
+          if (typeof StripePayment !== 'undefined') {
+            StripePayment.checkout(planId);
+          } else {
+            alert('決済モジュールを読み込み中です。少々お待ちください。');
+          }
+        });
+      });
     });
   </script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function () {});
     }
+    /* Auth・StripePayment初期化 */
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof Auth !== 'undefined') {
+        Auth.init().then(function () {
+          if (typeof StripePayment !== 'undefined') {
+            StripePayment.init();
+          }
+        });
+      }
+    });
   </script>
 </body>
 </html>

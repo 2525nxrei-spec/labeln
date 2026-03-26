@@ -50,10 +50,10 @@ async function handleSubscriptionUpdate(subscription, env) {
       .run();
   }
 
-  // アクティブなサブスクリプションならユーザーのプランを更新
+  // アクティブなサブスクリプションならユーザーのプランとサブスクリプションIDを更新
   if (status === 'active' || status === 'trialing') {
-    await env.DB.prepare('UPDATE users SET plan = ?, updated_at = ? WHERE id = ?')
-      .bind(plan, now, user.id)
+    await env.DB.prepare('UPDATE users SET plan = ?, stripe_subscription_id = ?, cancel_at_period_end = 0, updated_at = ? WHERE id = ?')
+      .bind(plan, subscription.id, now, user.id)
       .run();
   }
 }
@@ -75,7 +75,7 @@ async function handleSubscriptionDeleted(subscription, env) {
     .bind(now, subscription.id)
     .run();
 
-  await env.DB.prepare("UPDATE users SET plan = 'free', updated_at = ? WHERE id = ?")
+  await env.DB.prepare("UPDATE users SET plan = 'free', stripe_subscription_id = NULL, cancel_at_period_end = 0, updated_at = ? WHERE id = ?")
     .bind(now, user.id)
     .run();
 }

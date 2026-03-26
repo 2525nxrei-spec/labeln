@@ -353,7 +353,7 @@
         </a>
       </nav>
       <div class="sidebar__footer">
-        &copy; 2026 ラベルン by 礼株式会社
+        &copy; 2026 ラベルン by 濱田礼
       </div>
     </aside>
 
@@ -385,7 +385,7 @@
             </div>
             <div class="form-group">
               <label for="account-email" class="form-label">メールアドレス</label>
-              <input type="email" id="account-email" class="form-input" value="demo@labelun.jp" disabled>
+              <input type="email" id="account-email" class="form-input" value="" disabled>
               <p class="form-hint">メールアドレスの変更はサポートまでお問い合わせください。</p>
             </div>
             <div class="actions-row">
@@ -394,32 +394,32 @@
           </form>
         </section>
 
-        <!-- プラン情報 -->
+        <!-- プラン情報（APIから動的取得） -->
         <section class="account-section">
           <h2 class="account-section__title">プラン情報</h2>
-          <div class="plan-info">
+          <div class="plan-info" id="plan-info">
             <div>
-              <p class="plan-info__name">スタンダード <span class="plan-badge">Standard</span></p>
-              <p class="plan-info__price">月額 ¥500（税込） / 次回更新日: 2026-04-25</p>
+              <p class="plan-info__name" id="plan-name">読み込み中...</p>
+              <p class="plan-info__price" id="plan-price"></p>
             </div>
             <a href="pricing.html" class="btn btn--secondary btn--sm">プラン変更</a>
           </div>
           <div class="usage-bar-wrapper">
             <div class="usage-bar-label">
               <span>今月のラベル作成数</span>
-              <span>3 / 50</span>
+              <span id="usage-bar-count">- / -</span>
             </div>
             <div class="usage-bar">
-              <div class="usage-bar__fill" style="width: 6%"></div>
+              <div class="usage-bar__fill" id="usage-bar-fill" style="width: 0%"></div>
             </div>
           </div>
           <div class="usage-bar-wrapper">
             <div class="usage-bar-label">
               <span>利用可能言語</span>
-              <span>18 / 18</span>
+              <span id="lang-bar-count">- / -</span>
             </div>
             <div class="usage-bar">
-              <div class="usage-bar__fill" style="width: 100%"></div>
+              <div class="usage-bar__fill" id="lang-bar-fill" style="width: 0%"></div>
             </div>
           </div>
         </section>
@@ -494,6 +494,54 @@
       localStorage.removeItem('labelun_auth_user');
       location.href = 'index.html';
     });
+
+    /* アカウント情報をAPIから取得 */
+    (async function() {
+      var token = localStorage.getItem('labelun_auth_token');
+      if (!token) {
+        window.location.href = 'app.html';
+        return;
+      }
+      var headers = { 'Authorization': 'Bearer ' + token };
+
+      var planNames = { free: 'フリー', lite: 'ライト', standard: 'スタンダード', pro: 'プロ' };
+      var planPrices = { free: 0, lite: 300, standard: 500, pro: 2000 };
+      var planLanguages = { free: 1, lite: 5, standard: 18, pro: 18 };
+
+      // ユーザー情報取得
+      try {
+        var meRes = await fetch('/api/auth/me', { headers: headers });
+        if (meRes.ok) {
+          var me = await meRes.json();
+          document.getElementById('account-email').value = me.email || '';
+          var plan = me.plan || 'free';
+          var pName = planNames[plan] || plan;
+          document.getElementById('plan-name').innerHTML = pName + ' <span class="plan-badge">' + plan.charAt(0).toUpperCase() + plan.slice(1) + '</span>';
+          var price = planPrices[plan] || 0;
+          document.getElementById('plan-price').textContent = price > 0 ? ('月額 \\u00A5' + price.toLocaleString() + '（税込）') : '無料';
+        } else if (meRes.status === 401) {
+          localStorage.removeItem('labelun_auth_token');
+          localStorage.removeItem('labelun_auth_user');
+          window.location.href = 'app.html';
+          return;
+        }
+      } catch (e) { console.warn('ユーザー情報取得失敗:', e); }
+
+      // 利用量取得
+      try {
+        var usageRes = await fetch('/api/usage', { headers: headers });
+        if (usageRes.ok) {
+          var usage = await usageRes.json();
+          document.getElementById('usage-bar-count').textContent = usage.label_count + ' / ' + usage.label_limit;
+          var pct = usage.label_limit > 0 ? Math.min(100, (usage.label_count / usage.label_limit) * 100) : 0;
+          document.getElementById('usage-bar-fill').style.width = pct + '%';
+
+          var maxLang = planLanguages[usage.plan] || 1;
+          document.getElementById('lang-bar-count').textContent = maxLang + ' / 18';
+          document.getElementById('lang-bar-fill').style.width = Math.round((maxLang / 18) * 100) + '%';
+        }
+      } catch (e) { console.warn('利用量取得失敗:', e); }
+    })();
   </script>
 
   <script src="js/auth.js" defer></script>

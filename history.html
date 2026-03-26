@@ -337,7 +337,7 @@
         </a>
       </nav>
       <div class="sidebar__footer">
-        &copy; 2026 ラベルン by 礼株式会社
+        &copy; 2026 ラベルン by 濱田礼
       </div>
     </aside>
 
@@ -371,141 +371,12 @@
           </select>
         </div>
 
-        <p class="result-count">12件中 1-10件を表示</p>
+        <p class="result-count" id="result-count"></p>
 
-        <!-- 履歴テーブル -->
-        <table class="history-table">
-          <thead>
-            <tr>
-              <th>商品名</th>
-              <th>カテゴリ</th>
-              <th>言語数</th>
-              <th>作成日</th>
-              <th>ステータス</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><a href="app.html">有機グリーンティー</a></td>
-              <td>食品</td>
-              <td>18言語</td>
-              <td>2026-03-25</td>
-              <td><span class="status-badge status-badge--complete">完了</span></td>
-              <td>
-                <a href="app.html" class="action-link">編集</a>
-                <a href="#" class="action-link">PDF</a>
-              </td>
-            </tr>
-            <tr>
-              <td><a href="app.html">ヒアルロン酸美容液</a></td>
-              <td>化粧品</td>
-              <td>8言語</td>
-              <td>2026-03-24</td>
-              <td><span class="status-badge status-badge--complete">完了</span></td>
-              <td>
-                <a href="app.html" class="action-link">編集</a>
-                <a href="#" class="action-link">PDF</a>
-              </td>
-            </tr>
-            <tr>
-              <td><a href="app.html">プロテインバー チョコ味</a></td>
-              <td>食品</td>
-              <td>5言語</td>
-              <td>2026-03-23</td>
-              <td><span class="status-badge status-badge--draft">下書き</span></td>
-              <td>
-                <a href="app.html" class="action-link">編集</a>
-                <a href="#" class="action-link action-link--danger">削除</a>
-              </td>
-            </tr>
-            <tr>
-              <td><a href="app.html">薬用ハンドクリーム</a></td>
-              <td>化粧品</td>
-              <td>18言語</td>
-              <td>2026-03-20</td>
-              <td><span class="status-badge status-badge--complete">完了</span></td>
-              <td>
-                <a href="app.html" class="action-link">編集</a>
-                <a href="#" class="action-link">PDF</a>
-              </td>
-            </tr>
-            <tr>
-              <td><a href="app.html">有機味噌ペースト</a></td>
-              <td>食品</td>
-              <td>10言語</td>
-              <td>2026-03-18</td>
-              <td><span class="status-badge status-badge--complete">完了</span></td>
-              <td>
-                <a href="app.html" class="action-link">編集</a>
-                <a href="#" class="action-link">PDF</a>
-              </td>
-            </tr>
-            <tr>
-              <td><a href="app.html">抹茶ラテ粉末</a></td>
-              <td>食品</td>
-              <td>18言語</td>
-              <td>2026-03-15</td>
-              <td><span class="status-badge status-badge--complete">完了</span></td>
-              <td>
-                <a href="app.html" class="action-link">編集</a>
-                <a href="#" class="action-link">PDF</a>
-              </td>
-            </tr>
-            <tr>
-              <td><a href="app.html">日焼け止めジェル SPF50</a></td>
-              <td>化粧品</td>
-              <td>12言語</td>
-              <td>2026-03-12</td>
-              <td><span class="status-badge status-badge--complete">完了</span></td>
-              <td>
-                <a href="app.html" class="action-link">編集</a>
-                <a href="#" class="action-link">PDF</a>
-              </td>
-            </tr>
-            <tr>
-              <td><a href="app.html">だし醤油 500ml</a></td>
-              <td>食品</td>
-              <td>5言語</td>
-              <td>2026-03-10</td>
-              <td><span class="status-badge status-badge--draft">下書き</span></td>
-              <td>
-                <a href="app.html" class="action-link">編集</a>
-                <a href="#" class="action-link action-link--danger">削除</a>
-              </td>
-            </tr>
-            <tr>
-              <td><a href="app.html">ビタミンCサプリ</a></td>
-              <td>食品</td>
-              <td>18言語</td>
-              <td>2026-03-08</td>
-              <td><span class="status-badge status-badge--complete">完了</span></td>
-              <td>
-                <a href="app.html" class="action-link">編集</a>
-                <a href="#" class="action-link">PDF</a>
-              </td>
-            </tr>
-            <tr>
-              <td><a href="app.html">オーガニックリップバーム</a></td>
-              <td>化粧品</td>
-              <td>8言語</td>
-              <td>2026-03-05</td>
-              <td><span class="status-badge status-badge--complete">完了</span></td>
-              <td>
-                <a href="app.html" class="action-link">編集</a>
-                <a href="#" class="action-link">PDF</a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- ページネーション -->
-        <nav class="pagination" aria-label="ページ移動">
-          <button class="pagination__btn" disabled aria-label="前のページ">&laquo;</button>
-          <button class="pagination__btn pagination__btn--active" aria-current="page">1</button>
-          <button class="pagination__btn">2</button>
-          <button class="pagination__btn" aria-label="次のページ">&raquo;</button>
-        </nav>
+        <!-- 履歴テーブル（APIから動的取得） -->
+        <div id="history-container">
+          <p style="color:var(--color-text-muted);padding:24px 0;">読み込み中...</p>
+        </div>
       </div>
     </main>
   </div>
@@ -543,6 +414,56 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function () {});
     }
+
+    /* 履歴ページ: APIからラベル一覧取得 */
+    document.addEventListener('DOMContentLoaded', async function () {
+      if (typeof Auth !== 'undefined') {
+        await Auth.init();
+      }
+
+      var token = localStorage.getItem('labelun_auth_token');
+      if (!token) {
+        window.location.href = 'app.html';
+        return;
+      }
+      var headers = { 'Authorization': 'Bearer ' + token };
+      var container = document.getElementById('history-container');
+      var countEl = document.getElementById('result-count');
+
+      try {
+        var res = await fetch('/api/labels', { headers: headers });
+        if (res.ok) {
+          var data = await res.json();
+          var labels = data.labels || [];
+          countEl.textContent = labels.length + '件';
+
+          if (labels.length === 0) {
+            container.innerHTML = '<div style="text-align:center;padding:48px 24px;color:var(--color-text-muted);"><p>まだラベルが作成されていません。</p><a href="app.html" class="btn btn--primary" style="margin-top:16px;">新規ラベル作成</a></div>';
+          } else {
+            var html = '<table class="history-table"><thead><tr><th>商品名</th><th>カテゴリ</th><th>作成日</th><th>操作</th></tr></thead><tbody>';
+            labels.forEach(function (l) {
+              html += '<tr>';
+              html += '<td><a href="app.html?id=' + l.id + '">' + (l.product_name || '-') + '</a></td>';
+              html += '<td>' + (l.category || '-') + '</td>';
+              html += '<td>' + (l.created_at ? l.created_at.slice(0, 10) : '-') + '</td>';
+              html += '<td><a href="app.html?id=' + l.id + '" class="action-link">編集</a></td>';
+              html += '</tr>';
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+          }
+        } else if (res.status === 401) {
+          localStorage.removeItem('labelun_auth_token');
+          localStorage.removeItem('labelun_auth_user');
+          window.location.href = 'app.html';
+        } else {
+          container.innerHTML = '<p style="color:var(--color-text-muted);">データの取得に失敗しました。</p>';
+        }
+      } catch (e) {
+        console.warn('ラベル取得失敗:', e);
+        container.innerHTML = '<p style="color:var(--color-text-muted);">データの取得に失敗しました。</p>';
+      }
+    });
   </script>
 </body>
 </html>

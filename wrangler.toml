@@ -11,7 +11,7 @@ STRIPE_PRICE_PRO = "price_1TF9jy9Fc8Hnuaokk74PXZiN"
 [[d1_databases]]
 binding = "DB"
 database_name = "labelun-db"
-database_id = "placeholder-id"
+database_id = "81209195-427d-4755-9076-9b2b9e0df5cb"
 
 [[r2_buckets]]
 binding = "STORAGE"

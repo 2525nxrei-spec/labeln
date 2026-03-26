@@ -34,7 +34,7 @@ function jsonResponse(data, status = 200) {
 
 /** CORSヘッダーを付与 */
 function withCORS(response, origin) {
-  const allowedOrigin = origin || '*';
+  const allowedOrigin = 'https://mylabeln.com';
   const headers = new Headers(response.headers);
   headers.set('Access-Control-Allow-Origin', allowedOrigin);
   headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -928,15 +928,15 @@ async function handleStripeCheckout(request, env) {
       .run();
   }
 
-  // Checkout Session作成（card: クレジットカード/Apple Pay/Google Pay、paypay: PayPay決済）
+  // Checkout Session作成
+  // payment_method_types を指定しない → Stripeダッシュボードで有効化した決済方法が全て自動表示
+  // （card=クレカ/Apple Pay/Google Pay、paypay、konbini 等）
   const origin = new URL(request.url).origin;
   const sessionResponse = await stripeRequest('POST', '/v1/checkout/sessions', {
     customer: customerId,
     mode: 'subscription',
     'line_items[0][price]': priceId,
     'line_items[0][quantity]': '1',
-    'payment_method_types[0]': 'card',
-    'payment_method_types[1]': 'paypay',
     success_url: `${origin}/app.html?checkout=success`,
     cancel_url: `${origin}/app.html?checkout=cancel`,
     metadata: { user_id: payload.sub, plan },

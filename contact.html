@@ -6,7 +6,7 @@
   <meta name="description" content="ラベルンへのお問い合わせ。サービスに関するご質問・ご要望をお寄せください。">
   <meta name="theme-color" content="#0f766e">
   <title>お問い合わせ | ラベルン</title>
-  <link rel="canonical" href="https://labeln.app/contact.html">
+  <link rel="canonical" href="https://mylabeln.com/contact.html">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -126,7 +126,7 @@
         <div style="margin-top: var(--spacing-2xl); padding-top: var(--spacing-2xl); border-top: 1px solid var(--color-border);">
           <p style="font-weight: 600; margin-bottom: var(--spacing-sm);">直接のご連絡</p>
           <p style="color: var(--color-text-light); font-size: var(--font-size-sm);">
-            メール: <a href="mailto:info@labeln.app">info@labeln.app</a><br>
+            メール: <a href="mailto:2525nxrei@gmail.com">2525nxrei@gmail.com</a><br>
             対応時間: 平日 10:00 - 18:00（土日祝・年末年始を除く）
           </p>
         </div>
@@ -155,13 +155,13 @@
           <a href="changelog.html" class="footer__nav-link">更新履歴</a>
         </div>
         <div>
-          <p class="footer__nav-title">会社情報</p>
-          <a href="company.html" class="footer__nav-link">礼株式会社</a>
-          <a href="https://rei-inc.jp" class="footer__nav-link" target="_blank" rel="noopener noreferrer">コーポレートサイト</a>
+          <p class="footer__nav-title">運営者情報</p>
+          <a href="company.html" class="footer__nav-link">濱田礼</a>
+          <a href="https://rei-inc.jp" class="footer__nav-link" target="_blank" rel="noopener noreferrer">Webサイト</a>
         </div>
       </div>
       <div class="footer__bottom">
-        <p>&copy; 2026 礼株式会社. All rights reserved.</p>
+        <p>&copy; 2026 濱田礼. All rights reserved.</p>
         <div class="footer__legal">
           <a href="terms.html" class="footer__legal-link">利用規約</a>
           <a href="privacy.html" class="footer__legal-link">プライバシーポリシー</a>
@@ -202,12 +202,31 @@
         }
       });
 
-      /* フォーム送信（デモ） */
+      /* フォーム送信: mailto で送信 */
       var form = document.getElementById('contact-form');
       var successMsg = document.getElementById('contact-success');
       if (form) {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
+          var name = document.getElementById('contact-name').value.trim();
+          var email = document.getElementById('contact-email').value.trim();
+          var category = document.getElementById('contact-category').value;
+          var message = document.getElementById('contact-message').value.trim();
+
+          if (!name || !email || !category || !message) {
+            alert('必須項目をすべて入力してください。');
+            return;
+          }
+
+          var subject = encodeURIComponent('[ラベルン お問い合わせ] ' + category);
+          var body = encodeURIComponent(
+            'お名前: ' + name + '\n' +
+            'メールアドレス: ' + email + '\n' +
+            'お問い合わせ種別: ' + category + '\n\n' +
+            message
+          );
+          window.location.href = 'mailto:2525nxrei@gmail.com?subject=' + subject + '&body=' + body;
+
           form.style.display = 'none';
           successMsg.style.display = 'block';
           window.scrollTo({ top: 0, behavior: 'smooth' });

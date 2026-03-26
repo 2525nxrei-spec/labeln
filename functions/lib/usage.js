@@ -7,9 +7,9 @@ import { generateId } from './auth.js';
 /** プラン別の月間ラベル上限 */
 export const PLAN_LIMITS = {
   free: 3,
-  lite: 30,
-  standard: 100,
-  pro: 500,
+  lite: 10,
+  standard: 50,
+  pro: 9999,
 };
 
 /** 現在月のYYYY-MM文字列を取得 */

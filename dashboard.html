@@ -367,7 +367,7 @@
         </a>
       </nav>
       <div class="sidebar__footer">
-        &copy; 2026 ラベルン by 礼株式会社
+        &copy; 2026 ラベルン by 濱田礼
       </div>
     </aside>
 
@@ -386,22 +386,22 @@
       </header>
 
       <div class="dashboard-content">
-        <!-- 利用状況サマリ -->
-        <div class="usage-summary">
+        <!-- 利用状況サマリ（APIから動的取得） -->
+        <div class="usage-summary" id="usage-summary">
           <div class="usage-card">
             <p class="usage-card__label">今月の作成数</p>
-            <p class="usage-card__value">3 <span style="font-size:.9rem;font-weight:400;color:var(--color-text-muted)">/ 50</span></p>
-            <p class="usage-card__sub">スタンダードプラン <span class="plan-badge">Standard</span></p>
+            <p class="usage-card__value" id="usage-count">- <span style="font-size:.9rem;font-weight:400;color:var(--color-text-muted)">/ -</span></p>
+            <p class="usage-card__sub" id="usage-plan">読み込み中...</p>
           </div>
           <div class="usage-card">
             <p class="usage-card__label">対応言語数</p>
-            <p class="usage-card__value">18</p>
-            <p class="usage-card__sub">全言語利用可能</p>
+            <p class="usage-card__value" id="usage-languages">-</p>
+            <p class="usage-card__sub" id="usage-languages-sub">-</p>
           </div>
           <div class="usage-card">
             <p class="usage-card__label">保存済みラベル</p>
-            <p class="usage-card__value">12</p>
-            <p class="usage-card__sub">下書き 2件を含む</p>
+            <p class="usage-card__value" id="usage-labels">-</p>
+            <p class="usage-card__sub" id="usage-labels-sub">-</p>
           </div>
         </div>
 
@@ -421,42 +421,11 @@
           </a>
         </div>
 
-        <!-- 直近の作成履歴 -->
+        <!-- 直近の作成履歴（APIから動的取得） -->
         <h2 class="section-heading">直近の作成履歴</h2>
-        <table class="history-table">
-          <thead>
-            <tr>
-              <th>商品名</th>
-              <th>カテゴリ</th>
-              <th>言語数</th>
-              <th>作成日</th>
-              <th>ステータス</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><a href="app.html">有機グリーンティー</a></td>
-              <td>食品</td>
-              <td>18言語</td>
-              <td>2026-03-25</td>
-              <td><span class="status-badge status-badge--complete">完了</span></td>
-            </tr>
-            <tr>
-              <td><a href="app.html">ヒアルロン酸美容液</a></td>
-              <td>化粧品</td>
-              <td>8言語</td>
-              <td>2026-03-24</td>
-              <td><span class="status-badge status-badge--complete">完了</span></td>
-            </tr>
-            <tr>
-              <td><a href="app.html">プロテインバー チョコ味</a></td>
-              <td>食品</td>
-              <td>5言語</td>
-              <td>2026-03-23</td>
-              <td><span class="status-badge status-badge--draft">下書き</span></td>
-            </tr>
-          </tbody>
-        </table>
+        <div id="recent-labels">
+          <p style="color:var(--color-text-muted);padding:24px 0;">読み込み中...</p>
+        </div>
       </div>
     </main>
   </div>
@@ -495,6 +464,75 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function () {});
     }
+
+    /* ダッシュボード: APIからデータ取得 */
+    document.addEventListener('DOMContentLoaded', async function () {
+      // Auth初期化
+      if (typeof Auth !== 'undefined') {
+        await Auth.init();
+      }
+
+      var token = localStorage.getItem('labelun_auth_token');
+      if (!token) {
+        // 未ログインならログイン画面へ
+        window.location.href = 'app.html';
+        return;
+      }
+
+      var headers = { 'Authorization': 'Bearer ' + token };
+
+      // プラン別の制限マップ
+      var planNames = { free: 'フリー', lite: 'ライト', standard: 'スタンダード', pro: 'プロ' };
+      var planLanguages = { free: 1, lite: 5, standard: 18, pro: 18 };
+
+      // 利用量API取得
+      try {
+        var usageRes = await fetch('/api/usage', { headers: headers });
+        if (usageRes.ok) {
+          var usage = await usageRes.json();
+          document.getElementById('usage-count').innerHTML =
+            usage.label_count + ' <span style="font-size:.9rem;font-weight:400;color:var(--color-text-muted)">/ ' + usage.label_limit + '</span>';
+          document.getElementById('usage-plan').innerHTML =
+            (planNames[usage.plan] || usage.plan) + 'プラン <span class="plan-badge">' + (usage.plan || 'free').charAt(0).toUpperCase() + (usage.plan || 'free').slice(1) + '</span>';
+          var maxLang = planLanguages[usage.plan] || 1;
+          document.getElementById('usage-languages').textContent = maxLang;
+          document.getElementById('usage-languages-sub').textContent = maxLang >= 18 ? '全言語利用可能' : maxLang + '言語まで利用可';
+        }
+      } catch (e) {
+        console.warn('利用量取得失敗:', e);
+      }
+
+      // ラベル一覧API取得
+      try {
+        var labelsRes = await fetch('/api/labels', { headers: headers });
+        if (labelsRes.ok) {
+          var labelsData = await labelsRes.json();
+          var labels = labelsData.labels || [];
+          document.getElementById('usage-labels').textContent = labels.length;
+          document.getElementById('usage-labels-sub').textContent = labels.length + '件保存済み';
+
+          var container = document.getElementById('recent-labels');
+          if (labels.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p class="empty-state__text">まだラベルが作成されていません。</p><a href="app.html" class="btn btn--primary">最初のラベルを作成</a></div>';
+          } else {
+            var recent = labels.slice(0, 5);
+            var html = '<table class="history-table"><thead><tr><th>商品名</th><th>カテゴリ</th><th>作成日</th></tr></thead><tbody>';
+            recent.forEach(function (l) {
+              html += '<tr><td><a href="app.html?id=' + l.id + '">' + (l.product_name || '-') + '</a></td><td>' + (l.category || '-') + '</td><td>' + (l.created_at ? l.created_at.slice(0, 10) : '-') + '</td></tr>';
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+          }
+        } else {
+          document.getElementById('recent-labels').innerHTML = '<div class="empty-state"><p class="empty-state__text">まだラベルが作成されていません。</p><a href="app.html" class="btn btn--primary">最初のラベルを作成</a></div>';
+          document.getElementById('usage-labels').textContent = '0';
+          document.getElementById('usage-labels-sub').textContent = '0件保存済み';
+        }
+      } catch (e) {
+        console.warn('ラベル取得失敗:', e);
+        document.getElementById('recent-labels').innerHTML = '<p style="color:var(--color-text-muted);">データの取得に失敗しました。</p>';
+      }
+    });
   </script>
 </body>
 </html>

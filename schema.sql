@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
   salt TEXT NOT NULL,
   plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'lite', 'standard', 'pro')),
   stripe_customer_id TEXT,
+  stripe_subscription_id TEXT,
+  cancel_at_period_end INTEGER DEFAULT 0,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );

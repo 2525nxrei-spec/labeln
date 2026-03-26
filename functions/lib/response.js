@@ -20,9 +20,18 @@ export function jsonResponse(data, status = 200) {
 
 /** CORSヘッダーを付与 */
 export function withCORS(response, origin) {
-  const allowedOrigin = origin || '*';
+  // 許可するオリジン（本番 + プレビュー）
+  const allowedOrigins = [
+    'https://mylabeln.com',
+    'https://www.mylabeln.com',
+  ];
+  // Cloudflare Pagesプレビュー用（*.pages.dev）
+  const isAllowed = origin &&
+    (allowedOrigins.includes(origin) || origin.endsWith('.pages.dev'));
+  const resolvedOrigin = isAllowed ? origin : 'https://mylabeln.com';
+
   const headers = new Headers(response.headers);
-  headers.set('Access-Control-Allow-Origin', allowedOrigin);
+  headers.set('Access-Control-Allow-Origin', resolvedOrigin);
   headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   headers.set('Access-Control-Max-Age', '86400');

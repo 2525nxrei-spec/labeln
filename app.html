@@ -782,6 +782,54 @@
   </style>
 </head>
 <body>
+  <!-- ========== 認証モーダル ========== -->
+  <div id="auth-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;">
+    <div style="background:#fff;border-radius:16px;padding:32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+      <div style="text-align:center;margin-bottom:24px;">
+        <h2 id="auth-modal-title" style="font-size:1.4rem;font-weight:800;color:#0f766e;">ログイン</h2>
+        <p style="color:#64748b;font-size:.9rem;margin-top:4px;">ラベルンにログインして始めましょう</p>
+      </div>
+
+      <!-- ログインフォーム -->
+      <form id="login-form" style="display:block;">
+        <div style="margin-bottom:16px;">
+          <label for="login-email" style="display:block;font-size:.85rem;font-weight:500;margin-bottom:6px;">メールアドレス</label>
+          <input type="email" id="login-email" required autocomplete="email"
+            style="width:100%;padding:10px 14px;font-size:.9rem;font-family:inherit;border:1px solid #e2e8f0;border-radius:6px;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label for="login-password" style="display:block;font-size:.85rem;font-weight:500;margin-bottom:6px;">パスワード</label>
+          <input type="password" id="login-password" required autocomplete="current-password"
+            style="width:100%;padding:10px 14px;font-size:.9rem;font-family:inherit;border:1px solid #e2e8f0;border-radius:6px;">
+        </div>
+        <div id="login-error" style="display:none;color:#dc2626;font-size:.85rem;margin-bottom:12px;"></div>
+        <button type="submit" style="width:100%;padding:12px;background:#0f766e;color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;">ログイン</button>
+        <p style="text-align:center;margin-top:16px;font-size:.85rem;color:#64748b;">
+          アカウントをお持ちでない方は <a href="#" id="show-register" style="color:#0f766e;font-weight:600;">新規登録</a>
+        </p>
+      </form>
+
+      <!-- 登録フォーム -->
+      <form id="register-form" style="display:none;">
+        <div style="margin-bottom:16px;">
+          <label for="register-email" style="display:block;font-size:.85rem;font-weight:500;margin-bottom:6px;">メールアドレス</label>
+          <input type="email" id="register-email" required autocomplete="email"
+            style="width:100%;padding:10px 14px;font-size:.9rem;font-family:inherit;border:1px solid #e2e8f0;border-radius:6px;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label for="register-password" style="display:block;font-size:.85rem;font-weight:500;margin-bottom:6px;">パスワード（8文字以上）</label>
+          <input type="password" id="register-password" required minlength="8" autocomplete="new-password"
+            style="width:100%;padding:10px 14px;font-size:.9rem;font-family:inherit;border:1px solid #e2e8f0;border-radius:6px;">
+        </div>
+        <div id="register-error" style="display:none;color:#dc2626;font-size:.85rem;margin-bottom:12px;"></div>
+        <button type="submit" style="width:100%;padding:12px;background:#0f766e;color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;">無料で登録</button>
+        <p style="text-align:center;margin-top:16px;font-size:.85rem;color:#64748b;">
+          既にアカウントをお持ちの方は <a href="#" id="show-login" style="color:#0f766e;font-weight:600;">ログイン</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
   <!-- サイドバーオーバーレイ（モバイル用） -->
   <div class="sidebar-overlay" data-visible="false" id="sidebar-overlay" aria-hidden="true"></div>
 
@@ -810,7 +858,7 @@
         </a>
       </nav>
       <div class="sidebar__footer">
-        &copy; 2026 ラベルン by 礼株式会社
+        &copy; 2026 ラベルン by 濱田礼
       </div>
     </aside>
 
@@ -825,10 +873,12 @@
           <h1 class="app-header__title">新規ラベル作成</h1>
         </div>
         <div class="app-header__actions">
+          <span id="usage-count" style="font-size:.8rem;color:var(--color-text-muted);"></span>
           <button type="button" class="btn btn--ghost" id="btn-save-draft" aria-label="下書き保存">
             <svg class="btn__icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             下書き保存
           </button>
+          <button type="button" class="btn btn--ghost" id="header-logout-btn" style="display:none;" onclick="if(typeof Auth!=='undefined'){Auth.logout();location.reload();}">ログアウト</button>
         </div>
       </header>
 
@@ -1804,6 +1854,7 @@
   </script>
 
   <!-- 外部JS（defer） -->
+  <script src="https://js.stripe.com/v3/" defer></script>
   <script src="js/auth.js" defer></script>
   <script src="js/translation.js" defer></script>
   <script src="js/legal-display.js" defer></script>
@@ -1814,6 +1865,74 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function () {});
     }
+    /* Auth・StripePayment初期化 + 認証モーダル制御 */
+    document.addEventListener('DOMContentLoaded', function () {
+      var authModal = document.getElementById('auth-modal');
+      var loginForm = document.getElementById('login-form');
+      var registerForm = document.getElementById('register-form');
+      var authTitle = document.getElementById('auth-modal-title');
+
+      // ログイン/登録フォーム切り替え
+      document.getElementById('show-register').addEventListener('click', function (e) {
+        e.preventDefault();
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        authTitle.textContent = '新規登録';
+      });
+      document.getElementById('show-login').addEventListener('click', function (e) {
+        e.preventDefault();
+        registerForm.style.display = 'none';
+        loginForm.style.display = 'block';
+        authTitle.textContent = 'ログイン';
+      });
+
+      // ログインフォーム送信
+      loginForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var errorEl = document.getElementById('login-error');
+        errorEl.style.display = 'none';
+        try {
+          await Auth.login(
+            document.getElementById('login-email').value,
+            document.getElementById('login-password').value
+          );
+          authModal.style.display = 'none';
+        } catch (err) {
+          errorEl.textContent = err.message;
+          errorEl.style.display = 'block';
+        }
+      });
+
+      // 登録フォーム送信
+      registerForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var errorEl = document.getElementById('register-error');
+        errorEl.style.display = 'none';
+        try {
+          await Auth.register(
+            document.getElementById('register-email').value,
+            document.getElementById('register-password').value
+          );
+          authModal.style.display = 'none';
+        } catch (err) {
+          errorEl.textContent = err.message;
+          errorEl.style.display = 'block';
+        }
+      });
+
+      // Auth初期化
+      if (typeof Auth !== 'undefined') {
+        Auth.init().then(function () {
+          // 未ログインなら認証モーダルを表示
+          if (!Auth.isLoggedIn()) {
+            authModal.style.display = 'flex';
+          }
+          if (typeof StripePayment !== 'undefined') {
+            StripePayment.init();
+          }
+        });
+      }
+    });
   </script>
 </body>
 </html>

@@ -71,25 +71,19 @@ async function handler({ request, env }) {
       .run();
   }
 
-  // 決済方法の設定（フロントエンドから指定されたものを使用）
-  const paymentMethods = payment_methods || ['card'];
-  const paymentMethodParams = {};
-  paymentMethods.forEach((method, index) => {
-    paymentMethodParams[`payment_method_types[${index}]`] = method;
-  });
-
   // success_url / cancel_url はフロントエンドからの指定を優先
   const origin = new URL(request.url).origin;
   const resolvedSuccessUrl = successUrl || `${origin}/app.html?payment=success`;
   const resolvedCancelUrl = cancelUrl || `${origin}/app.html?payment=cancel`;
 
   // Checkout Session作成
+  // payment_method_types を指定しない → Stripeダッシュボードで有効化した決済方法が全て自動表示
+  // （card=クレカ/Apple Pay/Google Pay、paypay、konbini 等）
   const sessionResponse = await stripeRequest('POST', '/v1/checkout/sessions', {
     customer: customerId,
     mode: 'subscription',
     'line_items[0][price]': resolvedPriceId,
     'line_items[0][quantity]': '1',
-    ...paymentMethodParams,
     success_url: resolvedSuccessUrl,
     cancel_url: resolvedCancelUrl,
     metadata: { user_id: payload.sub, plan: planId },
