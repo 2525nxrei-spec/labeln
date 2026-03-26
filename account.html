@@ -327,6 +327,11 @@
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-nav">メインコンテンツへ</a>
+  <div class="offline-banner" id="offline-banner" role="alert" aria-live="assertive">
+    インターネットに接続されていません。一部の機能が利用できない場合があります。
+  </div>
+
   <div class="sidebar-overlay" data-visible="false" id="sidebar-overlay" aria-hidden="true"></div>
 
   <div class="app-layout">
@@ -357,7 +362,7 @@
       </div>
     </aside>
 
-    <main class="main-area" role="main">
+    <main class="main-area" role="main" id="main-content">
       <header class="app-header">
         <div class="gap-row">
           <button class="hamburger-btn" id="hamburger-btn" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="sidebar">
@@ -372,7 +377,7 @@
         <!-- プロフィール -->
         <section class="account-section">
           <h2 class="account-section__title">プロフィール</h2>
-          <form>
+          <form aria-label="プロフィール設定フォーム">
             <div class="form-row">
               <div class="form-group">
                 <label for="account-name" class="form-label">表示名</label>
@@ -427,7 +432,7 @@
         <!-- パスワード変更 -->
         <section class="account-section">
           <h2 class="account-section__title">パスワード変更</h2>
-          <form>
+          <form aria-label="パスワード変更フォーム">
             <div class="form-group">
               <label for="current-password" class="form-label">現在のパスワード</label>
               <input type="password" id="current-password" class="form-input" autocomplete="current-password">
@@ -525,7 +530,10 @@
           window.location.href = 'app.html';
           return;
         }
-      } catch (e) { console.warn('ユーザー情報取得失敗:', e); }
+      } catch (e) {
+        console.warn('ユーザー情報取得失敗:', e);
+        document.getElementById('plan-name').textContent = 'データを取得できませんでした';
+      }
 
       // 利用量取得
       try {
@@ -540,7 +548,10 @@
           document.getElementById('lang-bar-count').textContent = maxLang + ' / 18';
           document.getElementById('lang-bar-fill').style.width = Math.round((maxLang / 18) * 100) + '%';
         }
-      } catch (e) { console.warn('利用量取得失敗:', e); }
+      } catch (e) {
+        console.warn('利用量取得失敗:', e);
+        document.getElementById('usage-bar-count').textContent = '取得失敗';
+      }
     })();
   </script>
 

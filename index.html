@@ -23,6 +23,14 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <!-- Skip Navigation -->
+  <a href="#main-content" class="skip-nav">メインコンテンツへ</a>
+
+  <!-- オフライン通知バナー -->
+  <div class="offline-banner" id="offline-banner" role="alert" aria-live="assertive">
+    インターネットに接続されていません。一部の機能が利用できない場合があります。
+  </div>
+
   <!-- ===== ヘッダー ===== -->
   <header class="header" id="header" role="banner">
     <div class="header__inner">
@@ -60,7 +68,7 @@
     </div>
   </div>
 
-  <main>
+  <main id="main-content">
     <!-- ===== ヒーロー ===== -->
     <section class="hero" id="hero">
       <div class="container">
@@ -566,10 +574,17 @@
         }
       });
 
-      /* FAQ アコーディオン */
-      document.querySelectorAll('.faq-item__question').forEach(function (btn) {
+      /* FAQ アコーディオン（ARIA対応） */
+      document.querySelectorAll('.faq-item__question').forEach(function (btn, idx) {
+        var item = btn.closest('.faq-item');
+        var answer = item.querySelector('.faq-item__answer');
+        var answerId = 'faq-answer-' + idx;
+        answer.setAttribute('id', answerId);
+        answer.setAttribute('role', 'region');
+        answer.setAttribute('aria-labelledby', 'faq-q-' + idx);
+        btn.setAttribute('id', 'faq-q-' + idx);
+        btn.setAttribute('aria-controls', answerId);
         btn.addEventListener('click', function () {
-          var item = btn.closest('.faq-item');
           var isOpen = item.classList.toggle('is-open');
           btn.setAttribute('aria-expanded', isOpen);
         });

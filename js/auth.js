@@ -482,4 +482,115 @@ const Auth = {
   handleLogout() {
     this.logout();
   },
+
+  /* ============================================
+     エラーメッセージ変換（ユーザーフレンドリー）
+     ============================================ */
+
+  /**
+   * ログインエラーをユーザーフレンドリーなメッセージに変換
+   */
+  _friendlyLoginError(status, serverMsg) {
+    if (status === 401 || serverMsg.includes('password') || serverMsg.includes('unauthorized')) {
+      return 'メールアドレスまたはパスワードが正しくありません。入力内容をご確認ください。';
+    }
+    if (status === 404) {
+      return 'このメールアドレスのアカウントが見つかりません。新規登録をお試しください。';
+    }
+    if (status === 429) {
+      return 'ログイン試行回数が上限に達しました。しばらく時間をおいてからお試しください。';
+    }
+    if (status >= 500) {
+      return 'サーバーで一時的な問題が発生しています。しばらくしてから再度お試しください。';
+    }
+    return serverMsg || 'ログインに失敗しました。入力内容を確認して再度お試しください。';
+  },
+
+  /**
+   * 登録エラーをユーザーフレンドリーなメッセージに変換
+   */
+  _friendlyRegisterError(status, serverMsg) {
+    if (status === 409 || serverMsg.includes('already') || serverMsg.includes('exists')) {
+      return 'このメールアドレスは既に登録されています。ログインをお試しください。';
+    }
+    if (status === 400) {
+      return '入力内容に問題があります。メールアドレスの形式やパスワードの長さをご確認ください。';
+    }
+    if (status === 429) {
+      return '登録試行回数が上限に達しました。しばらく時間をおいてからお試しください。';
+    }
+    if (status >= 500) {
+      return 'サーバーで一時的な問題が発生しています。しばらくしてから再度お試しください。';
+    }
+    return serverMsg || '登録に失敗しました。入力内容を確認して再度お試しください。';
+  },
 };
+
+/* ============================================
+   グローバルUXユーティリティ
+   ============================================ */
+
+/**
+ * ボタンの二重送信防止 + ローディング + 成功フィードバック
+ * @param {HTMLButtonElement} btn - 対象ボタン
+ * @param {Function} asyncFn - 実行する非同期関数
+ * @param {Object} options - { loadingText, successText }
+ */
+async function withButtonFeedback(btn, asyncFn, options = {}) {
+  if (!btn || btn.disabled || btn.classList.contains('is-loading')) return;
+
+  const originalText = btn.querySelector('.btn-label')?.textContent || btn.textContent;
+  const loadingText = options.loadingText || '処理中...';
+  const successText = options.successText || '完了';
+
+  // ローディング状態に
+  btn.disabled = true;
+  btn.classList.add('is-loading');
+  if (btn.querySelector('.btn-label')) {
+    btn.querySelector('.btn-label').textContent = loadingText;
+  }
+
+  try {
+    await asyncFn();
+
+    // 成功フィードバック
+    btn.classList.remove('is-loading');
+    btn.classList.add('is-success');
+    if (btn.querySelector('.btn-label')) {
+      btn.querySelector('.btn-label').textContent = successText;
+    }
+
+    // 1.5秒後に元に戻す
+    setTimeout(() => {
+      btn.classList.remove('is-success');
+      btn.disabled = false;
+      if (btn.querySelector('.btn-label')) {
+        btn.querySelector('.btn-label').textContent = originalText;
+      }
+    }, 1500);
+  } catch (err) {
+    // エラー時は即座に戻す
+    btn.classList.remove('is-loading');
+    btn.disabled = false;
+    if (btn.querySelector('.btn-label')) {
+      btn.querySelector('.btn-label').textContent = originalText;
+    }
+    throw err;
+  }
+}
+
+/* オフライン検知・通知 */
+(function() {
+  function showOfflineBanner() {
+    var banner = document.getElementById('offline-banner');
+    if (banner) banner.classList.add('is-visible');
+  }
+  function hideOfflineBanner() {
+    var banner = document.getElementById('offline-banner');
+    if (banner) banner.classList.remove('is-visible');
+  }
+  window.addEventListener('offline', showOfflineBanner);
+  window.addEventListener('online', hideOfflineBanner);
+  // ページ読み込み時にもチェック
+  if (!navigator.onLine) showOfflineBanner();
+})();

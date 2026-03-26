@@ -15,6 +15,11 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-nav">メインコンテンツへ</a>
+  <div class="offline-banner" id="offline-banner" role="alert" aria-live="assertive">
+    インターネットに接続されていません。一部の機能が利用できない場合があります。
+  </div>
+
   <!-- ===== ヘッダー ===== -->
   <header class="header" id="header" role="banner">
     <div class="header__inner">
@@ -52,7 +57,7 @@
     </div>
   </div>
 
-  <main>
+  <main id="main-content">
     <!-- ===== 料金ヒーロー ===== -->
     <section class="hero" style="padding-bottom:var(--spacing-2xl);">
       <div class="container">
@@ -478,10 +483,15 @@
         }
       });
 
-      /* FAQ アコーディオン */
-      document.querySelectorAll('.faq-item__question').forEach(function (btn) {
+      /* FAQ アコーディオン（ARIA対応） */
+      document.querySelectorAll('.faq-item__question').forEach(function (btn, idx) {
+        var item = btn.closest('.faq-item');
+        var answer = item.querySelector('.faq-item__answer');
+        var answerId = 'pricing-faq-answer-' + idx;
+        answer.setAttribute('id', answerId);
+        answer.setAttribute('role', 'region');
+        btn.setAttribute('aria-controls', answerId);
         btn.addEventListener('click', function () {
-          var item = btn.closest('.faq-item');
           var isOpen = item.classList.toggle('is-open');
           btn.setAttribute('aria-expanded', isOpen);
         });
@@ -489,19 +499,19 @@
 
       /* フェードイン（不要なため無効化済み） */
 
-      /* チェックアウトボタンのクリックイベント */
+      /* チェックアウトボタンのクリックイベント（二重送信防止付き） */
       document.querySelectorAll('[data-plan]').forEach(function (btn) {
         btn.addEventListener('click', function () {
+          if (btn.disabled || btn.classList.contains('is-loading')) return;
           var planId = btn.getAttribute('data-plan');
           // ログインチェック
           if (typeof Auth !== 'undefined' && !Auth.isLoggedIn()) {
-            // 未ログインならapp.htmlのログイン画面へ誘導
             window.location.href = 'app.html?redirect=pricing&plan=' + planId;
             return;
           }
-          // Stripe決済モジュールが利用可能なら呼び出し
+          // Stripe決済モジュールが利用可能なら呼び出し（ボタン参照を渡す）
           if (typeof StripePayment !== 'undefined') {
-            StripePayment.checkout(planId);
+            StripePayment.checkout(planId, btn);
           } else {
             alert('決済モジュールを読み込み中です。少々お待ちください。');
           }

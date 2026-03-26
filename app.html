@@ -782,6 +782,11 @@
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-nav">メインコンテンツへ</a>
+  <div class="offline-banner" id="offline-banner" role="alert" aria-live="assertive">
+    インターネットに接続されていません。一部の機能が利用できない場合があります。
+  </div>
+
   <!-- ========== 認証モーダル ========== -->
   <div id="auth-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;">
     <div style="background:#fff;border-radius:16px;padding:32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
@@ -863,7 +868,7 @@
     </aside>
 
     <!-- ========== メインエリア ========== -->
-    <main class="main-area" role="main">
+    <main class="main-area" role="main" id="main-content">
       <!-- ヘッダー -->
       <header class="app-header">
         <div class="gap-row">

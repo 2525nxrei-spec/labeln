@@ -311,6 +311,11 @@
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-nav">メインコンテンツへ</a>
+  <div class="offline-banner" id="offline-banner" role="alert" aria-live="assertive">
+    インターネットに接続されていません。一部の機能が利用できない場合があります。
+  </div>
+
   <div class="sidebar-overlay" data-visible="false" id="sidebar-overlay" aria-hidden="true"></div>
 
   <div class="app-layout">
@@ -341,7 +346,7 @@
       </div>
     </aside>
 
-    <main class="main-area" role="main">
+    <main class="main-area" role="main" id="main-content">
       <header class="app-header">
         <div class="gap-row">
           <button class="hamburger-btn" id="hamburger-btn" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="sidebar">
@@ -457,11 +462,11 @@
           localStorage.removeItem('labelun_auth_user');
           window.location.href = 'app.html';
         } else {
-          container.innerHTML = '<p style="color:var(--color-text-muted);">データの取得に失敗しました。</p>';
+          container.innerHTML = '<div class="error-message"><span class="error-message__icon">&#9888;</span><div class="error-message__text">データの取得に失敗しました。<span class="error-message__hint">インターネット接続を確認し、ページを再読み込みしてください。</span></div></div>';
         }
       } catch (e) {
         console.warn('ラベル取得失敗:', e);
-        container.innerHTML = '<p style="color:var(--color-text-muted);">データの取得に失敗しました。</p>';
+        container.innerHTML = '<div class="error-message"><span class="error-message__icon">&#9888;</span><div class="error-message__text">データの取得に失敗しました。<span class="error-message__hint">インターネット接続を確認し、ページを再読み込みしてください。</span></div></div>';
       }
     });
   </script>

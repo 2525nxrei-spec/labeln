@@ -15,6 +15,11 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-nav">メインコンテンツへ</a>
+  <div class="offline-banner" id="offline-banner" role="alert" aria-live="assertive">
+    インターネットに接続されていません。一部の機能が利用できない場合があります。
+  </div>
+
   <header class="header" id="header" role="banner">
     <div class="header__inner">
       <a href="index.html" class="header__logo" aria-label="ラベルン トップページ">
@@ -48,7 +53,7 @@
     </div>
   </div>
 
-  <main>
+  <main id="main-content">
     <section class="section" style="padding-top: calc(var(--header-height) + var(--spacing-3xl)); background: #f8fafc;">
       <div class="container">
         <h1 style="font-size: var(--font-size-3xl); font-weight: 800; margin-bottom: var(--spacing-md);">特定商取引法に基づく表記</h1>

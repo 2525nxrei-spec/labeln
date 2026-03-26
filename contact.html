@@ -15,6 +15,11 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-nav">メインコンテンツへ</a>
+  <div class="offline-banner" id="offline-banner" role="alert" aria-live="assertive">
+    インターネットに接続されていません。一部の機能が利用できない場合があります。
+  </div>
+
   <header class="header" id="header" role="banner">
     <div class="header__inner">
       <a href="index.html" class="header__logo" aria-label="ラベルン トップページ">
@@ -48,7 +53,7 @@
     </div>
   </div>
 
-  <main>
+  <main id="main-content">
     <section class="section" style="padding-top: calc(var(--header-height) + var(--spacing-3xl)); background: #f8fafc;">
       <div class="container">
         <h1 style="font-size: var(--font-size-3xl); font-weight: 800; margin-bottom: var(--spacing-md);">お問い合わせ</h1>
@@ -69,7 +74,7 @@
         </div>
 
         <!-- フォーム -->
-        <form id="contact-form" novalidate>
+        <form id="contact-form" novalidate aria-label="お問い合わせフォーム">
           <div style="margin-bottom: var(--spacing-lg);">
             <label for="contact-name" style="display: block; font-size: var(--font-size-sm); font-weight: 500; margin-bottom: 6px;">お名前 <span style="color: var(--color-error);">*</span></label>
             <input type="text" id="contact-name" name="name" required
@@ -109,7 +114,11 @@
             送信された情報は <a href="privacy.html">プライバシーポリシー</a> に基づき適切に管理します。
           </p>
 
-          <button type="submit" class="btn btn--primary btn--lg" style="width: 100%;">送信する</button>
+          <button type="submit" class="btn btn--primary btn--lg" style="width: 100%;" id="contact-submit">
+            <span class="btn-spinner" aria-hidden="true"></span>
+            <span class="btn-check" aria-hidden="true">&#10003;</span>
+            <span class="btn-label">送信する</span>
+          </button>
         </form>
 
         <!-- 送信完了メッセージ（初期非表示） -->
@@ -202,20 +211,39 @@
         }
       });
 
-      /* フォーム送信: mailto で送信 */
+      /* フォーム送信: mailto で送信（改善版） */
       var form = document.getElementById('contact-form');
       var successMsg = document.getElementById('contact-success');
+      var submitBtn = document.getElementById('contact-submit');
       if (form) {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
+
+          /* 二重送信防止 */
+          if (submitBtn && (submitBtn.disabled || submitBtn.classList.contains('is-loading'))) return;
+
           var name = document.getElementById('contact-name').value.trim();
           var email = document.getElementById('contact-email').value.trim();
           var category = document.getElementById('contact-category').value;
           var message = document.getElementById('contact-message').value.trim();
 
-          if (!name || !email || !category || !message) {
-            alert('必須項目をすべて入力してください。');
+          /* バリデーション（具体的なエラー表示） */
+          var errors = [];
+          if (!name) errors.push('お名前を入力してください。');
+          if (!email) errors.push('メールアドレスを入力してください。');
+          else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('メールアドレスの形式が正しくありません。');
+          if (!category) errors.push('お問い合わせ種別を選択してください。');
+          if (!message) errors.push('お問い合わせ内容を入力してください。');
+
+          if (errors.length > 0) {
+            alert(errors.join('\n'));
             return;
+          }
+
+          /* ボタンをローディング状態に */
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('is-loading');
           }
 
           var subject = encodeURIComponent('[ラベルン お問い合わせ] ' + category);
@@ -227,9 +255,17 @@
           );
           window.location.href = 'mailto:2525nxrei@gmail.com?subject=' + subject + '&body=' + body;
 
-          form.style.display = 'none';
-          successMsg.style.display = 'block';
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          /* 成功フィードバック */
+          if (submitBtn) {
+            submitBtn.classList.remove('is-loading');
+            submitBtn.classList.add('is-success');
+          }
+
+          setTimeout(function() {
+            form.style.display = 'none';
+            successMsg.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 500);
         });
       }
     });

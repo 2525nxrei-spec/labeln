@@ -261,7 +261,7 @@ const StripePayment = {
    *
    * @param {string} planId - プランID ('lite' | 'standard' | 'pro')
    */
-  async checkout(planId) {
+  async checkout(planId, triggerBtn) {
     const plan = STRIPE_PLANS[planId];
     if (!plan) {
       throw new Error('無効なプランが選択されました。');
@@ -279,8 +279,21 @@ const StripePayment = {
       return;
     }
 
+    // ボタンをdisabled+処理中表示
+    if (triggerBtn) {
+      triggerBtn.disabled = true;
+      triggerBtn.dataset.originalText = triggerBtn.textContent;
+      triggerBtn.textContent = '処理中...';
+      triggerBtn.classList.add('is-loading');
+    }
+
     // Stripe利用不可 → モックUI
     if (!this._stripeAvailable || !plan.priceId) {
+      if (triggerBtn) {
+        triggerBtn.disabled = false;
+        triggerBtn.textContent = triggerBtn.dataset.originalText || 'このプランで始める';
+        triggerBtn.classList.remove('is-loading');
+      }
       this.showMockCheckout(planId);
       return;
     }
@@ -324,6 +337,13 @@ const StripePayment = {
     } catch (err) {
       console.error('[StripePayment] Checkout エラー:', err);
       this._hideLoading();
+
+      // ボタンを元に戻す
+      if (triggerBtn) {
+        triggerBtn.disabled = false;
+        triggerBtn.textContent = triggerBtn.dataset.originalText || 'このプランで始める';
+        triggerBtn.classList.remove('is-loading');
+      }
 
       // APIエラー → モックにフォールバック
       this.showMockCheckout(planId);
