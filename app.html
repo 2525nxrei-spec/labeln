@@ -827,6 +827,13 @@
           <input type="password" id="register-password" required minlength="8" autocomplete="new-password"
             style="width:100%;padding:10px 14px;font-size:.9rem;font-family:inherit;border:1px solid #e2e8f0;border-radius:6px;">
         </div>
+        <div id="register-pw-strength" style="font-size:.75rem;color:#64748b;margin-bottom:8px;"></div>
+        <div style="margin-bottom:16px;">
+          <label style="display:flex;align-items:flex-start;gap:8px;font-size:.82rem;cursor:pointer;">
+            <input type="checkbox" id="register-terms" style="margin-top:3px;flex-shrink:0;" required>
+            <span><a href="terms.html" target="_blank" style="color:#0f766e;text-decoration:underline;">利用規約</a>と<a href="privacy.html" target="_blank" style="color:#0f766e;text-decoration:underline;">プライバシーポリシー</a>に同意する</span>
+          </label>
+        </div>
         <div id="register-error" style="display:none;color:#dc2626;font-size:.85rem;margin-bottom:12px;"></div>
         <button type="submit" style="width:100%;padding:12px;background:#0f766e;color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;">無料で登録</button>
         <p style="text-align:center;margin-top:16px;font-size:.85rem;color:#64748b;">
@@ -1909,15 +1916,34 @@
         }
       });
 
+      // 登録パスワード強度チェック（リアルタイム）
+      document.getElementById('register-password').addEventListener('input', function() {
+        var pw = this.value;
+        var el = document.getElementById('register-pw-strength');
+        if (!el) return;
+        if (pw.length === 0) { el.textContent = ''; }
+        else if (pw.length < 8) { el.textContent = 'あと' + (8 - pw.length) + '文字必要です'; el.style.color = '#dc2626'; }
+        else if (!/[a-zA-Z]/.test(pw) || !/[0-9]/.test(pw)) { el.textContent = '英字と数字の両方を含めてください'; el.style.color = '#d97706'; }
+        else { el.textContent = 'OK'; el.style.color = '#16a34a'; }
+      });
+
       // 登録フォーム送信
       registerForm.addEventListener('submit', async function (e) {
         e.preventDefault();
         var errorEl = document.getElementById('register-error');
         errorEl.style.display = 'none';
+
+        var pw = document.getElementById('register-password').value;
+        if (pw.length < 8) { errorEl.textContent = 'パスワードは8文字以上で入力してください'; errorEl.style.display = 'block'; return; }
+        if (!/[a-zA-Z]/.test(pw) || !/[0-9]/.test(pw)) { errorEl.textContent = 'パスワードは英字と数字の両方を含めてください'; errorEl.style.display = 'block'; return; }
+
+        var termsCheck = document.getElementById('register-terms');
+        if (termsCheck && !termsCheck.checked) { errorEl.textContent = '利用規約への同意が必要です'; errorEl.style.display = 'block'; return; }
+
         try {
           await Auth.register(
             document.getElementById('register-email').value,
-            document.getElementById('register-password').value
+            pw
           );
           authModal.style.display = 'none';
         } catch (err) {

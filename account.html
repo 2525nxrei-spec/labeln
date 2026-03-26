@@ -429,6 +429,13 @@
           </div>
         </section>
 
+        <!-- サブスクリプション管理 -->
+        <section class="account-section" id="subscription-section" style="display:none">
+          <h2 class="account-section__title">サブスクリプション管理</h2>
+          <div id="sub-info"></div>
+          <div class="actions-row" id="sub-actions"></div>
+        </section>
+
         <!-- パスワード変更 -->
         <section class="account-section">
           <h2 class="account-section__title">パスワード変更</h2>
@@ -448,8 +455,9 @@
                 <input type="password" id="confirm-password" class="form-input" autocomplete="new-password">
               </div>
             </div>
+            <div id="pw-strength" class="form-hint"></div>
             <div class="actions-row">
-              <button type="button" class="btn btn--primary btn--sm">パスワードを変更</button>
+              <button type="button" class="btn btn--primary btn--sm" id="btn-change-password">パスワードを変更</button>
             </div>
           </form>
         </section>
@@ -460,7 +468,7 @@
           <p class="danger-text">ログアウトするとログイン画面に戻ります。アカウント削除は取り消せません。</p>
           <div class="actions-row">
             <button type="button" class="btn btn--secondary btn--sm" id="btn-logout">ログアウト</button>
-            <button type="button" class="btn btn--danger btn--sm">アカウントを削除</button>
+            <button type="button" class="btn btn--danger btn--sm" id="btn-delete-account">アカウントを削除</button>
           </div>
         </section>
       </div>
@@ -493,12 +501,102 @@
       overlay.addEventListener('click', closeSidebar);
     })();
 
-    /* ログアウト */
+    /* ログアウト（確認付き） */
     document.getElementById('btn-logout').addEventListener('click', function() {
+      if (!confirm('ログアウトしますか？')) return;
       localStorage.removeItem('labelun_auth_token');
       localStorage.removeItem('labelun_auth_user');
       location.href = 'index.html';
     });
+
+    /* パスワード強度チェック（リアルタイム） */
+    document.getElementById('new-password').addEventListener('input', function() {
+      var pw = this.value;
+      var el = document.getElementById('pw-strength');
+      if (pw.length === 0) { el.textContent = ''; }
+      else if (pw.length < 8) { el.textContent = 'あと' + (8 - pw.length) + '文字必要です'; el.style.color = '#dc2626'; }
+      else if (!/[a-zA-Z]/.test(pw) || !/[0-9]/.test(pw)) { el.textContent = '英字と数字の両方を含めてください'; el.style.color = '#d97706'; }
+      else { el.textContent = 'パスワード強度: OK'; el.style.color = '#16a34a'; }
+    });
+
+    /* パスワード変更 */
+    document.getElementById('btn-change-password').addEventListener('click', async function() {
+      var btn = this;
+      var currentPw = document.getElementById('current-password').value;
+      var newPw = document.getElementById('new-password').value;
+      var confirmPw = document.getElementById('confirm-password').value;
+      if (!currentPw) { alert('現在のパスワードを入力してください'); return; }
+      if (!newPw || newPw.length < 8) { alert('新しいパスワードは8文字以上で入力してください'); return; }
+      if (!/[a-zA-Z]/.test(newPw) || !/[0-9]/.test(newPw)) { alert('パスワードは英字と数字の両方を含めてください'); return; }
+      if (newPw !== confirmPw) { alert('新しいパスワードが一致しません'); return; }
+
+      btn.disabled = true; btn.textContent = '変更中...';
+      try {
+        var res = await fetch('/api/auth/password', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('labelun_auth_token') },
+          body: JSON.stringify({ current_password: currentPw, new_password: newPw })
+        });
+        var data = await res.json();
+        if (res.ok) {
+          alert('パスワードを変更しました');
+          document.getElementById('current-password').value = '';
+          document.getElementById('new-password').value = '';
+          document.getElementById('confirm-password').value = '';
+          document.getElementById('pw-strength').textContent = '';
+        } else {
+          alert(data.error || 'パスワード変更に失敗しました');
+        }
+      } catch (e) { alert('通信エラーが発生しました'); }
+      finally { btn.disabled = false; btn.textContent = 'パスワードを変更'; }
+    });
+
+    /* アカウント削除 */
+    document.getElementById('btn-delete-account').addEventListener('click', async function() {
+      var pw = prompt('アカウントを削除するには、パスワードを入力してください。\nこの操作は取り消せません。');
+      if (!pw) return;
+      if (!confirm('本当にアカウントを削除しますか？\nすべてのデータが完全に削除されます。')) return;
+
+      var btn = this;
+      btn.disabled = true; btn.textContent = '削除中...';
+      try {
+        var res = await fetch('/api/auth/account', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('labelun_auth_token') },
+          body: JSON.stringify({ password: pw })
+        });
+        var data = await res.json();
+        if (res.ok) {
+          localStorage.removeItem('labelun_auth_token');
+          localStorage.removeItem('labelun_auth_user');
+          alert('アカウントを削除しました。ご利用ありがとうございました。');
+          location.href = 'index.html';
+        } else {
+          alert(data.error || 'アカウント削除に失敗しました');
+        }
+      } catch (e) { alert('通信エラーが発生しました'); }
+      finally { btn.disabled = false; btn.textContent = 'アカウントを削除'; }
+    });
+
+    /* セッションタイムアウト（24時間操作なしでログアウト） */
+    (function() {
+      var TIMEOUT = 24 * 60 * 60 * 1000;
+      function resetTimer() { localStorage.setItem('labelun_last_activity', Date.now()); }
+      function checkTimeout() {
+        var last = parseInt(localStorage.getItem('labelun_last_activity') || '0', 10);
+        if (last && Date.now() - last > TIMEOUT && localStorage.getItem('labelun_auth_token')) {
+          localStorage.removeItem('labelun_auth_token');
+          localStorage.removeItem('labelun_auth_user');
+          alert('長時間操作がなかったため、セキュリティのためログアウトしました。');
+          location.href = 'index.html';
+        }
+      }
+      checkTimeout();
+      resetTimer();
+      ['click', 'keydown', 'scroll', 'touchstart'].forEach(function(e) {
+        document.addEventListener(e, resetTimer, { passive: true });
+      });
+    })();
 
     /* アカウント情報をAPIから取得 */
     (async function() {
