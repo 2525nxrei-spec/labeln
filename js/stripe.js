@@ -27,7 +27,7 @@ const STRIPE_PLANS = {
     currency: 'jpy',
     interval: 'month',
     priceId: 'price_1TF9jz9Fc8Hnuaokq1Fu5boR', // ラベルン ライト ¥300/月
-    description: '月30ラベル / 5言語',
+    description: '月10ラベル / 5言語',
   },
   standard: {
     id: 'standard',
@@ -36,7 +36,7 @@ const STRIPE_PLANS = {
     currency: 'jpy',
     interval: 'month',
     priceId: 'price_1TF9k09Fc8HnuaokatkHmGFM', // ラベルン スタンダード ¥500/月
-    description: '月100ラベル / 18言語',
+    description: '月50ラベル / 18言語',
   },
   pro: {
     id: 'pro',
