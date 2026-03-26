@@ -1866,24 +1866,33 @@
     })();
   </script>
 
-  <!-- 外部JS（defer） -->
-  <script src="https://js.stripe.com/v3/" defer></script>
-  <script src="js/auth.js" defer></script>
-  <script src="js/translation.js" defer></script>
-  <script src="js/legal-display.js" defer></script>
-  <script src="js/pdf-generator.js" defer></script>
-  <script src="js/stripe.js" defer></script>
-  <script src="js/app.js" defer></script>
+  <!-- 外部JS（deferなし・順序保証のため </body> 直前で同期読み込み） -->
+  <script src="js/auth.js"></script>
+  <script src="js/translation.js"></script>
+  <script src="js/legal-display.js"></script>
+  <script src="js/pdf-generator.js"></script>
+  <script src="js/stripe.js"></script>
+  <script src="js/app.js"></script>
+  <!-- Stripe.js は決済時に必要。読み込み遅延でページ表示がブロックされないよう async -->
+  <script src="https://js.stripe.com/v3/" async></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function () {});
     }
-    /* Auth・StripePayment初期化 + 認証モーダル制御 */
-    window.addEventListener('load', function () {
+
+    /* Auth・StripePayment初期化 + 認証モーダル制御
+       この時点で auth.js / stripe.js / app.js は同期読み込み済み。
+       DOM も </body> 直前なので全要素にアクセス可能。 */
+    (function () {
       var authModal = document.getElementById('auth-modal');
       var loginForm = document.getElementById('login-form');
       var registerForm = document.getElementById('register-form');
       var authTitle = document.getElementById('auth-modal-title');
+
+      if (!authModal || !loginForm || !registerForm || !authTitle) {
+        console.error('[app.html] 認証モーダルのDOM要素が見つかりません');
+        return;
+      }
 
       // ログイン/登録フォーム切り替え
       document.getElementById('show-register').addEventListener('click', function (e) {
@@ -1973,15 +1982,18 @@
         authModal.style.display = 'flex';
       }
 
-      // Auth初期化
+      // Auth初期化（auth.js は同期読み込み済みなので typeof チェックは念のため）
       if (typeof Auth !== 'undefined') {
         Auth.init().then(function () {
           // 未ログインなら認証モーダルを表示
           if (!Auth.isLoggedIn()) {
             showAuthModal(showRegisterFirst);
           }
+          // StripePayment初期化（Stripe.js CDNはasyncなので後から読み込まれる場合あり）
           if (typeof StripePayment !== 'undefined') {
-            StripePayment.init();
+            StripePayment.init().catch(function (err) {
+              console.warn('[StripePayment] 初期化エラー（決済時に再試行します）:', err);
+            });
           }
         }).catch(function (err) {
           // Auth初期化エラー時もモーダルを表示（API接続失敗等）
@@ -1990,9 +2002,10 @@
         });
       } else {
         // auth.jsの読み込みに失敗した場合もモーダルを表示
+        console.error('[app.html] Auth オブジェクトが見つかりません（auth.js 読み込み失敗）');
         showAuthModal(showRegisterFirst);
       }
-    });
+    })();
   </script>
 </body>
 </html>

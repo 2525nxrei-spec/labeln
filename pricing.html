@@ -447,13 +447,19 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
-  <script src="https://js.stripe.com/v3/" defer></script>
-  <script src="js/auth.js" defer></script>
-  <script src="js/stripe.js" defer></script>
-  <script src="js/app.js" defer></script>
+  <!-- Scripts（deferなし・順序保証のため </body> 直前で同期読み込み） -->
+  <script src="js/auth.js"></script>
+  <script src="js/stripe.js"></script>
+  <!-- Stripe.js CDN は決済時に必要。async で読み込みブロックを回避 -->
+  <script src="https://js.stripe.com/v3/" async></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    }
+
+    /* この時点で auth.js / stripe.js は同期読み込み済み。
+       DOM も </body> 直前なので全要素にアクセス可能。 */
+    (function () {
       /* ハンバーガーメニュー */
       var hamburger = document.getElementById('hamburger');
       var mobileMenu = document.getElementById('mobile-menu');
@@ -497,8 +503,6 @@
         });
       });
 
-      /* フェードイン（不要なため無効化済み） */
-
       /* チェックアウトボタンのクリックイベント（二重送信防止付き） */
       document.querySelectorAll('[data-plan]').forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -517,22 +521,20 @@
           }
         });
       });
-    });
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(function () {});
-    }
-    /* Auth・StripePayment初期化 */
-    document.addEventListener('DOMContentLoaded', function () {
+
+      /* Auth・StripePayment初期化 */
       if (typeof Auth !== 'undefined') {
         Auth.init().then(function () {
           if (typeof StripePayment !== 'undefined') {
-            StripePayment.init();
+            StripePayment.init().catch(function (err) {
+              console.warn('[StripePayment] 初期化エラー:', err);
+            });
           }
+        }).catch(function (err) {
+          console.error('[Auth] 初期化エラー:', err);
         });
       }
-    });
+    })();
   </script>
 </body>
 </html>
