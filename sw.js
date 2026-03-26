@@ -8,7 +8,7 @@
  *   - 外部リソース: Network Only
  */
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.0.1';
 const STATIC_CACHE = `labelun-static-${CACHE_VERSION}`;
 const DATA_CACHE = `labelun-data-${CACHE_VERSION}`;
 const API_CACHE = `labelun-api-${CACHE_VERSION}`;
