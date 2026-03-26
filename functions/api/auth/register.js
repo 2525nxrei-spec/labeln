@@ -10,7 +10,7 @@ async function handler({ request, env }) {
   const body = await request.json().catch(() => null);
   if (!body) return errorResponse('リクエストボディが不正です', 400);
 
-  const { email, password } = body;
+  const { email, password, plan } = body;
 
   if (!email || !isValidEmail(email)) {
     return errorResponse('有効なメールアドレスを入力してください', 400);
@@ -18,6 +18,10 @@ async function handler({ request, env }) {
   if (!password || !isValidPassword(password)) {
     return errorResponse('パスワードは8文字以上で入力してください', 400);
   }
+
+  // プランのバリデーション（無効な値は 'free' にフォールバック）
+  const validPlans = ['free', 'lite', 'standard', 'pro'];
+  const selectedPlan = validPlans.includes(plan) ? plan : 'free';
 
   // 既存ユーザーチェック
   const existing = await env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
@@ -33,9 +37,9 @@ async function handler({ request, env }) {
 
   await env.DB.prepare(
     `INSERT INTO users (id, email, password_hash, salt, plan, created_at, updated_at)
-     VALUES (?, ?, ?, ?, 'free', ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?)`
   )
-    .bind(userId, email, passwordHash, salt, now, now)
+    .bind(userId, email, passwordHash, salt, selectedPlan, now, now)
     .run();
 
   // JWT発行
@@ -50,7 +54,7 @@ async function handler({ request, env }) {
     secret
   );
 
-  return jsonResponse({ token, user: { id: userId, email, plan: 'free' } }, 201);
+  return jsonResponse({ token, user: { id: userId, email, plan: selectedPlan } }, 201);
 }
 
 export const onRequestPost = withMiddleware(handler);

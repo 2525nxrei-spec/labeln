@@ -1925,17 +1925,45 @@
         }
       });
 
+      // URLパラメータで新規登録フォームを初期表示するか判定
+      var urlParams = new URLSearchParams(window.location.search);
+      var showRegisterFirst = urlParams.get('mode') === 'register';
+
+      /**
+       * 認証モーダルを表示する共通関数
+       * showRegister: trueなら新規登録フォームを表示
+       */
+      function showAuthModal(showRegister) {
+        if (showRegister) {
+          loginForm.style.display = 'none';
+          registerForm.style.display = 'block';
+          authTitle.textContent = '新規登録（無料）';
+        } else {
+          loginForm.style.display = 'block';
+          registerForm.style.display = 'none';
+          authTitle.textContent = 'ログイン';
+        }
+        authModal.style.display = 'flex';
+      }
+
       // Auth初期化
       if (typeof Auth !== 'undefined') {
         Auth.init().then(function () {
           // 未ログインなら認証モーダルを表示
           if (!Auth.isLoggedIn()) {
-            authModal.style.display = 'flex';
+            showAuthModal(showRegisterFirst);
           }
           if (typeof StripePayment !== 'undefined') {
             StripePayment.init();
           }
+        }).catch(function (err) {
+          // Auth初期化エラー時もモーダルを表示（API接続失敗等）
+          console.error('[Auth] 初期化エラー:', err);
+          showAuthModal(showRegisterFirst);
         });
+      } else {
+        // auth.jsの読み込みに失敗した場合もモーダルを表示
+        showAuthModal(showRegisterFirst);
       }
     });
   </script>
