@@ -120,7 +120,9 @@ const Auth = {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || errorData.message || 'ログインに失敗しました。');
+        const serverMsg = errorData.error || errorData.message || '';
+        // ユーザーフレンドリーなエラーメッセージに変換
+        throw new Error(this._friendlyLoginError(res.status, serverMsg));
       }
 
       const data = await res.json();
@@ -134,6 +136,10 @@ const Auth = {
       console.log('[Auth] ログイン成功:', email);
       return { success: true };
     } catch (err) {
+      // ネットワークエラーの場合はわかりやすいメッセージに
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        throw new Error('サーバーに接続できません。インターネット接続を確認してください。');
+      }
       console.error('[Auth] ログインエラー:', err);
       throw err;
     }
@@ -168,7 +174,8 @@ const Auth = {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || errorData.message || '登録に失敗しました。');
+        const serverMsg = errorData.error || errorData.message || '';
+        throw new Error(this._friendlyRegisterError(res.status, serverMsg));
       }
 
       const data = await res.json();
@@ -182,6 +189,9 @@ const Auth = {
       console.log('[Auth] 登録成功:', email, selectedPlan);
       return { success: true };
     } catch (err) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        throw new Error('サーバーに接続できません。インターネット接続を確認してください。');
+      }
       console.error('[Auth] 登録エラー:', err);
       throw err;
     }
