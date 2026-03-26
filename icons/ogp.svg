@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#0d5c56"/>
+    </linearGradient>
+  </defs>
+  <!-- 背景 -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- 装飾 -->
+  <circle cx="1050" cy="520" r="220" fill="#14b8a6" opacity="0.1"/>
+  <circle cx="150" cy="110" r="180" fill="#14b8a6" opacity="0.08"/>
+  <!-- ラベルアイコン -->
+  <g transform="translate(600, 195)">
+    <!-- ラベル本体 -->
+    <rect x="-40" y="-55" width="80" height="100" rx="6" fill="none" stroke="#99f6e4" stroke-width="4"/>
+    <!-- ラベルの穴 -->
+    <circle cx="0" cy="-35" r="8" fill="none" stroke="#99f6e4" stroke-width="3"/>
+    <!-- ラベル内の線（テキスト表現） -->
+    <line x1="-22" y1="-10" x2="22" y2="-10" stroke="#99f6e4" stroke-width="2.5" opacity="0.6"/>
+    <line x1="-22" y1="5" x2="22" y2="5" stroke="#99f6e4" stroke-width="2.5" opacity="0.6"/>
+    <line x1="-22" y1="20" x2="12" y2="20" stroke="#99f6e4" stroke-width="2.5" opacity="0.6"/>
+  </g>
+  <!-- サービス名 -->
+  <text x="600" y="340" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif" font-size="80" font-weight="bold" fill="#ffffff" letter-spacing="8">ラベルン</text>
+  <!-- キャッチコピー -->
+  <text x="600" y="410" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif" font-size="30" fill="#99f6e4">かんたんラベルデザイン。18言語対応。</text>
+  <!-- 下部ライン -->
+  <rect x="500" y="460" width="200" height="3" rx="2" fill="#99f6e4" opacity="0.5"/>
+  <!-- 会社名 -->
+  <text x="600" y="560" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif" font-size="18" fill="#99f6e4" opacity="0.6">株式会社 礼</text>
+</svg>
