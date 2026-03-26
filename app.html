@@ -1871,7 +1871,7 @@
       navigator.serviceWorker.register('sw.js').catch(function () {});
     }
     /* Auth・StripePayment初期化 + 認証モーダル制御 */
-    document.addEventListener('DOMContentLoaded', function () {
+    window.addEventListener('load', function () {
       var authModal = document.getElementById('auth-modal');
       var loginForm = document.getElementById('login-form');
       var registerForm = document.getElementById('register-form');
