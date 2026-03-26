@@ -257,7 +257,19 @@ const StripePayment = {
      ============================================ */
 
   /**
-   * Stripe Checkout Session を作成して決済ページへ遷移
+   * Embedded Checkout モーダルを閉じる
+   */
+  _closeCheckoutModal() {
+    const modal = document.getElementById('labelun-checkout-modal');
+    if (modal) modal.remove();
+    if (this._embeddedCheckout) {
+      this._embeddedCheckout.destroy();
+      this._embeddedCheckout = null;
+    }
+  },
+
+  /**
+   * Stripe Embedded Checkout でページ内決済フォームを表示
    *
    * @param {string} planId - プランID ('lite' | 'standard' | 'pro')
    */
@@ -299,7 +311,7 @@ const StripePayment = {
     }
 
     try {
-      this._showLoading('決済ページを準備中...');
+      this._showLoading('決済フォームを準備中...');
 
       // Workers API で Checkout Session 作成
       const res = await fetch(STRIPE_API_ENDPOINTS.CREATE_CHECKOUT, {
@@ -311,8 +323,6 @@ const StripePayment = {
         body: JSON.stringify({
           planId: planId,
           priceId: plan.priceId,
-          successUrl: window.location.origin + '/app.html?payment=success',
-          cancelUrl: window.location.origin + '/app.html?payment=cancel',
         }),
       });
 
@@ -321,18 +331,40 @@ const StripePayment = {
       }
 
       const data = await res.json();
-
       this._hideLoading();
 
-      // Stripe Checkout にリダイレクト
-      if (data.sessionId) {
-        const { error } = await this.stripe.redirectToCheckout({ sessionId: data.sessionId });
-        if (error) {
-          throw new Error(error.message);
+      // モックレスポンスの場合
+      if (data.mock) {
+        if (triggerBtn) {
+          triggerBtn.disabled = false;
+          triggerBtn.textContent = triggerBtn.dataset.originalText || 'このプランで始める';
+          triggerBtn.classList.remove('is-loading');
         }
-      } else if (data.url) {
-        // Checkout URL が返された場合
-        window.location.href = data.url;
+        this.showMockCheckout(planId);
+        return;
+      }
+
+      // Embedded Checkout をモーダルで表示
+      if (data.clientSecret) {
+        const modal = document.createElement('div');
+        modal.id = 'labelun-checkout-modal';
+        modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px;';
+        modal.innerHTML = `
+          <div style="background:#fff;border-radius:12px;width:100%;max-width:500px;max-height:90vh;overflow:auto;position:relative;">
+            <button id="labelun-checkout-close" style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:#666;z-index:1;">&times;</button>
+            <div id="labelun-checkout-container" style="padding:16px;"></div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        // 閉じるイベント
+        document.getElementById('labelun-checkout-close').addEventListener('click', () => this._closeCheckoutModal());
+        modal.addEventListener('click', (e) => { if (e.target === modal) this._closeCheckoutModal(); });
+
+        // Embedded Checkoutをマウント
+        const checkout = await this.stripe.initEmbeddedCheckout({ clientSecret: data.clientSecret });
+        this._embeddedCheckout = checkout;
+        checkout.mount('#labelun-checkout-container');
       }
     } catch (err) {
       console.error('[StripePayment] Checkout エラー:', err);

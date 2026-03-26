@@ -7,6 +7,8 @@ ENVIRONMENT = "development"
 STRIPE_PRICE_LITE = "price_1TF9jz9Fc8Hnuaokq1Fu5boR"
 STRIPE_PRICE_STANDARD = "price_1TF9k09Fc8HnuaokatkHmGFM"
 STRIPE_PRICE_PRO = "price_1TF9jy9Fc8Hnuaokk74PXZiN"
+# Stripe公開鍵（Embedded Checkout用）— Cloudflareダッシュボードで本番値を設定
+STRIPE_PUBLISHABLE_KEY = ""
 
 [[d1_databases]]
 binding = "DB"
