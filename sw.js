@@ -8,7 +8,7 @@
  *   - 外部リソース: Network Only
  */
 
-const CACHE_VERSION = 'v1.0.1';
+const CACHE_VERSION = 'v1.0.2';
 const STATIC_CACHE = `labelun-static-${CACHE_VERSION}`;
 const DATA_CACHE = `labelun-data-${CACHE_VERSION}`;
 const API_CACHE = `labelun-api-${CACHE_VERSION}`;
@@ -154,7 +154,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 静的ファイル → Cache First
+  // HTMLナビゲーション → Network First（リダイレクト問題を回避）
+  if (request.mode === 'navigate') {
+    event.respondWith(networkFirst(request, STATIC_CACHE));
+    return;
+  }
+
+  // 静的ファイル（CSS, JS, 画像等） → Cache First
   event.respondWith(cacheFirst(request, STATIC_CACHE));
 });
 
@@ -177,7 +183,8 @@ async function cacheFirst(request, cacheName) {
 
   try {
     const networkResponse = await fetch(request);
-    if (networkResponse.ok) {
+    // リダイレクトレスポンスはキャッシュしない（SW経由で返すとエラーになる）
+    if (networkResponse.ok && !networkResponse.redirected) {
       cache.put(request, networkResponse.clone());
     }
     return networkResponse;
@@ -227,7 +234,8 @@ async function networkFirst(request, cacheName) {
 
   try {
     const networkResponse = await fetch(request);
-    if (networkResponse.ok) {
+    // リダイレクトレスポンスはキャッシュしない
+    if (networkResponse.ok && !networkResponse.redirected) {
       cache.put(request, networkResponse.clone());
     }
     return networkResponse;
