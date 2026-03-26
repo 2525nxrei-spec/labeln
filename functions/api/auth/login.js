@@ -15,9 +15,12 @@ async function handler({ request, env }) {
     return errorResponse('メールアドレスとパスワードを入力してください', 400);
   }
 
+  // メールアドレス正規化
+  const emailLower = email.toLowerCase().trim();
+
   // ユーザー検索
   const user = await env.DB.prepare('SELECT id, email, password_hash, salt, plan FROM users WHERE email = ?')
-    .bind(email)
+    .bind(emailLower)
     .first();
 
   if (!user) {
@@ -30,14 +33,17 @@ async function handler({ request, env }) {
     return errorResponse('メールアドレスまたはパスワードが正しくありません', 401);
   }
 
-  // JWT発行
-  const secret = env.JWT_SECRET || 'labelun-dev-secret-do-not-use-in-production';
+  // JWT発行（JWT_SECRET未設定時はエラー）
+  if (!env.JWT_SECRET) {
+    return errorResponse('サーバー設定エラー: JWT_SECRETが未設定です', 500);
+  }
+  const secret = env.JWT_SECRET;
   const token = await createJWT(
     {
       sub: user.id,
       email: user.email,
       iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
+      exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
     },
     secret
   );

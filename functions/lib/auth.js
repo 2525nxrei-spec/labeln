@@ -131,7 +131,8 @@ export async function authenticateRequest(request, env) {
     return null;
   }
   const token = authHeader.slice(7);
-  const secret = env.JWT_SECRET || 'labelun-dev-secret-do-not-use-in-production';
+  if (!env.JWT_SECRET) return null;
+  const secret = env.JWT_SECRET;
   const payload = await verifyJWT(token, secret);
   return payload;
 }

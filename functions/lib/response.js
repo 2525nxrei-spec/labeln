@@ -20,14 +20,15 @@ export function jsonResponse(data, status = 200) {
 
 /** CORSヘッダーを付与 */
 export function withCORS(response, origin) {
-  // 許可するオリジン（本番 + プレビュー）
+  // 許可するオリジン（本番 + ローカル開発）
   const allowedOrigins = [
     'https://mylabeln.com',
     'https://www.mylabeln.com',
+    'http://localhost:8788',
   ];
-  // Cloudflare Pagesプレビュー用（*.pages.dev）
+  // Cloudflare Pagesプレビュー用（自プロジェクトのみ許可）
   const isAllowed = origin &&
-    (allowedOrigins.includes(origin) || origin.endsWith('.pages.dev'));
+    (allowedOrigins.includes(origin) || /^https:\/\/[a-z0-9-]+\.labelun[a-z0-9-]*\.pages\.dev$/.test(origin));
   const resolvedOrigin = isAllowed ? origin : 'https://mylabeln.com';
 
   const headers = new Headers(response.headers);
@@ -35,6 +36,13 @@ export function withCORS(response, origin) {
   headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   headers.set('Access-Control-Max-Age', '86400');
+  // セキュリティヘッダー
+  headers.set('X-Content-Type-Options', 'nosniff');
+  headers.set('X-Frame-Options', 'DENY');
+  headers.set('X-XSS-Protection', '1; mode=block');
+  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
