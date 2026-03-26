@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ラベルンの更新履歴。新機能、改善、不具合修正の一覧。">
+  <meta name="theme-color" content="#0f766e">
+  <title>更新履歴 | ラベルン</title>
+  <link rel="canonical" href="https://labeln.app/changelog.html">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header" id="header" role="banner">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo" aria-label="ラベルン トップページ">
+        <span class="header__logo-icon" aria-hidden="true">&#127991;</span>
+        ラベルン
+      </a>
+      <nav class="header__nav" aria-label="メインナビゲーション">
+        <a href="index.html#features" class="header__nav-link">機能</a>
+        <a href="pricing.html" class="header__nav-link">料金</a>
+        <a href="index.html#faq" class="header__nav-link">FAQ</a>
+      </nav>
+      <div class="header__actions">
+        <a href="app.html" class="btn btn--ghost btn--sm">ログイン</a>
+        <a href="app.html" class="btn btn--primary btn--sm">新規登録</a>
+        <button class="header__hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-menu">
+          <span class="header__hamburger-line" aria-hidden="true"></span>
+          <span class="header__hamburger-line" aria-hidden="true"></span>
+          <span class="header__hamburger-line" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="モバイルナビゲーション">
+    <a href="index.html#features" class="mobile-menu__link">機能</a>
+    <a href="pricing.html" class="mobile-menu__link">料金</a>
+    <a href="index.html#faq" class="mobile-menu__link">FAQ</a>
+    <div class="mobile-menu__actions">
+      <a href="app.html" class="btn btn--outline btn--full">ログイン</a>
+      <a href="app.html" class="btn btn--primary btn--full">新規登録</a>
+    </div>
+  </div>
+
+  <main>
+    <section class="section" style="padding-top: calc(var(--header-height) + var(--spacing-3xl)); background: #f8fafc;">
+      <div class="container">
+        <h1 style="font-size: var(--font-size-3xl); font-weight: 800; margin-bottom: var(--spacing-md);">更新履歴</h1>
+        <p style="color: var(--color-text-light); font-size: var(--font-size-lg); max-width: 600px;">
+          ラベルンの新機能、改善、不具合修正の記録です。
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container" style="max-width: 760px;">
+        <!-- v1.2.0 -->
+        <article style="margin-bottom: var(--spacing-3xl); padding-bottom: var(--spacing-3xl); border-bottom: 1px solid var(--color-border);">
+          <div style="display: flex; align-items: baseline; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+            <span style="font-size: var(--font-size-xl); font-weight: 700;">v1.2.0</span>
+            <time style="font-size: var(--font-size-sm); color: var(--color-text-muted);" datetime="2026-03-20">2026年3月20日</time>
+          </div>
+          <div style="margin-bottom: var(--spacing-lg);">
+            <p style="font-weight: 600; color: var(--color-success); font-size: var(--font-size-sm); margin-bottom: var(--spacing-sm);">新機能</p>
+            <ul style="padding-left: 1.5em; color: var(--color-text-light); list-style: disc;">
+              <li>CSVインポート機能を追加（スタンダードプラン以上）</li>
+              <li>ラベルプレビューの手動編集機能を追加</li>
+              <li>ダッシュボードに利用状況グラフを追加</li>
+            </ul>
+          </div>
+          <div style="margin-bottom: var(--spacing-lg);">
+            <p style="font-weight: 600; color: var(--color-primary); font-size: var(--font-size-sm); margin-bottom: var(--spacing-sm);">改善</p>
+            <ul style="padding-left: 1.5em; color: var(--color-text-light); list-style: disc;">
+              <li>PDF出力速度を約40%改善</li>
+              <li>アラビア語のRTL（右から左）レイアウト精度を向上</li>
+              <li>モバイル端末でのフォーム入力体験を改善</li>
+            </ul>
+          </div>
+          <div>
+            <p style="font-weight: 600; color: var(--color-error); font-size: var(--font-size-sm); margin-bottom: var(--spacing-sm);">修正</p>
+            <ul style="padding-left: 1.5em; color: var(--color-text-light); list-style: disc;">
+              <li>一部の中国語簡体字フォントが正しく埋め込まれない問題を修正</li>
+              <li>栄養成分表の小数点以下が丸められる不具合を修正</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- v1.1.0 -->
+        <article style="margin-bottom: var(--spacing-3xl); padding-bottom: var(--spacing-3xl); border-bottom: 1px solid var(--color-border);">
+          <div style="display: flex; align-items: baseline; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+            <span style="font-size: var(--font-size-xl); font-weight: 700;">v1.1.0</span>
+            <time style="font-size: var(--font-size-sm); color: var(--color-text-muted);" datetime="2026-02-15">2026年2月15日</time>
+          </div>
+          <div style="margin-bottom: var(--spacing-lg);">
+            <p style="font-weight: 600; color: var(--color-success); font-size: var(--font-size-sm); margin-bottom: var(--spacing-sm);">新機能</p>
+            <ul style="padding-left: 1.5em; color: var(--color-text-light); list-style: disc;">
+              <li>台湾・マレーシアの法定表示に対応</li>
+              <li>ラベルサイズのカスタム設定を追加</li>
+              <li>PayPay / Apple Pay / Google Pay による決済に対応</li>
+            </ul>
+          </div>
+          <div style="margin-bottom: var(--spacing-lg);">
+            <p style="font-weight: 600; color: var(--color-primary); font-size: var(--font-size-sm); margin-bottom: var(--spacing-sm);">改善</p>
+            <ul style="padding-left: 1.5em; color: var(--color-text-light); list-style: disc;">
+              <li>翻訳精度の向上（食品成分の専門用語辞書を拡充）</li>
+              <li>PDF出力にトンボ（トリムマーク）を追加</li>
+            </ul>
+          </div>
+          <div>
+            <p style="font-weight: 600; color: var(--color-error); font-size: var(--font-size-sm); margin-bottom: var(--spacing-sm);">修正</p>
+            <ul style="padding-left: 1.5em; color: var(--color-text-light); list-style: disc;">
+              <li>韓国語のアレルゲン表示で一部の表記が不正確だった問題を修正</li>
+              <li>Safari でPDFダウンロードが開始されない不具合を修正</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- v1.0.0 -->
+        <article style="margin-bottom: var(--spacing-2xl);">
+          <div style="display: flex; align-items: baseline; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+            <span style="font-size: var(--font-size-xl); font-weight: 700;">v1.0.0</span>
+            <time style="font-size: var(--font-size-sm); color: var(--color-text-muted);" datetime="2026-01-15">2026年1月15日</time>
+          </div>
+          <div>
+            <p style="font-weight: 600; color: var(--color-success); font-size: var(--font-size-sm); margin-bottom: var(--spacing-sm);">正式リリース</p>
+            <ul style="padding-left: 1.5em; color: var(--color-text-light); list-style: disc;">
+              <li>18言語の翻訳に対応</li>
+              <li>8カ国の法定表示を自動生成</li>
+              <li>印刷用高解像度PDF出力（300dpi / CMYK対応）</li>
+              <li>ライト・スタンダードの2プランで提供開始</li>
+              <li>無料枠（月3ラベル / 1言語）の提供開始</li>
+              <li>Stripe決済連携（クレジットカード対応）</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <p class="footer__logo">ラベルン</p>
+          <p class="footer__description">製品ラベル多言語化サブスク。<br>18言語対応・法定表示準拠・PDF即出力。</p>
+        </div>
+        <div>
+          <p class="footer__nav-title">サービス</p>
+          <a href="index.html#features" class="footer__nav-link">機能紹介</a>
+          <a href="pricing.html" class="footer__nav-link">料金プラン</a>
+          <a href="index.html#languages" class="footer__nav-link">対応言語</a>
+          <a href="index.html#faq" class="footer__nav-link">FAQ</a>
+        </div>
+        <div>
+          <p class="footer__nav-title">サポート</p>
+          <a href="help.html" class="footer__nav-link">ヘルプセンター</a>
+          <a href="contact.html" class="footer__nav-link">お問い合わせ</a>
+          <a href="changelog.html" class="footer__nav-link">更新履歴</a>
+        </div>
+        <div>
+          <p class="footer__nav-title">会社情報</p>
+          <a href="company.html" class="footer__nav-link">礼株式会社</a>
+          <a href="https://rei-inc.jp" class="footer__nav-link" target="_blank" rel="noopener noreferrer">コーポレートサイト</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 礼株式会社. All rights reserved.</p>
+        <div class="footer__legal">
+          <a href="terms.html" class="footer__legal-link">利用規約</a>
+          <a href="privacy.html" class="footer__legal-link">プライバシーポリシー</a>
+          <a href="legal.html" class="footer__legal-link">特定商取引法に基づく表記</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var hamburger = document.getElementById('hamburger');
+      var mobileMenu = document.getElementById('mobile-menu');
+      var header = document.getElementById('header');
+
+      if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', function () {
+          var isOpen = mobileMenu.classList.toggle('is-open');
+          hamburger.classList.toggle('is-active');
+          hamburger.setAttribute('aria-expanded', isOpen);
+        });
+        mobileMenu.querySelectorAll('.mobile-menu__link').forEach(function (link) {
+          link.addEventListener('click', function () {
+            mobileMenu.classList.remove('is-open');
+            hamburger.classList.remove('is-active');
+            hamburger.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 10) {
+          header.classList.add('header--scrolled');
+        } else {
+          header.classList.remove('header--scrolled');
+        }
+      });
+    });
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    }
+  </script>
+</body>
+</html>

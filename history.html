@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="ラベルン ラベル作成履歴 - 過去に作成したラベルの一覧・検索・再編集">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#0f766e">
+  <title>作成履歴 | ラベルン</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
+  <style>
+    :root {
+      --color-primary: #0f766e;
+      --color-primary-hover: #0d6359;
+      --color-secondary: #1e293b;
+      --color-accent: #14b8a6;
+      --color-bg: #ffffff;
+      --color-bg-warm: #f0fdfa;
+      --color-bg-sidebar: #1e293b;
+      --color-text: #1e293b;
+      --color-text-muted: #64748b;
+      --color-border: #e2e8f0;
+      --color-success: #16a34a;
+      --color-warning: #d97706;
+      --color-error: #dc2626;
+      --sidebar-width: 260px;
+      --header-height: 64px;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+      --transition: .2s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--color-text);
+      background: var(--color-bg-warm);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .app-layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--color-bg-sidebar);
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform var(--transition);
+    }
+    .sidebar__brand {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .sidebar__brand span { color: #fff; }
+    .sidebar__nav { flex: 1; padding: 16px 12px; }
+    .sidebar__nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: .9rem;
+      transition: background var(--transition), color var(--transition);
+      cursor: pointer;
+    }
+    .sidebar__nav-item:hover,
+    .sidebar__nav-item[aria-current="page"] {
+      background: rgba(255,255,255,.1);
+      color: #fff;
+    }
+    .sidebar__nav-item[aria-current="page"] {
+      border-left: 3px solid var(--color-accent);
+    }
+    .sidebar__nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .sidebar__footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      font-size: .8rem;
+      color: #64748b;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.4);
+      z-index: 99;
+    }
+    .sidebar-overlay[data-visible="true"] { display: block; }
+
+    .main-area {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .app-header {
+      height: var(--header-height);
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .app-header__title { font-size: 1.1rem; font-weight: 700; }
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--color-text);
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger-btn svg { width: 28px; height: 28px; }
+    .gap-row { display: flex; gap: 12px; align-items: center; }
+
+    /* 履歴コンテンツ */
+    .history-content {
+      flex: 1;
+      padding: 32px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* 検索・フィルタ */
+    .search-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 14px;
+      font-size: .9rem;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-bg);
+      color: var(--color-text);
+      transition: border-color var(--transition);
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+    .filter-select {
+      padding: 10px 14px;
+      font-size: .9rem;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-bg);
+      color: var(--color-text);
+      cursor: pointer;
+    }
+
+    /* 結果件数 */
+    .result-count {
+      font-size: .85rem;
+      color: var(--color-text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* 履歴テーブル */
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .history-table th,
+    .history-table td {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: .875rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .history-table th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+    .history-table tr:last-child td { border-bottom: none; }
+    .history-table td a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+    .history-table td a:hover { text-decoration: underline; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: .75rem;
+      font-weight: 500;
+    }
+    .status-badge--complete { background: #dcfce7; color: #166534; }
+    .status-badge--draft { background: #fef3c7; color: #92400e; }
+
+    .action-link {
+      font-size: .85rem;
+      color: var(--color-primary);
+      text-decoration: none;
+      margin-right: 12px;
+    }
+    .action-link:hover { text-decoration: underline; }
+    .action-link--danger { color: var(--color-error); }
+
+    /* ページネーション */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .pagination__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
+      font-family: inherit;
+      font-size: .85rem;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: border-color var(--transition);
+    }
+    .pagination__btn:hover { border-color: var(--color-primary); }
+    .pagination__btn--active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+    .pagination__btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .btn--primary { background: var(--color-primary); color: #fff; }
+    .btn--primary:hover { background: var(--color-primary-hover); }
+
+    @media (max-width: 767px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar[data-open="true"] { transform: translateX(0); }
+      .main-area { margin-left: 0; }
+      .hamburger-btn { display: flex !important; }
+      .history-content { padding: 16px; }
+      .app-header { padding: 0 16px; }
+      .app-header__title { font-size: .95rem; }
+      .search-bar { flex-direction: column; }
+      .history-table { font-size: .8rem; }
+      .history-table th, .history-table td { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar-overlay" data-visible="false" id="sidebar-overlay" aria-hidden="true"></div>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="メインナビゲーション">
+      <div class="sidebar__brand">
+        <span>L</span>abeln
+      </div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__nav-item" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          ダッシュボード
+        </a>
+        <a href="app.html" class="sidebar__nav-item" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          新規ラベル作成
+        </a>
+        <a href="history.html" class="sidebar__nav-item" aria-current="page" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          履歴
+        </a>
+        <a href="account.html" class="sidebar__nav-item" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          アカウント設定
+        </a>
+      </nav>
+      <div class="sidebar__footer">
+        &copy; 2026 ラベルン by 礼株式会社
+      </div>
+    </aside>
+
+    <main class="main-area" role="main">
+      <header class="app-header">
+        <div class="gap-row">
+          <button class="hamburger-btn" id="hamburger-btn" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="sidebar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h1 class="app-header__title">作成履歴</h1>
+        </div>
+        <div class="gap-row">
+          <a href="app.html" class="btn btn--primary">新規ラベル作成</a>
+        </div>
+      </header>
+
+      <div class="history-content">
+        <!-- 検索・フィルタ -->
+        <div class="search-bar">
+          <input type="search" class="search-input" placeholder="商品名で検索..." aria-label="商品名で検索">
+          <select class="filter-select" aria-label="カテゴリで絞り込み">
+            <option value="">すべてのカテゴリ</option>
+            <option value="food">食品</option>
+            <option value="cosmetics">化粧品</option>
+            <option value="other">その他</option>
+          </select>
+          <select class="filter-select" aria-label="ステータスで絞り込み">
+            <option value="">すべてのステータス</option>
+            <option value="complete">完了</option>
+            <option value="draft">下書き</option>
+          </select>
+        </div>
+
+        <p class="result-count">12件中 1-10件を表示</p>
+
+        <!-- 履歴テーブル -->
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>商品名</th>
+              <th>カテゴリ</th>
+              <th>言語数</th>
+              <th>作成日</th>
+              <th>ステータス</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="app.html">有機グリーンティー</a></td>
+              <td>食品</td>
+              <td>18言語</td>
+              <td>2026-03-25</td>
+              <td><span class="status-badge status-badge--complete">完了</span></td>
+              <td>
+                <a href="app.html" class="action-link">編集</a>
+                <a href="#" class="action-link">PDF</a>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="app.html">ヒアルロン酸美容液</a></td>
+              <td>化粧品</td>
+              <td>8言語</td>
+              <td>2026-03-24</td>
+              <td><span class="status-badge status-badge--complete">完了</span></td>
+              <td>
+                <a href="app.html" class="action-link">編集</a>
+                <a href="#" class="action-link">PDF</a>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="app.html">プロテインバー チョコ味</a></td>
+              <td>食品</td>
+              <td>5言語</td>
+              <td>2026-03-23</td>
+              <td><span class="status-badge status-badge--draft">下書き</span></td>
+              <td>
+                <a href="app.html" class="action-link">編集</a>
+                <a href="#" class="action-link action-link--danger">削除</a>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="app.html">薬用ハンドクリーム</a></td>
+              <td>化粧品</td>
+              <td>18言語</td>
+              <td>2026-03-20</td>
+              <td><span class="status-badge status-badge--complete">完了</span></td>
+              <td>
+                <a href="app.html" class="action-link">編集</a>
+                <a href="#" class="action-link">PDF</a>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="app.html">有機味噌ペースト</a></td>
+              <td>食品</td>
+              <td>10言語</td>
+              <td>2026-03-18</td>
+              <td><span class="status-badge status-badge--complete">完了</span></td>
+              <td>
+                <a href="app.html" class="action-link">編集</a>
+                <a href="#" class="action-link">PDF</a>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="app.html">抹茶ラテ粉末</a></td>
+              <td>食品</td>
+              <td>18言語</td>
+              <td>2026-03-15</td>
+              <td><span class="status-badge status-badge--complete">完了</span></td>
+              <td>
+                <a href="app.html" class="action-link">編集</a>
+                <a href="#" class="action-link">PDF</a>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="app.html">日焼け止めジェル SPF50</a></td>
+              <td>化粧品</td>
+              <td>12言語</td>
+              <td>2026-03-12</td>
+              <td><span class="status-badge status-badge--complete">完了</span></td>
+              <td>
+                <a href="app.html" class="action-link">編集</a>
+                <a href="#" class="action-link">PDF</a>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="app.html">だし醤油 500ml</a></td>
+              <td>食品</td>
+              <td>5言語</td>
+              <td>2026-03-10</td>
+              <td><span class="status-badge status-badge--draft">下書き</span></td>
+              <td>
+                <a href="app.html" class="action-link">編集</a>
+                <a href="#" class="action-link action-link--danger">削除</a>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="app.html">ビタミンCサプリ</a></td>
+              <td>食品</td>
+              <td>18言語</td>
+              <td>2026-03-08</td>
+              <td><span class="status-badge status-badge--complete">完了</span></td>
+              <td>
+                <a href="app.html" class="action-link">編集</a>
+                <a href="#" class="action-link">PDF</a>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="app.html">オーガニックリップバーム</a></td>
+              <td>化粧品</td>
+              <td>8言語</td>
+              <td>2026-03-05</td>
+              <td><span class="status-badge status-badge--complete">完了</span></td>
+              <td>
+                <a href="app.html" class="action-link">編集</a>
+                <a href="#" class="action-link">PDF</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- ページネーション -->
+        <nav class="pagination" aria-label="ページ移動">
+          <button class="pagination__btn" disabled aria-label="前のページ">&laquo;</button>
+          <button class="pagination__btn pagination__btn--active" aria-current="page">1</button>
+          <button class="pagination__btn">2</button>
+          <button class="pagination__btn" aria-label="次のページ">&raquo;</button>
+        </nav>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function() {
+      var hamburger = document.getElementById('hamburger-btn');
+      var sidebar = document.getElementById('sidebar');
+      var overlay = document.getElementById('sidebar-overlay');
+
+      function openSidebar() {
+        sidebar.setAttribute('data-open', 'true');
+        overlay.setAttribute('data-visible', 'true');
+        overlay.setAttribute('aria-hidden', 'false');
+        hamburger.setAttribute('aria-expanded', 'true');
+      }
+      function closeSidebar() {
+        sidebar.setAttribute('data-open', 'false');
+        overlay.setAttribute('data-visible', 'false');
+        overlay.setAttribute('aria-hidden', 'true');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+
+      hamburger.addEventListener('click', function() {
+        var isOpen = sidebar.getAttribute('data-open') === 'true';
+        if (isOpen) { closeSidebar(); } else { openSidebar(); }
+      });
+      overlay.addEventListener('click', closeSidebar);
+    })();
+  </script>
+
+  <script src="js/auth.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    }
+  </script>
+</body>
+</html>

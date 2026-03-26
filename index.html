@@ -8,6 +8,7 @@
   <title>ラベルン | 製品ラベル多言語化サブスク - 18言語対応・法定表示準拠</title>
   <link rel="canonical" href="https://labeln.app/">
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -29,8 +30,8 @@
       </nav>
 
       <div class="header__actions">
-        <a href="login.html" class="btn btn--ghost btn--sm">ログイン</a>
-        <a href="signup.html" class="btn btn--primary btn--sm">新規登録</a>
+        <a href="app.html" class="btn btn--ghost btn--sm">ログイン</a>
+        <a href="app.html" class="btn btn--primary btn--sm">新規登録</a>
         <button class="header__hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-menu">
           <span class="header__hamburger-line" aria-hidden="true"></span>
           <span class="header__hamburger-line" aria-hidden="true"></span>
@@ -46,8 +47,8 @@
     <a href="#pricing" class="mobile-menu__link">料金</a>
     <a href="#faq" class="mobile-menu__link">FAQ</a>
     <div class="mobile-menu__actions">
-      <a href="login.html" class="btn btn--outline btn--full">ログイン</a>
-      <a href="signup.html" class="btn btn--primary btn--full">新規登録</a>
+      <a href="app.html" class="btn btn--outline btn--full">ログイン</a>
+      <a href="app.html" class="btn btn--primary btn--full">新規登録</a>
     </div>
   </div>
 
@@ -64,8 +65,32 @@
           各国の法定表示に合わせたラベルPDFをその場で出力します。
         </p>
         <div class="hero__cta fade-in">
-          <a href="signup.html" class="btn btn--primary btn--lg">無料で試す</a>
+          <a href="app.html" class="btn btn--primary btn--lg">無料で試す</a>
           <a href="#features" class="btn btn--outline btn--lg">詳しく見る</a>
+        </div>
+        <!-- テストログインボタン -->
+        <div style="margin-top:20px;">
+          <button id="test-login-btn" type="button" style="
+            display:inline-flex;align-items:center;gap:8px;
+            padding:14px 36px;
+            background:#dc2626;color:#fff;
+            font-size:1rem;font-weight:700;font-family:inherit;
+            border:none;border-radius:8px;
+            cursor:pointer;
+            box-shadow:0 4px 14px rgba(220,38,38,.4);
+            transition:background .2s,transform .2s;
+          " onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'" onclick="(function(){
+            localStorage.setItem('labelun_auth_token','mock_token_'+Date.now());
+            localStorage.setItem('labelun_auth_user',JSON.stringify({
+              id:'demo_user_001',
+              email:'demo@labelun.jp',
+              name:'デモユーザー',
+              plan:'standard',
+              createdAt:new Date().toISOString(),
+              isMock:true
+            }));
+            location.href='app.html';
+          })()">テストログイン</button>
         </div>
         <p class="hero__note">カード不要で無料お試し・PayPay / Apple Pay / Google Pay 対応</p>
       </div>
@@ -474,7 +499,7 @@
         <p class="section__subtitle section__subtitle--light">
           無料プランで今すぐ始めましょう。
         </p>
-        <a href="signup.html" class="btn btn--primary btn--lg">無料で試す</a>
+        <a href="app.html" class="btn btn--primary btn--lg">無料で試す</a>
       </div>
     </section>
   </main>

@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#0f766e">
   <title>ラベルン - ラベル作成</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
@@ -85,7 +85,7 @@
       color: #fff;
       border-bottom: 1px solid rgba(255,255,255,.1);
     }
-    .sidebar__brand span { color: var(--color-accent); }
+    .sidebar__brand span { color: #fff; }
     .sidebar__nav { flex: 1; padding: 16px 12px; }
     .sidebar__nav-item {
       display: flex;
@@ -223,7 +223,7 @@
       animation: fadeIn .3s ease;
     }
     .step-panel[aria-hidden="false"] { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .step-panel__heading {
       font-size: 1.35rem;
@@ -397,13 +397,12 @@
       border: 2px solid var(--color-border);
       border-radius: var(--radius-md);
       cursor: pointer;
-      transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+      transition: border-color var(--transition), background var(--transition);
       position: relative;
       background: var(--color-bg);
     }
     .language-card:hover {
       border-color: var(--color-primary);
-      box-shadow: var(--shadow-sm);
     }
     .language-card[aria-checked="true"] {
       border-color: var(--color-primary);
@@ -533,7 +532,6 @@
     .label-preview-frame {
       background: #fff;
       border: 1px solid #cbd5e1;
-      box-shadow: var(--shadow-md);
       padding: 16px;
       position: relative;
     }
@@ -555,9 +553,8 @@
       font-size: .9rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+      transition: background var(--transition);
     }
-    .btn:active { transform: scale(.98); }
     .btn--primary {
       background: var(--color-primary);
       color: #fff;
@@ -613,7 +610,6 @@
       overflow-y: auto;
       z-index: 20;
       display: none;
-      box-shadow: var(--shadow-md);
     }
     .autocomplete-list[data-visible="true"] { display: block; }
     .autocomplete-list__item {
@@ -717,6 +713,24 @@
       height: 22px;
     }
 
+    /* インラインstyle代替クラス */
+    .mt-xs { margin-top: 6px; }
+    .mt-sm { margin-top: 12px; }
+    .mt-md { margin-top: 16px; }
+    .mb-sm { margin-bottom: 12px; }
+    .gap-row { display: flex; gap: 12px; }
+    .gap-row--wrap { display: flex; gap: 12px; flex-wrap: wrap; }
+    .inline-check { display: flex; align-items: center; gap: 6px; font-size: .85rem; cursor: pointer; }
+    .inline-check input { accent-color: var(--color-primary); width: 18px; height: 18px; }
+    .orientation-group { display: flex; gap: 12px; }
+    .orientation-group .checkbox-item { flex: 1; justify-content: center; }
+    .select--narrow { max-width: 240px; }
+    .translate-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .translate-actions__count { font-size: .9rem; font-weight: 600; }
+    .color-hex { font-size: .85rem; color: var(--color-text-muted); }
+    .preview-placeholder-icon { width: 48px; height: 48px; color: #94a3b8; margin-bottom: 12px; }
+    .btn__icon--sm { width: 18px; height: 18px; }
+
     /* レスポンシブ */
     @media (max-width: 767px) {
       .sidebar {
@@ -775,7 +789,7 @@
     <!-- ========== サイドバー ========== -->
     <aside class="sidebar" id="sidebar" role="navigation" aria-label="メインナビゲーション">
       <div class="sidebar__brand">
-        <span>L</span>abelne
+        <span>L</span>abeln
       </div>
       <nav class="sidebar__nav">
         <a href="dashboard.html" class="sidebar__nav-item" role="menuitem">
@@ -804,7 +818,7 @@
     <main class="main-area" role="main">
       <!-- ヘッダー -->
       <header class="app-header">
-        <div style="display:flex;align-items:center;gap:12px;">
+        <div class="gap-row">
           <button class="hamburger-btn" id="hamburger-btn" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="sidebar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
@@ -812,7 +826,7 @@
         </div>
         <div class="app-header__actions">
           <button type="button" class="btn btn--ghost" id="btn-save-draft" aria-label="下書き保存">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:18px;height:18px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <svg class="btn__icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             下書き保存
           </button>
         </div>
@@ -1028,11 +1042,11 @@
           <!-- 栄養成分 -->
           <div class="form-section">
             <h3 class="form-section__title">栄養成分表示</h3>
-            <p class="form-hint" style="margin-bottom:12px;">100gあたり、または1食分あたりの値を入力してください。</p>
+            <p class="form-hint mb-sm">100gあたり、または1食分あたりの値を入力してください。</p>
 
-            <div class="form-group" style="margin-bottom:16px;">
+            <div class="form-group">
               <label for="nutrition-per" class="form-label">表示基準</label>
-              <select id="nutrition-per" name="nutrition-per" class="form-select" data-field="nutritionPer" style="max-width:240px;">
+              <select id="nutrition-per" name="nutrition-per" class="form-select select--narrow" data-field="nutritionPer">
                 <option value="100g">100gあたり</option>
                 <option value="100ml">100mlあたり</option>
                 <option value="serving">1食分あたり</option>
@@ -1076,7 +1090,7 @@
               </tbody>
             </table>
 
-            <button type="button" class="btn btn--ghost" id="btn-add-nutrition" style="margin-top:12px;" aria-label="栄養成分を追加">
+            <button type="button" class="btn btn--ghost mt-sm" id="btn-add-nutrition" aria-label="栄養成分を追加">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               項目を追加
             </button>
@@ -1109,7 +1123,7 @@
                 <button type="button" class="size-preset-btn" data-size="custom" aria-pressed="false" role="radio" aria-checked="false">カスタム</button>
               </div>
             </div>
-            <div class="form-row" id="custom-size-fields" style="display:none;margin-top:16px;">
+            <div class="form-row mt-md" id="custom-size-fields" style="display:none;">
               <div class="form-group">
                 <label for="label-width" class="form-label">幅（mm）</label>
                 <input type="number" id="label-width" name="label-width" class="form-input" data-field="labelWidth" placeholder="幅" min="10" max="300">
@@ -1119,13 +1133,13 @@
                 <input type="number" id="label-height" name="label-height" class="form-input" data-field="labelHeight" placeholder="高さ" min="10" max="300">
               </div>
             </div>
-            <div class="form-group" style="margin-top:16px;">
+            <div class="form-group mt-md">
               <p class="form-label">向き</p>
-              <div style="display:flex;gap:12px;">
-                <label class="checkbox-item" style="flex:1;justify-content:center;">
+              <div class="orientation-group">
+                <label class="checkbox-item">
                   <input type="radio" name="label-orientation" value="landscape" data-field="orientation" checked> 横
                 </label>
-                <label class="checkbox-item" style="flex:1;justify-content:center;">
+                <label class="checkbox-item">
                   <input type="radio" name="label-orientation" value="portrait" data-field="orientation"> 縦
                 </label>
               </div>
@@ -1146,9 +1160,9 @@
               </div>
               <div class="form-group">
                 <label for="font-size-auto" class="form-label">文字サイズ自動調整</label>
-                <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
-                  <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;">
-                    <input type="checkbox" id="font-size-auto" name="font-size-auto" data-field="fontSizeAuto" checked style="accent-color:var(--color-primary);width:18px;height:18px;">
+                <div class="mt-xs">
+                  <label class="inline-check">
+                    <input type="checkbox" id="font-size-auto" name="font-size-auto" data-field="fontSizeAuto" checked>
                     有効
                   </label>
                 </div>
@@ -1159,20 +1173,20 @@
                 <label for="bg-color" class="form-label">背景色</label>
                 <div class="color-input-group">
                   <input type="color" id="bg-color" name="bg-color" data-field="bgColor" value="#ffffff">
-                  <span id="bg-color-hex" style="font-size:.85rem;color:var(--color-text-muted);">#ffffff</span>
+                  <span id="bg-color-hex" class="color-hex">#ffffff</span>
                 </div>
               </div>
               <div class="form-group">
                 <label for="show-border" class="form-label">枠線</label>
-                <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
-                  <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;">
-                    <input type="checkbox" id="show-border" name="show-border" data-field="showBorder" checked style="accent-color:var(--color-primary);width:18px;height:18px;">
+                <div class="mt-xs">
+                  <label class="inline-check">
+                    <input type="checkbox" id="show-border" name="show-border" data-field="showBorder" checked>
                     表示する
                   </label>
                 </div>
               </div>
             </div>
-            <div class="form-group" style="margin-top:8px;">
+            <div class="form-group">
               <label class="form-label">ロゴ画像（任意）</label>
               <div class="file-upload-area" id="logo-upload-area" role="button" tabindex="0" aria-label="ロゴ画像をアップロード">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -1180,7 +1194,7 @@
                 <p class="form-hint">PNG, JPG, SVG（最大2MB）</p>
               </div>
               <input type="file" id="logo-file" name="logo-file" data-field="logoFile" accept="image/png,image/jpeg,image/svg+xml" style="display:none;" aria-label="ロゴ画像ファイル">
-              <div id="logo-preview" style="display:none;margin-top:12px;"></div>
+              <div id="logo-preview" class="mt-sm" style="display:none;"></div>
             </div>
           </div>
 
@@ -1415,9 +1429,9 @@
 
           <!-- 翻訳アクション -->
           <div class="form-section">
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div class="translate-actions">
               <div>
-                <p style="font-size:.9rem;font-weight:600;">選択中: <span id="selected-lang-count">0</span> 言語</p>
+                <p class="translate-actions__count">選択中: <span id="selected-lang-count">0</span> 言語</p>
               </div>
               <button type="button" class="btn btn--accent" id="btn-start-translation" aria-label="翻訳を開始">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
@@ -1485,7 +1499,7 @@
             <div class="preview-container">
               <div class="label-preview-frame" id="label-preview" data-label-width="80" data-label-height="50" aria-label="ラベルプレビュー">
                 <div class="label-preview-frame__placeholder">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;color:#94a3b8;margin-bottom:12px;" aria-hidden="true"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="8" y1="3" x2="8" y2="21"/></svg>
+                  <svg class="preview-placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="8" y1="3" x2="8" y2="21"/></svg>
                   <p>言語を選択して翻訳を実行すると、ここにラベルのプレビューが表示されます。</p>
                 </div>
                 <!--
@@ -1506,7 +1520,7 @@
           <!-- 出力オプション -->
           <div class="form-section">
             <h3 class="form-section__title">PDF出力</h3>
-            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div class="gap-row--wrap">
               <button type="button" class="btn btn--primary" id="btn-download-all-pdf" aria-label="全言語のPDFを一括ダウンロード">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 PDF一括ダウンロード
@@ -1516,8 +1530,8 @@
                 個別言語ダウンロード
               </button>
             </div>
-            <p class="form-hint" style="margin-top:12px;">一括ダウンロードの場合、全言語のラベルがまとめてZIPで出力されます。</p>
-            <div id="payment-request-button" style="margin-top:12px;"></div>
+            <p class="form-hint mt-sm">一括ダウンロードの場合、全言語のラベルがまとめてZIPで出力されます。</p>
+            <div id="payment-request-button" class="mt-sm"></div>
             <div id="payment-method-badges"></div>
           </div>
 
@@ -1796,5 +1810,10 @@
   <script src="js/pdf-generator.js" defer></script>
   <script src="js/stripe.js" defer></script>
   <script src="js/app.js" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    }
+  </script>
 </body>
 </html>

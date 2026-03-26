@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="ラベルン アカウント設定 - プロフィール、プラン、セキュリティ">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#0f766e">
+  <title>アカウント設定 | ラベルン</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
+  <style>
+    :root {
+      --color-primary: #0f766e;
+      --color-primary-hover: #0d6359;
+      --color-secondary: #1e293b;
+      --color-accent: #14b8a6;
+      --color-bg: #ffffff;
+      --color-bg-warm: #f0fdfa;
+      --color-bg-sidebar: #1e293b;
+      --color-text: #1e293b;
+      --color-text-muted: #64748b;
+      --color-border: #e2e8f0;
+      --color-success: #16a34a;
+      --color-warning: #d97706;
+      --color-error: #dc2626;
+      --sidebar-width: 260px;
+      --header-height: 64px;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+      --transition: .2s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--color-text);
+      background: var(--color-bg-warm);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .app-layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--color-bg-sidebar);
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform var(--transition);
+    }
+    .sidebar__brand {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .sidebar__brand span { color: #fff; }
+    .sidebar__nav { flex: 1; padding: 16px 12px; }
+    .sidebar__nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: .9rem;
+      transition: background var(--transition), color var(--transition);
+      cursor: pointer;
+    }
+    .sidebar__nav-item:hover,
+    .sidebar__nav-item[aria-current="page"] {
+      background: rgba(255,255,255,.1);
+      color: #fff;
+    }
+    .sidebar__nav-item[aria-current="page"] {
+      border-left: 3px solid var(--color-accent);
+    }
+    .sidebar__nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .sidebar__footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      font-size: .8rem;
+      color: #64748b;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.4);
+      z-index: 99;
+    }
+    .sidebar-overlay[data-visible="true"] { display: block; }
+
+    .main-area {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .app-header {
+      height: var(--header-height);
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .app-header__title { font-size: 1.1rem; font-weight: 700; }
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--color-text);
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger-btn svg { width: 28px; height: 28px; }
+    .gap-row { display: flex; gap: 12px; align-items: center; }
+
+    /* アカウントコンテンツ */
+    .account-content {
+      flex: 1;
+      padding: 32px;
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* セクション */
+    .account-section {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .account-section__title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    /* フォーム */
+    .form-group { margin-bottom: 18px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label {
+      display: block;
+      font-size: .875rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--color-text);
+    }
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: .9rem;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-bg);
+      color: var(--color-text);
+      transition: border-color var(--transition);
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+    .form-input:disabled {
+      background: #f8fafc;
+      color: var(--color-text-muted);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-hint {
+      font-size: .78rem;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+
+    /* プラン情報 */
+    .plan-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+    }
+    .plan-info__name {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .plan-info__price {
+      font-size: .9rem;
+      color: var(--color-text-muted);
+    }
+    .plan-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-size: .75rem;
+      font-weight: 600;
+      background: #ccfbf1;
+      color: var(--color-primary);
+      margin-left: 8px;
+    }
+
+    /* 利用量バー */
+    .usage-bar-wrapper {
+      margin-bottom: 12px;
+    }
+    .usage-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .85rem;
+      margin-bottom: 6px;
+    }
+    .usage-bar {
+      height: 8px;
+      background: var(--color-border);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .usage-bar__fill {
+      height: 100%;
+      background: var(--color-primary);
+      border-radius: 9999px;
+      transition: width var(--transition);
+    }
+
+    /* ボタン */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .btn--primary { background: var(--color-primary); color: #fff; }
+    .btn--primary:hover { background: var(--color-primary-hover); }
+    .btn--secondary {
+      background: none;
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+    }
+    .btn--secondary:hover { border-color: var(--color-primary); }
+    .btn--danger {
+      background: none;
+      color: var(--color-error);
+      border: 1px solid var(--color-border);
+    }
+    .btn--danger:hover { border-color: var(--color-error); }
+    .btn--sm { padding: 8px 16px; font-size: .85rem; }
+
+    .actions-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    /* 危険ゾーン */
+    .danger-zone {
+      border-color: #fecaca;
+    }
+    .danger-zone .account-section__title {
+      color: var(--color-error);
+      border-bottom-color: #fecaca;
+    }
+    .danger-text {
+      font-size: .85rem;
+      color: var(--color-text-muted);
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 767px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar[data-open="true"] { transform: translateX(0); }
+      .main-area { margin-left: 0; }
+      .hamburger-btn { display: flex !important; }
+      .account-content { padding: 16px; }
+      .app-header { padding: 0 16px; }
+      .app-header__title { font-size: .95rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .plan-info { flex-direction: column; gap: 8px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar-overlay" data-visible="false" id="sidebar-overlay" aria-hidden="true"></div>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="メインナビゲーション">
+      <div class="sidebar__brand">
+        <span>L</span>abeln
+      </div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__nav-item" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          ダッシュボード
+        </a>
+        <a href="app.html" class="sidebar__nav-item" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          新規ラベル作成
+        </a>
+        <a href="history.html" class="sidebar__nav-item" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          履歴
+        </a>
+        <a href="account.html" class="sidebar__nav-item" aria-current="page" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          アカウント設定
+        </a>
+      </nav>
+      <div class="sidebar__footer">
+        &copy; 2026 ラベルン by 礼株式会社
+      </div>
+    </aside>
+
+    <main class="main-area" role="main">
+      <header class="app-header">
+        <div class="gap-row">
+          <button class="hamburger-btn" id="hamburger-btn" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="sidebar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h1 class="app-header__title">アカウント設定</h1>
+        </div>
+        <div></div>
+      </header>
+
+      <div class="account-content">
+        <!-- プロフィール -->
+        <section class="account-section">
+          <h2 class="account-section__title">プロフィール</h2>
+          <form>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="account-name" class="form-label">表示名</label>
+                <input type="text" id="account-name" class="form-input" value="デモユーザー">
+              </div>
+              <div class="form-group">
+                <label for="account-company" class="form-label">会社名（任意）</label>
+                <input type="text" id="account-company" class="form-input" placeholder="株式会社サンプル">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="account-email" class="form-label">メールアドレス</label>
+              <input type="email" id="account-email" class="form-input" value="demo@labelun.jp" disabled>
+              <p class="form-hint">メールアドレスの変更はサポートまでお問い合わせください。</p>
+            </div>
+            <div class="actions-row">
+              <button type="button" class="btn btn--primary btn--sm">保存する</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- プラン情報 -->
+        <section class="account-section">
+          <h2 class="account-section__title">プラン情報</h2>
+          <div class="plan-info">
+            <div>
+              <p class="plan-info__name">スタンダード <span class="plan-badge">Standard</span></p>
+              <p class="plan-info__price">月額 ¥500（税込） / 次回更新日: 2026-04-25</p>
+            </div>
+            <a href="pricing.html" class="btn btn--secondary btn--sm">プラン変更</a>
+          </div>
+          <div class="usage-bar-wrapper">
+            <div class="usage-bar-label">
+              <span>今月のラベル作成数</span>
+              <span>3 / 50</span>
+            </div>
+            <div class="usage-bar">
+              <div class="usage-bar__fill" style="width: 6%"></div>
+            </div>
+          </div>
+          <div class="usage-bar-wrapper">
+            <div class="usage-bar-label">
+              <span>利用可能言語</span>
+              <span>18 / 18</span>
+            </div>
+            <div class="usage-bar">
+              <div class="usage-bar__fill" style="width: 100%"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- パスワード変更 -->
+        <section class="account-section">
+          <h2 class="account-section__title">パスワード変更</h2>
+          <form>
+            <div class="form-group">
+              <label for="current-password" class="form-label">現在のパスワード</label>
+              <input type="password" id="current-password" class="form-input" autocomplete="current-password">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="new-password" class="form-label">新しいパスワード</label>
+                <input type="password" id="new-password" class="form-input" autocomplete="new-password">
+                <p class="form-hint">8文字以上、英数字を含めてください。</p>
+              </div>
+              <div class="form-group">
+                <label for="confirm-password" class="form-label">新しいパスワード（確認）</label>
+                <input type="password" id="confirm-password" class="form-input" autocomplete="new-password">
+              </div>
+            </div>
+            <div class="actions-row">
+              <button type="button" class="btn btn--primary btn--sm">パスワードを変更</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- 危険ゾーン -->
+        <section class="account-section danger-zone">
+          <h2 class="account-section__title">アカウント操作</h2>
+          <p class="danger-text">ログアウトするとログイン画面に戻ります。アカウント削除は取り消せません。</p>
+          <div class="actions-row">
+            <button type="button" class="btn btn--secondary btn--sm" id="btn-logout">ログアウト</button>
+            <button type="button" class="btn btn--danger btn--sm">アカウントを削除</button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function() {
+      var hamburger = document.getElementById('hamburger-btn');
+      var sidebar = document.getElementById('sidebar');
+      var overlay = document.getElementById('sidebar-overlay');
+
+      function openSidebar() {
+        sidebar.setAttribute('data-open', 'true');
+        overlay.setAttribute('data-visible', 'true');
+        overlay.setAttribute('aria-hidden', 'false');
+        hamburger.setAttribute('aria-expanded', 'true');
+      }
+      function closeSidebar() {
+        sidebar.setAttribute('data-open', 'false');
+        overlay.setAttribute('data-visible', 'false');
+        overlay.setAttribute('aria-hidden', 'true');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+
+      hamburger.addEventListener('click', function() {
+        var isOpen = sidebar.getAttribute('data-open') === 'true';
+        if (isOpen) { closeSidebar(); } else { openSidebar(); }
+      });
+      overlay.addEventListener('click', closeSidebar);
+    })();
+
+    /* ログアウト */
+    document.getElementById('btn-logout').addEventListener('click', function() {
+      localStorage.removeItem('labelun_auth_token');
+      localStorage.removeItem('labelun_auth_user');
+      location.href = 'index.html';
+    });
+  </script>
+
+  <script src="js/auth.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    }
+  </script>
+</body>
+</html>

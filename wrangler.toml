@@ -4,6 +4,9 @@ compatibility_date = "2024-12-01"
 
 [vars]
 ENVIRONMENT = "development"
+STRIPE_PRICE_LITE = "price_1TF9jz9Fc8Hnuaokq1Fu5boR"
+STRIPE_PRICE_STANDARD = "price_1TF9k09Fc8HnuaokatkHmGFM"
+STRIPE_PRICE_PRO = "price_1TF9jy9Fc8Hnuaokk74PXZiN"
 
 [[d1_databases]]
 binding = "DB"

@@ -24,10 +24,10 @@ const APP_SHELL = [
 
 /** データファイル（辞書、法定表示ルール等） */
 const DATA_FILES = [
-  '/data/languages.json',
+  '/data/dictionary.json',
   '/data/legal-rules.json',
   '/data/allergens.json',
-  '/data/nutrition-units.json',
+  '/data/nutrition-formats.json',
 ];
 
 /** オフライン時のフォールバックHTML */

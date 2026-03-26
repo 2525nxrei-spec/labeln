@@ -26,7 +26,7 @@ const STRIPE_PLANS = {
     price: 300,
     currency: 'jpy',
     interval: 'month',
-    priceId: null, // Stripe Price ID（Workers の .env から渡される）
+    priceId: 'price_1TF9jz9Fc8Hnuaokq1Fu5boR', // ラベルン ライト ¥300/月
     description: '月30ラベル / 5言語',
   },
   standard: {
@@ -35,7 +35,7 @@ const STRIPE_PLANS = {
     price: 500,
     currency: 'jpy',
     interval: 'month',
-    priceId: null,
+    priceId: 'price_1TF9k09Fc8HnuaokatkHmGFM', // ラベルン スタンダード ¥500/月
     description: '月100ラベル / 18言語',
   },
   pro: {
@@ -44,7 +44,7 @@ const STRIPE_PLANS = {
     price: 2000,
     currency: 'jpy',
     interval: 'month',
-    priceId: null,
+    priceId: 'price_1TF9jy9Fc8Hnuaokk74PXZiN', // ラベルン プロ ¥2,000/月
     description: '無制限ラベル / API連携',
     comingSoon: true,
   },
