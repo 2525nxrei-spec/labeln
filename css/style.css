@@ -1120,6 +1120,13 @@ table {
   .pricing-card .btn {
     min-height: 48px;
   }
+
+  /* テーブル横スクロール対応 */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* ============================================

@@ -77,8 +77,7 @@
             font-size:1rem;font-weight:700;font-family:inherit;
             border:none;border-radius:8px;
             cursor:pointer;
-            box-shadow:0 4px 14px rgba(220,38,38,.4);
-            transition:background .2s,transform .2s;
+            transition:background .2s;
           " onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'" onclick="(function(){
             localStorage.setItem('labelun_auth_token','mock_token_'+Date.now());
             localStorage.setItem('labelun_auth_user',JSON.stringify({
