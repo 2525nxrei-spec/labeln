@@ -74,6 +74,7 @@ const Auth = {
   /* API利用可能フラグ */
   _apiAvailable: null,
 
+
   /* ============================================
      初期化
      ============================================ */
@@ -86,11 +87,6 @@ const Auth = {
 
     // API接続テスト
     await this._checkAPIAvailability();
-
-    // API利用不可 → モックモードでデモユーザーログイン
-    if (!this._apiAvailable && !this.currentUser) {
-      this.mockLogin();
-    }
 
     // トークンが有効か検証
     if (this.token && this._apiAvailable) {
@@ -113,12 +109,6 @@ const Auth = {
   async login(email, password) {
     if (!email || !password) {
       throw new Error('メールアドレスとパスワードを入力してください。');
-    }
-
-    // API利用不可 → モック
-    if (!this._apiAvailable) {
-      this.mockLogin(email);
-      return { success: true, mock: true };
     }
 
     try {
@@ -145,13 +135,6 @@ const Auth = {
       return { success: true };
     } catch (err) {
       console.error('[Auth] ログインエラー:', err);
-
-      // APIエラー → モックにフォールバック
-      if (err.message.includes('fetch') || err.message.includes('NetworkError')) {
-        this.mockLogin(email);
-        return { success: true, mock: true };
-      }
-
       throw err;
     }
   },
@@ -175,12 +158,6 @@ const Auth = {
     }
 
     const selectedPlan = plan || 'free';
-
-    // API利用不可 → モック
-    if (!this._apiAvailable) {
-      this.mockLogin(email, selectedPlan);
-      return { success: true, mock: true };
-    }
 
     try {
       const res = await fetch(AUTH_API_ENDPOINTS.REGISTER, {
@@ -206,12 +183,6 @@ const Auth = {
       return { success: true };
     } catch (err) {
       console.error('[Auth] 登録エラー:', err);
-
-      if (err.message.includes('fetch') || err.message.includes('NetworkError')) {
-        this.mockLogin(email, selectedPlan);
-        return { success: true, mock: true };
-      }
-
       throw err;
     }
   },
@@ -311,31 +282,6 @@ const Auth = {
       allowed: selectedCount <= planDetails.maxLanguages,
       max: planDetails.maxLanguages,
     };
-  },
-
-  /* ============================================
-     モックモード
-     ============================================ */
-
-  /**
-   * デモユーザーで自動ログイン
-   * API未設定時に全機能を試用可能にする
-   */
-  mockLogin(email, plan) {
-    this.currentUser = {
-      id: 'demo_user_001',
-      email: email || 'demo@labelun.jp',
-      name: 'デモユーザー',
-      plan: plan || 'standard',
-      createdAt: new Date().toISOString(),
-      isMock: true,
-    };
-    this.token = 'mock_token_' + Date.now();
-
-    this._saveSession();
-    this._updateUI();
-
-    console.log('[Auth] モックログイン:', this.currentUser.email, `(${this.currentUser.plan}プラン)`);
   },
 
   /* ============================================
@@ -440,10 +386,6 @@ const Auth = {
       if (userPlanEl) {
         const planInfo = this.getPlanDetails();
         userPlanEl.textContent = planInfo.name;
-        // モックモード表示
-        if (this.currentUser.isMock) {
-          userPlanEl.textContent += '（デモ）';
-        }
       }
     } else {
       if (loginSection) loginSection.style.display = 'flex';
