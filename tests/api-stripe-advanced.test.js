@@ -286,9 +286,9 @@ describe('Stripe API 高度なテスト', () => {
 
       expect(data.connected).toBe(true);
       expect(data.plans).toBeDefined();
-      expect(data.plans.lite).toBe('price_test_lite');
-      expect(data.plans.standard).toBe('price_test_standard');
-      expect(data.plans.pro).toBe('price_test_pro');
+      expect(data.plans.lite).toBe('lite');
+      expect(data.plans.standard).toBe('standard');
+      expect(data.plans.pro).toBe('pro');
       expect(data.paymentMethods).toContain('card');
       expect(data.paymentMethods).toContain('paypay');
     });
