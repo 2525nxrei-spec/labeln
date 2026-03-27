@@ -114,9 +114,6 @@ async function handler({ request, env }) {
     return errorResponse('今月の翻訳上限に達しました。プランをアップグレードしてください。', 429);
   }
 
-  // 翻訳API呼び出し時に利用量をインクリメント
-  await incrementUsage(payload.sub, env);
-
   // Gemini API未設定時はモック返却
   if (!env.GEMINI_API_KEY) {
     const mockTranslations = {};
@@ -125,6 +122,8 @@ async function handler({ request, env }) {
         (text) => `[MOCK:${lang}] ${text}`
       );
     }
+    // 成功後にカウントをインクリメント
+    await incrementUsage(payload.sub, env);
     return jsonResponse({ translations: mockTranslations, mock: true });
   }
 
@@ -161,6 +160,9 @@ async function handler({ request, env }) {
 
       translations[lang] = parseTranslationResponse(rawText, texts.length);
     }
+
+    // 翻訳成功後にカウントをインクリメント（失敗時はカウントしない）
+    await incrementUsage(payload.sub, env);
 
     return jsonResponse({ translations, mock: false });
   } catch (err) {

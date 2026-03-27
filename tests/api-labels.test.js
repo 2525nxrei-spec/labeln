@@ -56,6 +56,28 @@ describe('ラベルAPI', () => {
       expect(data.product_name).toBe('テスト醤油');
     });
 
+    it('freeプランで月間上限超過時に403を返す', async () => {
+      const env = createMockEnv();
+      env.DB._tables.users.push({ id: userId, email, plan: 'free' });
+      // freeプランは月3件まで → 既に3件使用済みにする
+      const month = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+      env.DB._tables.usage.push({ id: 'usage-1', user_id: userId, month, label_count: 3 });
+
+      const token = await createTestJWT(userId, email, env.JWT_SECRET);
+      const request = new Request('https://mylabeln.com/api/labels', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          'CF-Connecting-IP': '127.0.0.1',
+          Origin: 'https://mylabeln.com',
+        },
+        body: JSON.stringify({ product_name: '上限テスト商品' }),
+      });
+      const response = await createLabel(createMockContext(request, env));
+      expect(response.status).toBe(403);
+    });
+
     it('product_name未設定で400を返す', async () => {
       const env = createMockEnv();
       env.DB._tables.users.push({ id: userId, email, plan: 'standard' });
