@@ -80,3 +80,18 @@ CREATE TABLE IF NOT EXISTS rate_limits (
 
 -- IP×タイムスタンプで高速検索・削除
 CREATE INDEX IF NOT EXISTS idx_rate_limits_ip_ts ON rate_limits (ip, timestamp);
+
+-- リクエスト・フィードバックテーブル
+CREATE TABLE IF NOT EXISTS requests (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL DEFAULT '',
+  email TEXT NOT NULL DEFAULT '',
+  category TEXT NOT NULL CHECK (category IN ('feature', 'bug', 'other')),
+  message TEXT NOT NULL,
+  ip TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL
+);
+
+-- リクエスト検索用インデックス
+CREATE INDEX IF NOT EXISTS idx_requests_created_at ON requests (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_requests_category ON requests (category);

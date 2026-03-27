@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ラベルンへのお問い合わせ。サービスに関するご質問・ご要望をお寄せください。">
+  <meta name="description" content="ラベルンへの機能リクエスト・フィードバック。サービス改善のためのご意見をお待ちしています。">
   <meta name="theme-color" content="#0f766e">
-  <title>お問い合わせ | ラベルン</title>
-  <link rel="canonical" href="https://mylabeln.com/contact.html">
+  <title>リクエスト・フィードバック | ラベルン</title>
+  <link rel="canonical" href="https://mylabeln.com/request.html">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,73 +56,55 @@
   <main id="main-content">
     <section class="section" style="padding-top: calc(var(--header-height) + var(--spacing-3xl)); background: #f8fafc;">
       <div class="container">
-        <h1 style="font-size: var(--font-size-3xl); font-weight: 800; margin-bottom: var(--spacing-md);">お問い合わせ</h1>
+        <h1 style="font-size: var(--font-size-3xl); font-weight: 800; margin-bottom: var(--spacing-md);">リクエスト・フィードバック</h1>
         <p style="color: var(--color-text-light); font-size: var(--font-size-lg); max-width: 600px;">
-          サービスに関するご質問、不具合の報告、機能のご要望などお気軽にお寄せください。
+          「こんな機能がほしい」「ここが使いにくい」など、サービス改善のためのご意見をお待ちしています。
         </p>
       </div>
     </section>
 
     <section class="section">
       <div class="container" style="max-width: 680px;">
-        <!-- パスワードリセット案内 -->
-        <div style="background: #fef9f0; border: 1px solid #f0d9c0; border-radius: var(--radius-md); padding: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-          <p style="font-weight: 600; margin-bottom: var(--spacing-sm); color: #0f766e;">パスワードリセットをご希望の方へ</p>
-          <p style="color: var(--color-text-light); font-size: var(--font-size-sm);">
-            パスワードをお忘れの場合は、ご登録のメールアドレスを記載のうえ、下記フォームよりお問い合わせください。確認後、パスワードリセットのご案内をお送りいたします。
-          </p>
-        </div>
-
-        <!-- お問い合わせ前の案内 -->
-        <div style="background: #f8fafc; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--spacing-lg); margin-bottom: var(--spacing-2xl);">
-          <p style="font-weight: 600; margin-bottom: var(--spacing-sm);">お問い合わせの前に</p>
-          <p style="color: var(--color-text-light); font-size: var(--font-size-sm);">
-            <a href="help.html">ヘルプセンター</a> や <a href="index.html#faq">FAQ</a> で解決できる場合があります。まずそちらをご確認ください。
-          </p>
-        </div>
-
         <!-- フォーム -->
-        <form id="contact-form" novalidate aria-label="お問い合わせフォーム">
+        <form id="request-form" novalidate aria-label="リクエスト・フィードバックフォーム">
           <div style="margin-bottom: var(--spacing-lg);">
-            <label for="contact-name" style="display: block; font-size: var(--font-size-sm); font-weight: 500; margin-bottom: 6px;">お名前 <span style="color: var(--color-error);">*</span></label>
-            <input type="text" id="contact-name" name="name" required
+            <label for="request-name" style="display: block; font-size: var(--font-size-sm); font-weight: 500; margin-bottom: 6px;">名前（任意）</label>
+            <input type="text" id="request-name" name="name"
               style="width: 100%; padding: 10px 14px; font-size: var(--font-size-base); font-family: inherit; border: 1px solid var(--color-border); border-radius: var(--radius-sm); transition: border-color 0.2s;"
               placeholder="山田 太郎">
           </div>
 
           <div style="margin-bottom: var(--spacing-lg);">
-            <label for="contact-email" style="display: block; font-size: var(--font-size-sm); font-weight: 500; margin-bottom: 6px;">メールアドレス <span style="color: var(--color-error);">*</span></label>
-            <input type="email" id="contact-email" name="email" required
+            <label for="request-email" style="display: block; font-size: var(--font-size-sm); font-weight: 500; margin-bottom: 6px;">メールアドレス（任意）</label>
+            <input type="email" id="request-email" name="email"
               style="width: 100%; padding: 10px 14px; font-size: var(--font-size-base); font-family: inherit; border: 1px solid var(--color-border); border-radius: var(--radius-sm); transition: border-color 0.2s;"
               placeholder="example@example.com">
+            <p style="font-size: var(--font-size-sm); color: var(--color-text-light); margin-top: 4px;">返信をご希望の場合はご入力ください</p>
           </div>
 
           <div style="margin-bottom: var(--spacing-lg);">
-            <label for="contact-category" style="display: block; font-size: var(--font-size-sm); font-weight: 500; margin-bottom: 6px;">お問い合わせ種別 <span style="color: var(--color-error);">*</span></label>
-            <select id="contact-category" name="category" required
+            <label for="request-category" style="display: block; font-size: var(--font-size-sm); font-weight: 500; margin-bottom: 6px;">カテゴリ <span style="color: var(--color-error);">*</span></label>
+            <select id="request-category" name="category" required
               style="width: 100%; padding: 10px 14px; font-size: var(--font-size-base); font-family: inherit; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); cursor: pointer;">
               <option value="">選択してください</option>
-              <option value="usage">使い方について</option>
-              <option value="bug">不具合の報告</option>
-              <option value="billing">料金・決済について</option>
               <option value="feature">機能リクエスト</option>
-              <option value="partnership">提携・パートナーシップ</option>
+              <option value="bug">バグ報告</option>
               <option value="other">その他</option>
             </select>
           </div>
 
           <div style="margin-bottom: var(--spacing-lg);">
-            <label for="contact-message" style="display: block; font-size: var(--font-size-sm); font-weight: 500; margin-bottom: 6px;">お問い合わせ内容 <span style="color: var(--color-error);">*</span></label>
-            <textarea id="contact-message" name="message" required rows="6"
+            <label for="request-message" style="display: block; font-size: var(--font-size-sm); font-weight: 500; margin-bottom: 6px;">内容 <span style="color: var(--color-error);">*</span></label>
+            <textarea id="request-message" name="message" required rows="6"
               style="width: 100%; padding: 10px 14px; font-size: var(--font-size-base); font-family: inherit; border: 1px solid var(--color-border); border-radius: var(--radius-sm); resize: vertical; transition: border-color 0.2s;"
-              placeholder="お問い合わせ内容を詳しくお書きください。"></textarea>
+              placeholder="具体的にお書きください。"></textarea>
           </div>
 
           <p style="font-size: var(--font-size-sm); color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
             送信された情報は <a href="privacy.html">プライバシーポリシー</a> に基づき適切に管理します。
           </p>
 
-          <button type="submit" class="btn btn--primary btn--lg" style="width: 100%;" id="contact-submit">
+          <button type="submit" class="btn btn--primary btn--lg" style="width: 100%;" id="request-submit">
             <span class="btn-spinner" aria-hidden="true"></span>
             <span class="btn-check" aria-hidden="true">&#10003;</span>
             <span class="btn-label">送信する</span>
@@ -130,22 +112,13 @@
         </form>
 
         <!-- 送信完了メッセージ（初期非表示） -->
-        <div id="contact-success" style="display: none; text-align: center; padding: var(--spacing-3xl) 0;">
+        <div id="request-success" style="display: none; text-align: center; padding: var(--spacing-3xl) 0;">
           <p style="font-size: var(--font-size-xl); font-weight: 700; margin-bottom: var(--spacing-md);">送信完了</p>
           <p style="color: var(--color-text-light); margin-bottom: var(--spacing-xl);">
-            お問い合わせありがとうございます。<br>
-            通常1営業日以内にご返信いたします。
+            貴重なご意見ありがとうございます。<br>
+            いただいたフィードバックはサービス改善に活用させていただきます。
           </p>
           <a href="index.html" class="btn btn--outline btn--lg">トップに戻る</a>
-        </div>
-
-        <!-- 直接連絡先 -->
-        <div style="margin-top: var(--spacing-2xl); padding-top: var(--spacing-2xl); border-top: 1px solid var(--color-border);">
-          <p style="font-weight: 600; margin-bottom: var(--spacing-sm);">直接のご連絡</p>
-          <p style="color: var(--color-text-light); font-size: var(--font-size-sm);">
-            メール: <a href="mailto:2525nxrei@gmail.com">2525nxrei@gmail.com</a><br>
-            対応時間: 平日 10:00 - 18:00（土日祝・年末年始を除く）
-          </p>
         </div>
       </div>
     </section>
@@ -220,61 +193,61 @@
         }
       });
 
-      /* フォーム送信: mailto で送信（改善版） */
-      var form = document.getElementById('contact-form');
-      var successMsg = document.getElementById('contact-success');
-      var submitBtn = document.getElementById('contact-submit');
+      /* フォーム送信 */
+      var form = document.getElementById('request-form');
+      var successMsg = document.getElementById('request-success');
+      var submitBtn = document.getElementById('request-submit');
       if (form) {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
-
-          /* 二重送信防止 */
           if (submitBtn && (submitBtn.disabled || submitBtn.classList.contains('is-loading'))) return;
 
-          var name = document.getElementById('contact-name').value.trim();
-          var email = document.getElementById('contact-email').value.trim();
-          var category = document.getElementById('contact-category').value;
-          var message = document.getElementById('contact-message').value.trim();
+          var category = document.getElementById('request-category').value;
+          var message = document.getElementById('request-message').value.trim();
 
-          /* バリデーション（具体的なエラー表示） */
           var errors = [];
-          if (!name) errors.push('お名前を入力してください。');
-          if (!email) errors.push('メールアドレスを入力してください。');
-          else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('メールアドレスの形式が正しくありません。');
-          if (!category) errors.push('お問い合わせ種別を選択してください。');
-          if (!message) errors.push('お問い合わせ内容を入力してください。');
+          if (!category) errors.push('カテゴリを選択してください。');
+          if (!message) errors.push('内容を入力してください。');
+
+          var email = document.getElementById('request-email').value.trim();
+          if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            errors.push('メールアドレスの形式が正しくありません。');
+          }
 
           if (errors.length > 0) {
             alert(errors.join('\n'));
             return;
           }
 
-          /* ボタンをローディング状態に */
           if (submitBtn) {
             submitBtn.disabled = true;
             submitBtn.classList.add('is-loading');
           }
 
-          var subject = encodeURIComponent('[ラベルン お問い合わせ] ' + category);
-          var body = encodeURIComponent(
-            'お名前: ' + name + '\n' +
-            'メールアドレス: ' + email + '\n' +
-            'お問い合わせ種別: ' + category + '\n\n' +
-            message
-          );
-          window.location.href = 'mailto:2525nxrei@gmail.com?subject=' + subject + '&body=' + body;
+          var name = document.getElementById('request-name').value.trim();
 
-          /* 成功フィードバック */
-          if (submitBtn) {
-            submitBtn.classList.remove('is-loading');
-            submitBtn.classList.add('is-success');
-          }
-
-          setTimeout(function() {
-            form.style.display = 'none';
-            successMsg.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }, 500);
+          fetch('/api/requests', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, email: email, category: category, message: message })
+          }).then(function (res) {
+            if (!res.ok) throw new Error('送信に失敗しました');
+            if (submitBtn) {
+              submitBtn.classList.remove('is-loading');
+              submitBtn.classList.add('is-success');
+            }
+            setTimeout(function () {
+              form.style.display = 'none';
+              successMsg.style.display = 'block';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 500);
+          }).catch(function () {
+            alert('送信に失敗しました。時間をおいて再度お試しください。');
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.classList.remove('is-loading');
+            }
+          });
         });
       }
     });
