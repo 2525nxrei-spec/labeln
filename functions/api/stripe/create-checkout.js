@@ -84,6 +84,7 @@ async function handler({ request, env }) {
     mode: 'subscription',
     'line_items[0][price]': resolvedPriceId,
     'line_items[0][quantity]': '1',
+    'subscription_data[trial_period_days]': '30',
     success_url: resolvedSuccessUrl,
     cancel_url: resolvedCancelUrl,
     metadata: { user_id: payload.sub, plan: planId },

@@ -19,6 +19,7 @@ export function createMockDB(initialData = {}) {
     usage: [],
     subscriptions: [],
     rate_limits: [],
+    requests: [],
     ...initialData,
   };
 

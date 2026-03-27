@@ -1,8 +1,15 @@
--- マイグレーション: usersテーブルにカラム追加
+-- リクエスト・フィードバックテーブル（マイグレーション）
 -- 実行: wrangler d1 execute labelun-db --file=./migration.sql
 
--- サブスクリプションIDカラム追加
-ALTER TABLE users ADD COLUMN stripe_subscription_id TEXT;
+CREATE TABLE IF NOT EXISTS requests (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL DEFAULT '',
+  email TEXT NOT NULL DEFAULT '',
+  category TEXT NOT NULL CHECK (category IN ('feature', 'bug', 'other')),
+  message TEXT NOT NULL,
+  ip TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL
+);
 
--- 解約予約フラグカラム追加
-ALTER TABLE users ADD COLUMN cancel_at_period_end INTEGER DEFAULT 0;
+CREATE INDEX IF NOT EXISTS idx_requests_created_at ON requests (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_requests_category ON requests (category);
