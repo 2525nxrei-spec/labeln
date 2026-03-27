@@ -124,7 +124,7 @@ describe('認証API 高度なテスト', () => {
 
   // ─── 登録の追加テスト ───
   describe('POST /api/auth/register 追加', () => {
-    it('有効なプラン指定で登録できる', async () => {
+    it('plan指定しても常にfreeで登録される（セキュリティ修正）', async () => {
       const env = createMockEnv();
       const request = makeRequest('POST', 'https://mylabeln.com/api/auth/register', {
         body: { email: 'premium@example.com', password: 'password123', plan: 'standard' },
@@ -132,7 +132,7 @@ describe('認証API 高度なテスト', () => {
       const response = await registerHandler(createMockContext(request, env));
       const { status, data } = await parseResponse(response);
       expect(status).toBe(201);
-      expect(data.user.plan).toBe('standard');
+      expect(data.user.plan).toBe('free');
     });
 
     it('重複メールで409を返す', async () => {

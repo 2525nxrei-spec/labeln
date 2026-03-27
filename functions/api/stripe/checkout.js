@@ -41,54 +41,65 @@ async function handler({ request, env }) {
     return errorResponse(`プラン「${plan}」のStripe Price IDが未設定です`, 500);
   }
 
-  // ユーザーのStripe Customer ID取得（なければ作成）
-  const user = await env.DB.prepare('SELECT email, stripe_customer_id FROM users WHERE id = ?')
-    .bind(payload.sub)
-    .first();
+  try {
+    // ユーザーのStripe Customer ID取得（なければ作成）
+    const user = await env.DB.prepare('SELECT email, stripe_customer_id FROM users WHERE id = ?')
+      .bind(payload.sub)
+      .first();
 
-  let customerId = user?.stripe_customer_id;
-
-  if (!customerId) {
-    // Stripe Customer作成
-    const customerResponse = await stripeRequest('POST', '/v1/customers', {
-      email: user.email,
-      metadata: { user_id: payload.sub },
-    }, env.STRIPE_SECRET_KEY);
-
-    if (!customerResponse.ok) {
-      return errorResponse('Stripe顧客の作成に失敗しました', 502);
+    if (!user) {
+      return errorResponse('ユーザーが見つかりません', 404);
     }
 
-    const customer = await customerResponse.json();
-    customerId = customer.id;
+    let customerId = user?.stripe_customer_id;
 
-    // DB更新
-    await env.DB.prepare('UPDATE users SET stripe_customer_id = ?, updated_at = ? WHERE id = ?')
-      .bind(customerId, new Date().toISOString(), payload.sub)
-      .run();
+    if (!customerId) {
+      // Stripe Customer作成
+      const customerResponse = await stripeRequest('POST', '/v1/customers', {
+        email: user.email,
+        metadata: { user_id: payload.sub },
+      }, env.STRIPE_SECRET_KEY);
+
+      if (!customerResponse.ok) {
+        const errText = await customerResponse.text().catch(() => '');
+        console.error('Stripe Customer creation error:', errText);
+        return errorResponse('Stripe顧客の作成に失敗しました', 500);
+      }
+
+      const customer = await customerResponse.json();
+      customerId = customer.id;
+
+      // DB更新
+      await env.DB.prepare('UPDATE users SET stripe_customer_id = ?, updated_at = ? WHERE id = ?')
+        .bind(customerId, new Date().toISOString(), payload.sub)
+        .run();
+    }
+
+    // Embedded Checkout: ページ内埋め込み決済（リダイレクトなし）
+    const origin = new URL(request.url).origin;
+    const sessionResponse = await stripeRequest('POST', '/v1/checkout/sessions', {
+      customer: customerId,
+      mode: 'subscription',
+      ui_mode: 'embedded',
+      'line_items[0][price]': priceId,
+      'line_items[0][quantity]': '1',
+      return_url: `${origin}/app.html?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      metadata: { user_id: payload.sub, plan },
+      locale: 'ja',
+    }, env.STRIPE_SECRET_KEY);
+
+    if (!sessionResponse.ok) {
+      const errText = await sessionResponse.text().catch(() => '');
+      console.error('Stripe Checkout error:', errText);
+      return errorResponse('Stripe Checkout Sessionの作成に失敗しました', 500);
+    }
+
+    const session = await sessionResponse.json();
+    return jsonResponse({ clientSecret: session.client_secret, session_id: session.id });
+  } catch (err) {
+    console.error('checkout unexpected error:', err);
+    return errorResponse('決済処理中にエラーが発生しました', 500);
   }
-
-  // Embedded Checkout: ページ内埋め込み決済（リダイレクトなし）
-  const origin = new URL(request.url).origin;
-  const sessionResponse = await stripeRequest('POST', '/v1/checkout/sessions', {
-    customer: customerId,
-    mode: 'subscription',
-    ui_mode: 'embedded',
-    'line_items[0][price]': priceId,
-    'line_items[0][quantity]': '1',
-    return_url: `${origin}/app.html?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-    metadata: { user_id: payload.sub, plan },
-    locale: 'ja',
-  }, env.STRIPE_SECRET_KEY);
-
-  if (!sessionResponse.ok) {
-    const errText = await sessionResponse.text();
-    console.error('Stripe Checkout error:', errText);
-    return errorResponse('Stripe Checkout Sessionの作成に失敗しました', 502);
-  }
-
-  const session = await sessionResponse.json();
-  return jsonResponse({ clientSecret: session.client_secret, session_id: session.id });
 }
 
 export const onRequestPost = withMiddleware(handler);

@@ -333,8 +333,10 @@ const LegalDisplayEngine = {
     // ラベルHTML組み立て
     const html = `
       <div class="legal-label" dir="${dir}" style="
-        width: ${data.settings.width * 3}px;
-        min-height: ${data.settings.height * 3}px;
+        width: ${Math.max(data.settings.width * 3.78, 300)}px;
+        min-height: ${data.settings.height * 3.78}px;
+        max-width: 100%;
+        overflow-x: auto;
         background: ${data.settings.backgroundColor || '#ffffff'};
         color: ${data.settings.textColor || '#000000'};
         border: 1px ${data.settings.borderStyle || 'solid'} #333;

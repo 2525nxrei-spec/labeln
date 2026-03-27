@@ -5,7 +5,15 @@
 import { withMiddleware } from '../lib/middleware.js';
 import { errorResponse, jsonResponse } from '../lib/response.js';
 import { authenticateRequest } from '../lib/auth.js';
-import { checkUsageLimit } from '../lib/usage.js';
+import { checkUsageLimit, incrementUsage } from '../lib/usage.js';
+
+/** プランごとの翻訳先言語数上限 */
+const PLAN_LANG_LIMITS = {
+  free: 1,
+  lite: 5,
+  standard: 18,
+  pro: 18,
+};
 
 /** 対応言語一覧（18言語） */
 const SUPPORTED_LANGUAGES = [
@@ -89,11 +97,25 @@ async function handler({ request, env }) {
     }
   }
 
+  // プランごとの翻訳先言語数制限チェック
+  const user = await env.DB.prepare('SELECT plan FROM users WHERE id = ?').bind(payload.sub).first();
+  const userPlan = user?.plan || 'free';
+  const langLimit = PLAN_LANG_LIMITS[userPlan] || PLAN_LANG_LIMITS.free;
+  if (target_langs.length > langLimit) {
+    return errorResponse(
+      `現在のプラン（${userPlan}）では翻訳先言語は${langLimit}言語までです。${target_langs.length}言語が指定されました。`,
+      403
+    );
+  }
+
   // 利用量チェック
   const usageOk = await checkUsageLimit(payload.sub, env);
   if (!usageOk) {
     return errorResponse('今月の翻訳上限に達しました。プランをアップグレードしてください。', 429);
   }
+
+  // 翻訳API呼び出し時に利用量をインクリメント
+  await incrementUsage(payload.sub, env);
 
   // Gemini API未設定時はモック返却
   if (!env.GEMINI_API_KEY) {

@@ -15,8 +15,9 @@ async function handler({ request, env }) {
   const body = await request.json().catch(() => null);
   if (!body) return errorResponse('リクエストボディが不正です', 400);
 
-  // フロントエンドから送られるパラメータ: planId, priceId, payment_methods, successUrl, cancelUrl
-  const { planId, priceId, payment_methods, successUrl, cancelUrl } = body;
+  // フロントエンドから送られるパラメータ: planId, payment_methods, successUrl, cancelUrl
+  // セキュリティ: priceIdはクライアントから受け付けない（環境変数のみ使用）
+  const { planId, payment_methods, successUrl, cancelUrl } = body;
 
   if (!planId || !['lite', 'standard', 'pro'].includes(planId)) {
     return errorResponse('有効なプランを指定してください（lite / standard / pro）', 400);
@@ -32,73 +33,84 @@ async function handler({ request, env }) {
     });
   }
 
-  // Price IDマッピング（env優先、なければフロントから受け取ったpriceIdを使用）
+  // Price IDマッピング（環境変数のみ使用、クライアントからのpriceIdは拒否）
   const priceIdMap = {
     lite: env.STRIPE_PRICE_LITE,
     standard: env.STRIPE_PRICE_STANDARD,
     pro: env.STRIPE_PRICE_PRO,
   };
 
-  const resolvedPriceId = priceIdMap[planId] || priceId;
+  const resolvedPriceId = priceIdMap[planId];
   if (!resolvedPriceId) {
     return errorResponse(`プラン「${planId}」のStripe Price IDが未設定です`, 500);
   }
 
-  // ユーザーのStripe Customer ID取得（なければ作成）
-  const user = await env.DB.prepare('SELECT email, stripe_customer_id FROM users WHERE id = ?')
-    .bind(payload.sub)
-    .first();
+  try {
+    // ユーザーのStripe Customer ID取得（なければ作成）
+    const user = await env.DB.prepare('SELECT email, stripe_customer_id FROM users WHERE id = ?')
+      .bind(payload.sub)
+      .first();
 
-  let customerId = user?.stripe_customer_id;
-
-  if (!customerId) {
-    // Stripe Customer作成
-    const customerResponse = await stripeRequest('POST', '/v1/customers', {
-      email: user.email,
-      metadata: { user_id: payload.sub },
-    }, env.STRIPE_SECRET_KEY);
-
-    if (!customerResponse.ok) {
-      return errorResponse('Stripe顧客の作成に失敗しました', 502);
+    if (!user) {
+      return errorResponse('ユーザーが見つかりません', 404);
     }
 
-    const customer = await customerResponse.json();
-    customerId = customer.id;
+    let customerId = user?.stripe_customer_id;
 
-    // DB更新
-    await env.DB.prepare('UPDATE users SET stripe_customer_id = ?, updated_at = ? WHERE id = ?')
-      .bind(customerId, new Date().toISOString(), payload.sub)
-      .run();
+    if (!customerId) {
+      // Stripe Customer作成
+      const customerResponse = await stripeRequest('POST', '/v1/customers', {
+        email: user.email,
+        metadata: { user_id: payload.sub },
+      }, env.STRIPE_SECRET_KEY);
+
+      if (!customerResponse.ok) {
+        const errText = await customerResponse.text().catch(() => '');
+        console.error('Stripe Customer creation error:', errText);
+        return errorResponse('Stripe顧客の作成に失敗しました', 500);
+      }
+
+      const customer = await customerResponse.json();
+      customerId = customer.id;
+
+      // DB更新
+      await env.DB.prepare('UPDATE users SET stripe_customer_id = ?, updated_at = ? WHERE id = ?')
+        .bind(customerId, new Date().toISOString(), payload.sub)
+        .run();
+    }
+
+    // success_url / cancel_url はフロントエンドからの指定を優先
+    const origin = new URL(request.url).origin;
+    const resolvedSuccessUrl = successUrl || `${origin}/app.html?payment=success`;
+    const resolvedCancelUrl = cancelUrl || `${origin}/app.html?payment=cancel`;
+
+    // Checkout Session作成
+    // payment_method_types を指定しない → Stripeダッシュボードで有効化した決済方法が全て自動表示
+    // （card=クレカ/Apple Pay/Google Pay、paypay、konbini 等）
+    const sessionResponse = await stripeRequest('POST', '/v1/checkout/sessions', {
+      customer: customerId,
+      mode: 'subscription',
+      'line_items[0][price]': resolvedPriceId,
+      'line_items[0][quantity]': '1',
+      success_url: resolvedSuccessUrl,
+      cancel_url: resolvedCancelUrl,
+      metadata: { user_id: payload.sub, plan: planId },
+      locale: 'ja',
+    }, env.STRIPE_SECRET_KEY);
+
+    if (!sessionResponse.ok) {
+      const errText = await sessionResponse.text().catch(() => '');
+      console.error('Stripe Checkout error:', errText);
+      return errorResponse('Stripe Checkout Sessionの作成に失敗しました', 500);
+    }
+
+    const session = await sessionResponse.json();
+    // フロントエンドは sessionId と url の両方をチェックする
+    return jsonResponse({ url: session.url, sessionId: session.id });
+  } catch (err) {
+    console.error('create-checkout unexpected error:', err);
+    return errorResponse('決済処理中にエラーが発生しました', 500);
   }
-
-  // success_url / cancel_url はフロントエンドからの指定を優先
-  const origin = new URL(request.url).origin;
-  const resolvedSuccessUrl = successUrl || `${origin}/app.html?payment=success`;
-  const resolvedCancelUrl = cancelUrl || `${origin}/app.html?payment=cancel`;
-
-  // Checkout Session作成
-  // payment_method_types を指定しない → Stripeダッシュボードで有効化した決済方法が全て自動表示
-  // （card=クレカ/Apple Pay/Google Pay、paypay、konbini 等）
-  const sessionResponse = await stripeRequest('POST', '/v1/checkout/sessions', {
-    customer: customerId,
-    mode: 'subscription',
-    'line_items[0][price]': resolvedPriceId,
-    'line_items[0][quantity]': '1',
-    success_url: resolvedSuccessUrl,
-    cancel_url: resolvedCancelUrl,
-    metadata: { user_id: payload.sub, plan: planId },
-    locale: 'ja',
-  }, env.STRIPE_SECRET_KEY);
-
-  if (!sessionResponse.ok) {
-    const errText = await sessionResponse.text();
-    console.error('Stripe Checkout error:', errText);
-    return errorResponse('Stripe Checkout Sessionの作成に失敗しました', 502);
-  }
-
-  const session = await sessionResponse.json();
-  // フロントエンドは sessionId と url の両方をチェックする
-  return jsonResponse({ url: session.url, sessionId: session.id });
 }
 
 export const onRequestPost = withMiddleware(handler);

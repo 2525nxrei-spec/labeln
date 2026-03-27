@@ -916,8 +916,10 @@ const LabelunApp = {
 
     return `
       <div class="label-preview" style="
-        width:${this.labelSettings.width * 3}px;
-        min-height:${this.labelSettings.height * 3}px;
+        width:${Math.max(this.labelSettings.width * 3.78, 300)}px;
+        min-height:${this.labelSettings.height * 3.78}px;
+        max-width:100%;
+        overflow-x:auto;
         background:${this.labelSettings.backgroundColor};
         color:${this.labelSettings.textColor};
         border:1px ${this.labelSettings.borderStyle} #333;

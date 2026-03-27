@@ -10,7 +10,7 @@ async function handler({ request, env }) {
   const body = await request.json().catch(() => null);
   if (!body) return errorResponse('リクエストボディが不正です', 400);
 
-  const { email, password, plan } = body;
+  const { email, password } = body;
 
   if (!email || !isValidEmail(email)) {
     return errorResponse('有効なメールアドレスを入力してください', 400);
@@ -19,9 +19,8 @@ async function handler({ request, env }) {
     return errorResponse('パスワードは8文字以上で入力してください', 400);
   }
 
-  // プランのバリデーション（無効な値は 'free' にフォールバック）
-  const validPlans = ['free', 'lite', 'standard', 'pro'];
-  const selectedPlan = validPlans.includes(plan) ? plan : 'free';
+  // セキュリティ: 登録時は常にfreeプラン。有料プランはStripe決済後にのみ変更される
+  const selectedPlan = 'free';
 
   // メールアドレス正規化
   const emailLower = email.toLowerCase().trim();
