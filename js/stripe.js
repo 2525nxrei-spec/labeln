@@ -7,7 +7,7 @@
  * Workers API エンドポイント
  */
 const STRIPE_API_ENDPOINTS = {
-  CREATE_CHECKOUT: '/api/stripe/create-checkout',
+  CREATE_CHECKOUT: '/api/stripe/checkout',
   MANAGE_BILLING: '/api/stripe/billing-portal',
   CANCEL: '/api/stripe/cancel',
   PAYMENT_HISTORY: '/api/stripe/payments',
@@ -71,6 +71,11 @@ const StripePayment = {
   async init() {
     console.log('[StripePayment] 初期化開始');
 
+    // Stripe.js がまだ読み込まれていなければ最大5秒待つ
+    if (typeof Stripe === 'undefined') {
+      await this._waitForStripe(5000);
+    }
+
     // Stripe.js の存在チェック
     if (typeof Stripe !== 'undefined') {
       await this._initStripe();
@@ -86,6 +91,22 @@ const StripePayment = {
     await this.initPaymentRequest();
 
     console.log('[StripePayment] 初期化完了', this._stripeAvailable ? '(Stripe有効)' : '(モックモード)');
+  },
+
+  /**
+   * Stripe.js CDN の読み込み完了を待つ（defer/async対策）
+   * @param {number} timeout - 最大待機時間(ms)
+   */
+  _waitForStripe(timeout) {
+    return new Promise((resolve) => {
+      const start = Date.now();
+      const check = () => {
+        if (typeof Stripe !== 'undefined') return resolve();
+        if (Date.now() - start > timeout) return resolve();
+        setTimeout(check, 100);
+      };
+      check();
+    });
   },
 
   /**

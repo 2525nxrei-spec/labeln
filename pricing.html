@@ -450,8 +450,8 @@
   <!-- Scripts（deferなし・順序保証のため </body> 直前で同期読み込み） -->
   <script src="js/auth.js"></script>
   <script src="js/stripe.js"></script>
-  <!-- Stripe.js CDN は決済時に必要。async で読み込みブロックを回避 -->
-  <script src="https://js.stripe.com/v3/" async></script>
+  <!-- Stripe.js CDN は決済時に必要。defer で auth.js/stripe.js の後に読み込み -->
+  <script src="https://js.stripe.com/v3/" defer></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function () {});

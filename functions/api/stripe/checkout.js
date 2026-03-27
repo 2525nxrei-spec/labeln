@@ -14,7 +14,8 @@ async function handler({ request, env }) {
   const body = await request.json().catch(() => null);
   if (!body) return errorResponse('リクエストボディが不正です', 400);
 
-  const { plan } = body;
+  // フロントエンドは planId で送信するため両方受け付ける
+  const plan = body.planId || body.plan;
   if (!plan || !['lite', 'standard', 'pro'].includes(plan)) {
     return errorResponse('有効なプランを指定してください（lite / standard / pro）', 400);
   }

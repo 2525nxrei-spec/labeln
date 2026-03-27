@@ -1,3 +1,4 @@
+// ⚠️ 旧実装 — 本番はfunctions/を使用
 /**
  * ラベルン - Cloudflare Workers APIハンドラー
  * 製品ラベル多言語化サブスクリプションサービス
