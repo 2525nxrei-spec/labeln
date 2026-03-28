@@ -23,6 +23,12 @@ async function handleCreate({ request, env }) {
     return errorResponse('製品名（product_name）は必須です', 400);
   }
 
+  // 利用量上限チェック（freeプラン月3件等）
+  const usageOk = await checkUsageLimit(payload.sub, env);
+  if (!usageOk) {
+    return errorResponse('今月のラベル作成上限に達しました。プランをアップグレードしてください。', 403);
+  }
+
   const labelId = generateId();
   const now = new Date().toISOString();
 

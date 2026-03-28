@@ -7,7 +7,7 @@
  * {
  *   connected: boolean,
  *   publishableKey: string | null,
- *   plans: { lite: priceId, standard: priceId, pro: priceId }
+ *   plans: { lite: 'lite', standard: 'standard', pro: 'pro' }
  * }
  */
 
@@ -18,11 +18,11 @@ async function handler({ request, env }) {
   const hasStripeKey = !!env.STRIPE_SECRET_KEY;
   const publishableKey = env.STRIPE_PUBLISHABLE_KEY || null;
 
-  // Price IDマッピング（環境変数から取得）
+  // プラン名のみ返す（Price IDはサーバー側で保持、クライアントに露出しない）
   const plans = {};
-  if (env.STRIPE_PRICE_LITE) plans.lite = env.STRIPE_PRICE_LITE;
-  if (env.STRIPE_PRICE_STANDARD) plans.standard = env.STRIPE_PRICE_STANDARD;
-  if (env.STRIPE_PRICE_PRO) plans.pro = env.STRIPE_PRICE_PRO;
+  if (env.STRIPE_PRICE_LITE) plans.lite = 'lite';
+  if (env.STRIPE_PRICE_STANDARD) plans.standard = 'standard';
+  if (env.STRIPE_PRICE_PRO) plans.pro = 'pro';
 
   return jsonResponse({
     connected: hasStripeKey,

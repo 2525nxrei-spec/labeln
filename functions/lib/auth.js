@@ -92,24 +92,27 @@ export async function verifyJWT(token, secret) {
     const [encodedHeader, encodedPayload, encodedSignature] = parts;
     const signingInput = `${encodedHeader}.${encodedPayload}`;
 
+    // 署名を再計算してbase64url文字列レベルで比較する方式
+    // crypto.subtle.verifyはデコード後のバイト比較のため、
+    // base64urlパディングビットの改ざんを検知できない環境がある
     const encoder = new TextEncoder();
     const key = await crypto.subtle.importKey(
       'raw',
       encoder.encode(secret),
       { name: 'HMAC', hash: 'SHA-256' },
       false,
-      ['verify']
+      ['sign']
     );
 
-    const signatureBytes = base64urlDecode(encodedSignature);
-    const valid = await crypto.subtle.verify(
+    const expectedSignature = await crypto.subtle.sign(
       'HMAC',
       key,
-      signatureBytes,
       encoder.encode(signingInput)
     );
+    const expectedEncoded = base64urlEncode(expectedSignature);
 
-    if (!valid) return null;
+    // 文字列レベルで署名を比較（パディングビットの改ざんも検知可能）
+    if (encodedSignature !== expectedEncoded) return null;
 
     const payload = JSON.parse(new TextDecoder().decode(base64urlDecode(encodedPayload)));
 

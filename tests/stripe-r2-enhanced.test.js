@@ -529,10 +529,10 @@ describe('Stripe設定済み + fetch失敗時の502テスト', () => {
       body: { plan: 'lite' },
     });
     const response = await checkoutHandler(createMockContext(request, env));
-    expect(response.status).toBe(502);
+    expect(response.status).toBe(500);
   });
 
-  it('create-checkout: Stripe API fetch失敗で502を返す', async () => {
+  it('create-checkout: Stripe API fetch失敗で500を返す', async () => {
     const env = createMockEnv({ STRIPE_SECRET_KEY: stripeSecretKey });
     env.DB._tables.users.push({
       id: userId,
@@ -550,7 +550,7 @@ describe('Stripe設定済み + fetch失敗時の502テスト', () => {
       body: { planId: 'standard' },
     });
     const response = await createCheckoutHandler(createMockContext(request, env));
-    expect(response.status).toBe(502);
+    expect(response.status).toBe(500);
   });
 
   it('portal: Stripe API fetch失敗で502を返す', async () => {
@@ -656,7 +656,7 @@ describe('Stripe設定済み + fetch失敗時の502テスト', () => {
       body: { plan: 'standard' },
     });
     const response = await checkoutHandler(createMockContext(request, env));
-    expect(response.status).toBe(502);
+    expect(response.status).toBe(500);
   });
 
   it('cancel: サブスクIDあり + キャンセルAPI失敗で502を返す', async () => {

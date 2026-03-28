@@ -5,7 +5,15 @@
 import { withMiddleware } from '../lib/middleware.js';
 import { errorResponse, jsonResponse } from '../lib/response.js';
 import { authenticateRequest } from '../lib/auth.js';
-import { checkUsageLimit } from '../lib/usage.js';
+import { checkUsageLimit, incrementUsage } from '../lib/usage.js';
+
+/** プランごとの翻訳先言語数上限 */
+const PLAN_LANG_LIMITS = {
+  free: 1,
+  lite: 5,
+  standard: 18,
+  pro: 18,
+};
 
 /** 対応言語一覧（18言語） */
 const SUPPORTED_LANGUAGES = [
@@ -89,6 +97,17 @@ async function handler({ request, env }) {
     }
   }
 
+  // プランごとの翻訳先言語数制限チェック
+  const user = await env.DB.prepare('SELECT plan FROM users WHERE id = ?').bind(payload.sub).first();
+  const userPlan = user?.plan || 'free';
+  const langLimit = PLAN_LANG_LIMITS[userPlan] || PLAN_LANG_LIMITS.free;
+  if (target_langs.length > langLimit) {
+    return errorResponse(
+      `現在のプラン（${userPlan}）では翻訳先言語は${langLimit}言語までです。${target_langs.length}言語が指定されました。`,
+      403
+    );
+  }
+
   // 利用量チェック
   const usageOk = await checkUsageLimit(payload.sub, env);
   if (!usageOk) {
@@ -103,6 +122,8 @@ async function handler({ request, env }) {
         (text) => `[MOCK:${lang}] ${text}`
       );
     }
+    // 成功後にカウントをインクリメント
+    await incrementUsage(payload.sub, env);
     return jsonResponse({ translations: mockTranslations, mock: true });
   }
 
@@ -139,6 +160,9 @@ async function handler({ request, env }) {
 
       translations[lang] = parseTranslationResponse(rawText, texts.length);
     }
+
+    // 翻訳成功後にカウントをインクリメント（失敗時はカウントしない）
+    await incrementUsage(payload.sub, env);
 
     return jsonResponse({ translations, mock: false });
   } catch (err) {
