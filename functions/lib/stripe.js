@@ -52,7 +52,13 @@ export async function verifyStripeSignature(payload, signatureHeader, secret) {
       .map((b) => b.toString(16).padStart(2, '0'))
       .join('');
 
-    return expectedSignature === signature;
+    // タイミングセーフ比較（サイドチャネル攻撃防止）
+    if (expectedSignature.length !== signature.length) return false;
+    let mismatch = 0;
+    for (let i = 0; i < expectedSignature.length; i++) {
+      mismatch |= expectedSignature.charCodeAt(i) ^ signature.charCodeAt(i);
+    }
+    return mismatch === 0;
   } catch {
     return false;
   }
