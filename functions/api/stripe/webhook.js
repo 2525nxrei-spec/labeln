@@ -101,6 +101,17 @@ async function handler({ request, env }) {
 
   const event = JSON.parse(body);
 
+  // 冪等性チェック: 処理済みイベントはスキップ
+  const existing = await env.DB.prepare(
+    'SELECT id FROM webhooks_log WHERE stripe_event_id = ?'
+  )
+    .bind(event.id)
+    .first();
+
+  if (existing) {
+    return jsonResponse({ received: true, status: 'already_processed' });
+  }
+
   switch (event.type) {
     case 'customer.subscription.created':
     case 'customer.subscription.updated': {
@@ -113,8 +124,45 @@ async function handler({ request, env }) {
       await handleSubscriptionDeleted(subscription, env);
       break;
     }
+    case 'invoice.payment_succeeded': {
+      const invoice = event.data.object;
+      const customerId = invoice.customer;
+      const subscriptionId = invoice.subscription;
+      const amountPaid = invoice.amount_paid;
+
+      await env.DB.prepare(
+        `UPDATE users SET updated_at = ? WHERE stripe_customer_id = ?`
+      ).bind(new Date().toISOString(), customerId).run();
+
+      console.log(`支払い成功: customer=${customerId}, subscription=${subscriptionId}, amount=${amountPaid}円`);
+      break;
+    }
+    case 'invoice.payment_failed': {
+      const invoice = event.data.object;
+      console.error('Invoice payment failed:', {
+        customer: invoice.customer,
+        attempt_count: invoice.attempt_count,
+        invoice_id: invoice.id,
+      });
+      break;
+    }
     default:
       break;
+  }
+
+  // Webhookログ保存（並行リクエスト時のUNIQUE制約違反は無視）
+  try {
+    await env.DB.prepare(
+      `INSERT INTO webhooks_log (id, event_type, stripe_event_id, payload, processed_at)
+       VALUES (?, ?, ?, ?, ?)`
+    )
+      .bind(generateId(), event.type, event.id, body, new Date().toISOString())
+      .run();
+  } catch (err) {
+    // UNIQUE制約違反は並行リクエストによるものなので無視
+    if (!err.message?.includes('UNIQUE')) {
+      console.error('Webhook log insert error:', err);
+    }
   }
 
   return jsonResponse({ received: true });

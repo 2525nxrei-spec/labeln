@@ -8,7 +8,7 @@
  */
 const STRIPE_API_ENDPOINTS = {
   CREATE_CHECKOUT: '/api/stripe/checkout',
-  MANAGE_BILLING: '/api/stripe/billing-portal',
+  MANAGE_BILLING: '/api/stripe/portal',
   CANCEL: '/api/stripe/cancel',
   PAYMENT_HISTORY: '/api/stripe/payments',
   WEBHOOK_STATUS: '/api/stripe/status',
@@ -16,8 +16,7 @@ const STRIPE_API_ENDPOINTS = {
 
 /**
  * Stripe 決済プラン定義
- * price_id は Stripe ダッシュボードで作成した Price ID を設定
- * .env 未設定時は null のまま → モックモード
+ * Price ID はサーバー側で環境変数から解決する（フロントには持たない）
  */
 const STRIPE_PLANS = {
   lite: {
@@ -26,7 +25,6 @@ const STRIPE_PLANS = {
     price: 300,
     currency: 'jpy',
     interval: 'month',
-    priceId: 'price_1TF9jz9Fc8Hnuaokq1Fu5boR', // ラベルン ライト ¥300/月
     description: '月10ラベル / 5言語',
   },
   standard: {
@@ -35,7 +33,6 @@ const STRIPE_PLANS = {
     price: 500,
     currency: 'jpy',
     interval: 'month',
-    priceId: 'price_1TF9k09Fc8HnuaokatkHmGFM', // ラベルン スタンダード ¥500/月
     description: '月50ラベル / 18言語',
   },
   pro: {
@@ -44,7 +41,6 @@ const STRIPE_PLANS = {
     price: 2000,
     currency: 'jpy',
     interval: 'month',
-    priceId: 'price_1TF9jy9Fc8Hnuaokk74PXZiN', // ラベルン プロ ¥2,000/月
     description: '無制限ラベル / API連携',
     comingSoon: true,
   },
@@ -84,8 +80,8 @@ const StripePayment = {
       this._stripeAvailable = false;
     }
 
-    // Workers API から Price ID を取得
-    await this._fetchPriceIds();
+    // Workers API からプラン情報を取得
+    await this._fetchPlanInfo();
 
     // Payment Request API（Apple Pay / Google Pay）の初期化
     await this.initPaymentRequest();
@@ -135,25 +131,22 @@ const StripePayment = {
   },
 
   /**
-   * Workers API から Stripe Price ID を取得
+   * Workers API からプラン情報を取得（Price IDはサーバー側で管理）
    */
-  async _fetchPriceIds() {
+  async _fetchPlanInfo() {
     try {
       const res = await fetch(STRIPE_API_ENDPOINTS.WEBHOOK_STATUS);
       if (!res.ok) return;
 
       const data = await res.json();
       if (data.plans) {
-        for (const [planId, priceId] of Object.entries(data.plans)) {
-          if (STRIPE_PLANS[planId]) {
-            STRIPE_PLANS[planId].priceId = priceId;
-          }
-        }
-        console.log('[StripePayment] Price ID取得完了');
+        // サーバー側でプランが設定済みかどうかのみ確認
+        this._serverPlansAvailable = true;
+        console.log('[StripePayment] プラン情報取得完了');
       }
     } catch (err) {
       // 取得失敗はモックモードで継続
-      console.warn('[StripePayment] Price ID取得スキップ');
+      console.warn('[StripePayment] プラン情報取得スキップ');
     }
   },
 
@@ -321,7 +314,7 @@ const StripePayment = {
     }
 
     // Stripe利用不可 → モックUI
-    if (!this._stripeAvailable || !plan.priceId) {
+    if (!this._stripeAvailable) {
       if (triggerBtn) {
         triggerBtn.disabled = false;
         triggerBtn.textContent = triggerBtn.dataset.originalText || 'このプランで始める';
@@ -343,7 +336,6 @@ const StripePayment = {
         },
         body: JSON.stringify({
           planId: planId,
-          priceId: plan.priceId,
         }),
       });
 
