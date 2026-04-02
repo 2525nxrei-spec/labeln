@@ -52,8 +52,8 @@ async function handleSubscriptionUpdate(subscription, env) {
 
   // アクティブなサブスクリプションならユーザーのプランとサブスクリプションIDを更新
   if (status === 'active' || status === 'trialing') {
-    await env.DB.prepare('UPDATE users SET plan = ?, stripe_subscription_id = ?, cancel_at_period_end = 0, updated_at = ? WHERE id = ?')
-      .bind(plan, subscription.id, now, user.id)
+    await env.DB.prepare('UPDATE users SET plan = ?, stripe_subscription_id = ?, cancel_at_period_end = ?, updated_at = ? WHERE id = ?')
+      .bind(plan, subscription.id, subscription.cancel_at_period_end ? 1 : 0, now, user.id)
       .run();
   }
 }
