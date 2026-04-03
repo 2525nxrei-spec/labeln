@@ -50,3 +50,4 @@ async function handler({ request, env }) {
 }
 
 export const onRequestPut = withMiddleware(handler);
+export const onRequestOptions = withMiddleware(handler);

@@ -101,14 +101,17 @@ async function handler({ request, env }) {
 
   const event = JSON.parse(body);
 
-  // 冪等性チェック: 処理済みイベントはスキップ
-  const existing = await env.DB.prepare(
-    'SELECT id FROM webhooks_log WHERE stripe_event_id = ?'
+  // 冪等性チェック: INSERT OR IGNOREでDBレベルのUNIQUE制約による重複防止
+  // SELECT→INSERTのレースコンディションを排除
+  const insertResult = await env.DB.prepare(
+    `INSERT OR IGNORE INTO webhooks_log (id, event_type, stripe_event_id, payload, processed_at)
+     VALUES (?, ?, ?, ?, ?)`
   )
-    .bind(event.id)
-    .first();
+    .bind(generateId(), event.type, event.id, body, new Date().toISOString())
+    .run();
 
-  if (existing) {
+  // 挿入されなかった = 既に処理済み（UNIQUE制約によりスキップ）
+  if (!insertResult.meta?.changes) {
     return jsonResponse({ received: true, status: 'already_processed' });
   }
 
@@ -150,21 +153,7 @@ async function handler({ request, env }) {
       break;
   }
 
-  // Webhookログ保存（並行リクエスト時のUNIQUE制約違反は無視）
-  try {
-    await env.DB.prepare(
-      `INSERT INTO webhooks_log (id, event_type, stripe_event_id, payload, processed_at)
-       VALUES (?, ?, ?, ?, ?)`
-    )
-      .bind(generateId(), event.type, event.id, body, new Date().toISOString())
-      .run();
-  } catch (err) {
-    // UNIQUE制約違反は並行リクエストによるものなので無視
-    if (!err.message?.includes('UNIQUE')) {
-      console.error('Webhook log insert error:', err);
-    }
-  }
-
+  // Webhookログは冪等性チェック時に既にINSERT済み
   return jsonResponse({ received: true });
 }
 

@@ -69,5 +69,5 @@ export function determinePlanFromPrice(priceId, env) {
   if (priceId === env.STRIPE_PRICE_LITE) return 'lite';
   if (priceId === env.STRIPE_PRICE_STANDARD) return 'standard';
   if (priceId === env.STRIPE_PRICE_PRO) return 'pro';
-  return 'lite'; // フォールバック
+  return null; // 不明なPrice IDはnullを返し、呼び出し元で適切に処理させる
 }

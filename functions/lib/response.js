@@ -28,7 +28,7 @@ export function withCORS(response, origin) {
   ];
   // Cloudflare Pagesプレビュー用（自プロジェクトのみ許可）
   const isAllowed = origin &&
-    (allowedOrigins.includes(origin) || /^https:\/\/[a-z0-9-]+\.labelun[a-z0-9-]*\.pages\.dev$/.test(origin));
+    (allowedOrigins.includes(origin) || /^https:\/\/[a-z0-9-]+\.label[nu][a-z0-9-]*\.pages\.dev$/.test(origin));
   const resolvedOrigin = isAllowed ? origin : 'https://mylabeln.com';
 
   const headers = new Headers(response.headers);

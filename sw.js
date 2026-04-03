@@ -2,13 +2,11 @@
  * ラベルン - Service Worker
  *
  * キャッシュ戦略:
- *   - 静的ファイル（HTML, CSS, JS, 画像）: Cache First
- *   - データファイル（data/ 配下のJSON）: Cache First
- *   - API リクエスト: Network First（オフライン時はキャッシュ）
+ *   - 全リクエスト: Network First（オフライン時のみキャッシュから応答）
  *   - 外部リソース: Network Only
  */
 
-const CACHE_VERSION = 'v1.0.2';
+const CACHE_VERSION = 'v1.0.3';
 const STATIC_CACHE = `labelun-static-${CACHE_VERSION}`;
 const DATA_CACHE = `labelun-data-${CACHE_VERSION}`;
 const API_CACHE = `labelun-api-${CACHE_VERSION}`;
@@ -148,9 +146,9 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // データファイル → Cache First（バックグラウンドで更新）
+  // データファイル → Network First（オフライン時はキャッシュ）
   if (url.pathname.startsWith('/data/')) {
-    event.respondWith(cacheFirstWithRefresh(request, DATA_CACHE));
+    event.respondWith(networkFirst(request, DATA_CACHE));
     return;
   }
 
@@ -160,70 +158,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 静的ファイル（CSS, JS, 画像等） → Cache First
-  event.respondWith(cacheFirst(request, STATIC_CACHE));
+  // 静的ファイル（CSS, JS, 画像等） → Network First（デプロイ後の即時反映を保証）
+  event.respondWith(networkFirst(request, STATIC_CACHE));
 });
 
 // ==========================================
 // キャッシュ戦略の実装
 // ==========================================
-
-/**
- * Cache First: キャッシュにあればキャッシュから返す。
- * なければネットワークから取得してキャッシュに保存。
- * 両方失敗したらオフラインフォールバック。
- */
-async function cacheFirst(request, cacheName) {
-  const cache = await caches.open(cacheName);
-  const cachedResponse = await cache.match(request);
-
-  if (cachedResponse) {
-    return cachedResponse;
-  }
-
-  try {
-    const networkResponse = await fetch(request);
-    // リダイレクトレスポンスはキャッシュしない（SW経由で返すとエラーになる）
-    if (networkResponse.ok && !networkResponse.redirected) {
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
-  } catch {
-    return offlineFallback(request);
-  }
-}
-
-/**
- * Cache First + バックグラウンドリフレッシュ
- * キャッシュがあれば即座に返しつつ、裏でネットワークからの更新を試みる
- */
-async function cacheFirstWithRefresh(request, cacheName) {
-  const cache = await caches.open(cacheName);
-  const cachedResponse = await cache.match(request);
-
-  // バックグラウンドでキャッシュ更新（結果を待たない）
-  const fetchPromise = fetch(request)
-    .then((networkResponse) => {
-      if (networkResponse.ok) {
-        cache.put(request, networkResponse.clone());
-      }
-      return networkResponse;
-    })
-    .catch(() => null);
-
-  // キャッシュがあればすぐ返す
-  if (cachedResponse) {
-    return cachedResponse;
-  }
-
-  // キャッシュがなければネットワーク応答を待つ
-  const networkResponse = await fetchPromise;
-  if (networkResponse) {
-    return networkResponse;
-  }
-
-  return offlineFallback(request);
-}
 
 /**
  * Network First: ネットワークを優先し、失敗時にキャッシュにフォールバック。

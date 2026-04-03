@@ -16,7 +16,8 @@ import { jsonResponse } from '../../lib/response.js';
 
 async function handler({ request, env }) {
   const hasStripeKey = !!env.STRIPE_SECRET_KEY;
-  const publishableKey = env.STRIPE_PUBLISHABLE_KEY || null;
+  // 空文字の場合もnullとして扱う（wrangler.tomlで空文字定義された場合の対策）
+  const publishableKey = env.STRIPE_PUBLISHABLE_KEY && env.STRIPE_PUBLISHABLE_KEY.trim() !== '' ? env.STRIPE_PUBLISHABLE_KEY : null;
 
   // プラン名のみ返す（Price IDはサーバー側で保持、クライアントに露出しない）
   const plans = {};

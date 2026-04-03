@@ -18,6 +18,9 @@ async function handler({ request, env }) {
   if (!password || !isValidPassword(password)) {
     return errorResponse('パスワードは8文字以上で入力してください', 400);
   }
+  if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) {
+    return errorResponse('パスワードは英字と数字の両方を含めてください', 400);
+  }
 
   // セキュリティ: 登録時は常にfreeプラン。有料プランはStripe決済後にのみ変更される
   const selectedPlan = 'free';

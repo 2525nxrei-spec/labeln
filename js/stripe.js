@@ -106,25 +106,23 @@ const StripePayment = {
   },
 
   /**
-   * Stripe.js を初期化
-   * publishable key は Workers API から取得するか、HTMLに埋め込み
+   * Stripe設定状況を確認（リダイレクト型のためStripe.jsインスタンスは不要）
    */
   async _initStripe() {
     try {
-      // Workers API から公開鍵を取得
+      // Workers API からStripe設定状況を確認
       const res = await fetch(STRIPE_API_ENDPOINTS.WEBHOOK_STATUS);
 
       if (res.ok) {
         const data = await res.json();
-        if (data.publishableKey) {
-          this.stripe = Stripe(data.publishableKey);
+        if (data.publishableKey || data.configured) {
           this._stripeAvailable = true;
-          console.log('[StripePayment] Stripe.js 初期化成功');
+          console.log('[StripePayment] Stripe設定確認完了（リダイレクト型）');
           return;
         }
       }
     } catch (err) {
-      console.warn('[StripePayment] Stripe公開鍵の取得に失敗:', err.message);
+      console.warn('[StripePayment] Stripe設定確認に失敗:', err.message);
     }
 
     this._stripeAvailable = false;
@@ -271,19 +269,7 @@ const StripePayment = {
      ============================================ */
 
   /**
-   * Embedded Checkout モーダルを閉じる
-   */
-  _closeCheckoutModal() {
-    const modal = document.getElementById('labelun-checkout-modal');
-    if (modal) modal.remove();
-    if (this._embeddedCheckout) {
-      this._embeddedCheckout.destroy();
-      this._embeddedCheckout = null;
-    }
-  },
-
-  /**
-   * Stripe Embedded Checkout でページ内決済フォームを表示
+   * リダイレクト型 Stripe Checkout で決済ページに遷移
    *
    * @param {string} planId - プランID ('lite' | 'standard' | 'pro')
    */
@@ -325,7 +311,7 @@ const StripePayment = {
     }
 
     try {
-      this._showLoading('決済フォームを準備中...');
+      this._showLoading('決済ページに移動中...');
 
       // Workers API で Checkout Session 作成
       const res = await fetch(STRIPE_API_ENDPOINTS.CREATE_CHECKOUT, {
@@ -357,27 +343,11 @@ const StripePayment = {
         return;
       }
 
-      // Embedded Checkout をモーダルで表示
-      if (data.clientSecret) {
-        const modal = document.createElement('div');
-        modal.id = 'labelun-checkout-modal';
-        modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px;';
-        modal.innerHTML = `
-          <div style="background:#fff;border-radius:12px;width:100%;max-width:500px;max-height:90vh;overflow:auto;position:relative;">
-            <button id="labelun-checkout-close" style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:#666;z-index:1;">&times;</button>
-            <div id="labelun-checkout-container" style="padding:16px;"></div>
-          </div>
-        `;
-        document.body.appendChild(modal);
-
-        // 閉じるイベント
-        document.getElementById('labelun-checkout-close').addEventListener('click', () => this._closeCheckoutModal());
-        modal.addEventListener('click', (e) => { if (e.target === modal) this._closeCheckoutModal(); });
-
-        // Embedded Checkoutをマウント
-        const checkout = await this.stripe.initEmbeddedCheckout({ clientSecret: data.clientSecret });
-        this._embeddedCheckout = checkout;
-        checkout.mount('#labelun-checkout-container');
+      // リダイレクト型: Stripe Checkout URLに遷移
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('決済URLの取得に失敗しました。');
       }
     } catch (err) {
       console.error('[StripePayment] Checkout エラー:', err);

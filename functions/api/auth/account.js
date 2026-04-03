@@ -35,3 +35,4 @@ async function handler({ request, env }) {
 }
 
 export const onRequestDelete = withMiddleware(handler);
+export const onRequestOptions = withMiddleware(handler);

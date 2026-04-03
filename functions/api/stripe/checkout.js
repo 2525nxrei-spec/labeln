@@ -23,7 +23,7 @@ async function handler({ request, env }) {
   // Stripe未設定時のモック
   if (!env.STRIPE_SECRET_KEY) {
     return jsonResponse({
-      clientSecret: `mock_client_secret_${generateId()}`,
+      url: `https://mylabeln.com/account.html?session_id=mock_cs_${generateId()}`,
       session_id: `mock_cs_${generateId()}`,
       mock: true,
     });
@@ -75,16 +75,17 @@ async function handler({ request, env }) {
         .run();
     }
 
-    // Embedded Checkout: ページ内埋め込み決済（リダイレクトなし）
-    const origin = new URL(request.url).origin;
+    // リダイレクト型 Stripe Checkout（checkout.stripe.comに飛ぶ方式）
+    const frontendUrl = env.FRONTEND_URL || 'https://mylabeln.com';
     const sessionResponse = await stripeRequest('POST', '/v1/checkout/sessions', {
       customer: customerId,
       mode: 'subscription',
-      ui_mode: 'embedded',
       'line_items[0][price]': priceId,
       'line_items[0][quantity]': '1',
-      return_url: `${origin}/app.html?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-      metadata: { user_id: payload.sub, plan },
+      success_url: `${frontendUrl}/account.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${frontendUrl}/pricing.html`,
+      'metadata[user_id]': payload.sub,
+      'metadata[plan]': plan,
       locale: 'ja',
     }, env.STRIPE_SECRET_KEY);
 
@@ -95,7 +96,7 @@ async function handler({ request, env }) {
     }
 
     const session = await sessionResponse.json();
-    return jsonResponse({ clientSecret: session.client_secret, session_id: session.id });
+    return jsonResponse({ url: session.url, session_id: session.id });
   } catch (err) {
     console.error('checkout unexpected error:', err);
     return errorResponse('決済処理中にエラーが発生しました', 500);
