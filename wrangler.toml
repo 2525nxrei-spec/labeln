@@ -1,5 +1,6 @@
 name = "labelun-api"
 compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "."
 
 [vars]
@@ -27,4 +28,3 @@ bucket_name = "labelun-storage"
 # wrangler secret put STRIPE_PRICE_LITE
 # wrangler secret put STRIPE_PRICE_STANDARD
 # wrangler secret put STRIPE_PRICE_PRO
-
