@@ -26,18 +26,16 @@ const PDFGenerator = {
      ============================================ */
 
   async init() {
-    console.log('[PDFGenerator] 初期化開始');
-
     // jsPDF の存在チェック
     if (typeof window.jspdf !== 'undefined' || typeof window.jsPDF !== 'undefined') {
       this._jspdfLoaded = true;
-      console.log('[PDFGenerator] jsPDF 検出済み');
+
     } else {
       console.warn('[PDFGenerator] jsPDF 未検出。CDN読み込みを確認してください。');
       // jsPDF が後からロードされる可能性があるのでエラーにしない
     }
 
-    console.log('[PDFGenerator] 初期化完了');
+
   },
 
   /**
@@ -88,7 +86,7 @@ const PDFGenerator = {
       // ダウンロード
       doc.save(fileName);
 
-      console.log(`[PDFGenerator] PDF生成完了: ${fileName}`);
+
     } catch (err) {
       console.error('[PDFGenerator] PDF生成エラー:', err);
       // フォールバック
@@ -135,7 +133,7 @@ const PDFGenerator = {
       const fileName = `${productName}_all_${allLabels.length}lang.pdf`;
 
       doc.save(fileName);
-      console.log(`[PDFGenerator] 一括PDF生成完了: ${fileName} (${allLabels.length}言語)`);
+
     } catch (err) {
       console.error('[PDFGenerator] 一括PDF生成エラー:', err);
       throw err;
@@ -201,7 +199,7 @@ const PDFGenerator = {
         doc.addFileToVFS(fontData.fileName, fontData.base64);
         doc.addFont(fontData.fileName, fontData.fontName, 'normal');
         doc.setFont(fontData.fontName, 'normal');
-        console.log(`[PDFGenerator] フォント設定: ${fontData.fontName}`);
+
         return;
       }
     } catch (err) {
@@ -608,7 +606,7 @@ const PDFGenerator = {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    console.log('[PDFGenerator] フォールバック: HTML形式でダウンロード');
+
   },
 
   /* ============================================

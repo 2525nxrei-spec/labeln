@@ -8,10 +8,6 @@ import { errorResponse, jsonResponse } from '../lib/response.js';
 import { generateId } from '../lib/auth.js';
 
 async function handler({ request, env }) {
-  if (request.method !== 'POST') {
-    return errorResponse('Method not allowed', 405);
-  }
-
   const body = await request.json().catch(() => null);
   if (!body) return errorResponse('リクエストボディが不正です', 400);
 

@@ -115,10 +115,7 @@ self.addEventListener('activate', (event) => {
       await Promise.all(
         cacheNames
           .filter((name) => name.startsWith('labelun-') && !validCaches.includes(name))
-          .map((name) => {
-            console.log(`旧キャッシュを削除: ${name}`);
-            return caches.delete(name);
-          })
+          .map((name) => caches.delete(name))
       );
 
       // 即座に全クライアントを制御下に置く

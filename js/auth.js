@@ -80,8 +80,6 @@ const Auth = {
      ============================================ */
 
   async init() {
-    console.log('[Auth] 初期化開始');
-
     // ローカルストレージからトークン復元
     this._restoreSession();
 
@@ -96,7 +94,6 @@ const Auth = {
     // UI更新
     this._updateUI();
 
-    console.log('[Auth] 初期化完了', this.isLoggedIn() ? `(${this.currentUser.email})` : '(未ログイン)');
   },
 
   /* ============================================
@@ -133,7 +130,7 @@ const Auth = {
       this._saveSession();
       this._updateUI();
 
-      console.log('[Auth] ログイン成功:', email);
+
       return { success: true };
     } catch (err) {
       // ネットワークエラーの場合はわかりやすいメッセージに
@@ -186,7 +183,7 @@ const Auth = {
       this._saveSession();
       this._updateUI();
 
-      console.log('[Auth] 登録成功:', email, selectedPlan);
+
       return { success: true };
     } catch (err) {
       if (err.name === 'TypeError' && err.message.includes('fetch')) {
@@ -219,7 +216,7 @@ const Auth = {
     localStorage.removeItem(AUTH_STORAGE_KEYS.USER);
 
     this._updateUI();
-    console.log('[Auth] ログアウト完了');
+
   },
 
   /* ============================================
@@ -268,7 +265,7 @@ const Auth = {
         const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
         current = usage[monthKey] || 0;
       }
-    } catch (err) {
+    } catch {
       current = 0;
     }
 
@@ -372,7 +369,7 @@ const Auth = {
     } catch (err) {
       this._apiAvailable = false;
     }
-    console.log(`[Auth] API利用可能: ${this._apiAvailable}`);
+
   },
 
   /* ============================================

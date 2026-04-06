@@ -132,9 +132,6 @@ const LabelunApp = {
   /* 成分辞書（dictionary.json） */
   ingredientDictionary: [],
 
-  /* UI要素キャッシュ */
-  _elements: {},
-
   /* 初期化済みフラグ */
   _initialized: false,
 
@@ -148,12 +145,7 @@ const LabelunApp = {
    */
   async init() {
     if (this._initialized) return;
-    console.log('[LabelunApp] 初期化開始');
-
     try {
-      // UIの要素をキャッシュ
-      this._cacheElements();
-
       // 成分辞書をロード
       await this._loadIngredientDictionary();
 
@@ -188,7 +180,6 @@ const LabelunApp = {
       }
 
       this._initialized = true;
-      console.log('[LabelunApp] 初期化完了');
     } catch (err) {
       console.error('[LabelunApp] 初期化エラー:', err);
       this._showError('アプリケーションの初期化に失敗しました。ページを再読み込みしてください。');
@@ -340,8 +331,6 @@ const LabelunApp = {
    * ステップ1: 製品データ収集
    */
   _collectProductData() {
-    const el = this._elements;
-
     this.productData.productName = this._val('product-name');
     this.productData.productCategory = this._val('product-category');
     this.productData.manufacturer = this._val('manufacturer');
@@ -406,7 +395,7 @@ const LabelunApp = {
       if (res.ok) {
         const data = await res.json();
         this.ingredientDictionary = data.ingredients || data || [];
-        console.log(`[LabelunApp] 成分辞書ロード完了: ${this.ingredientDictionary.length}件`);
+
       } else {
         throw new Error('辞書ファイルが見つかりません');
       }
@@ -716,7 +705,7 @@ const LabelunApp = {
           <span class="logo-filename">${this._escapeHtml(file.name)}</span>
           <button type="button" class="btn btn--sm btn--ghost" onclick="LabelunApp.removeLogo()">削除</button>`;
       }
-      console.log('[LabelunApp] ロゴアップロード完了');
+
     };
     reader.onerror = () => {
       this._showError('画像の読み込みに失敗しました。');
@@ -799,7 +788,7 @@ const LabelunApp = {
       }
 
       if (statusEl) statusEl.textContent = '翻訳完了';
-      console.log('[LabelunApp] 翻訳完了:', Object.keys(this.translationResults));
+
     } catch (err) {
       console.error('[LabelunApp] 翻訳処理エラー:', err);
       if (statusEl) statusEl.textContent = '翻訳でエラーが発生しましたが、モックデータで続行できます。';
@@ -990,7 +979,7 @@ const LabelunApp = {
 
       this._hideLoading();
       this._incrementUsageCount();
-      console.log(`[LabelunApp] PDF生成完了: ${lang}`);
+
     } catch (err) {
       console.error('[LabelunApp] PDF生成エラー:', err);
       this._hideLoading();
@@ -1029,7 +1018,7 @@ const LabelunApp = {
 
       this._hideLoading();
       this._incrementUsageCount();
-      console.log('[LabelunApp] 全言語PDF生成完了');
+
     } catch (err) {
       console.error('[LabelunApp] 一括PDF生成エラー:', err);
       this._hideLoading();
@@ -1067,7 +1056,7 @@ const LabelunApp = {
         }
       }
 
-      console.log('[LabelunApp] 下書き保存完了');
+
     } catch (err) {
       console.warn('[LabelunApp] 下書き保存失敗:', err);
     }
@@ -1097,7 +1086,7 @@ const LabelunApp = {
         this.labelSettings.logoBase64 = logo;
       }
 
-      console.log('[LabelunApp] 下書き復元完了 (ステップ:', draft.currentStep, ')');
+
     } catch (err) {
       console.warn('[LabelunApp] 下書き復元失敗:', err);
     }
@@ -1109,7 +1098,7 @@ const LabelunApp = {
   clearDraft() {
     localStorage.removeItem(STORAGE_KEYS.DRAFT);
     localStorage.removeItem(STORAGE_KEYS.DRAFT + '_logo');
-    console.log('[LabelunApp] 下書きクリア');
+
   },
 
   /* ============================================
@@ -1254,14 +1243,6 @@ const LabelunApp = {
   /* ============================================
      UI ヘルパー
      ============================================ */
-
-  /**
-   * DOM要素をキャッシュ
-   */
-  _cacheElements() {
-    // 要素が存在しない場合もエラーにしない
-    this._elements = {};
-  },
 
   /**
    * input/selectの値を取得（要素が無ければ空文字）

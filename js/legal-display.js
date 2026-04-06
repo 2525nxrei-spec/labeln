@@ -28,12 +28,12 @@ const LegalDisplayEngine = {
      ============================================ */
 
   async init() {
-    console.log('[LegalDisplayEngine] 初期化開始');
+
     await Promise.all([
       this._loadRules(),
       this._loadNutritionFormats(),
     ]);
-    console.log('[LegalDisplayEngine] 初期化完了');
+
   },
 
   /**
@@ -44,7 +44,7 @@ const LegalDisplayEngine = {
       const res = await fetch('./data/legal-rules.json');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       this.rules = await res.json();
-      console.log('[LegalDisplayEngine] 法定表示ルール読み込み完了');
+
     } catch (err) {
       console.warn('[LegalDisplayEngine] legal-rules.json 読み込みスキップ:', err.message);
       this.rules = this._getFallbackRules();
@@ -59,7 +59,7 @@ const LegalDisplayEngine = {
       const res = await fetch('./data/nutrition-formats.json');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       this.nutritionFormats = await res.json();
-      console.log('[LegalDisplayEngine] 栄養成分フォーマット読み込み完了');
+
     } catch (err) {
       console.warn('[LegalDisplayEngine] nutrition-formats.json 読み込みスキップ:', err.message);
       this.nutritionFormats = this._getFallbackNutritionFormats();
