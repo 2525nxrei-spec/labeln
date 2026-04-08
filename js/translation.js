@@ -42,15 +42,13 @@ const TranslationEngine = {
    * 辞書ファイルをロードして初期化
    */
   async init() {
-    console.log('[TranslationEngine] 初期化開始');
-
     // 辞書をロード
     await this._loadDictionary();
 
     // API接続テスト（バックグラウンド）
     this._checkAPIAvailability();
 
-    console.log('[TranslationEngine] 初期化完了');
+
   },
 
   /**
@@ -62,7 +60,7 @@ const TranslationEngine = {
       const res = await fetch('./data/dictionary.json');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       this.dictionary = await res.json();
-      console.log('[TranslationEngine] 辞書ロード完了');
+
     } catch (err) {
       console.warn('[TranslationEngine] 辞書ファイル読み込みスキップ:', err.message);
       // フォールバック辞書（最低限のアレルゲン名）
@@ -135,7 +133,7 @@ const TranslationEngine = {
       // ネットワークエラー = API未デプロイ → モックモード
       this._apiAvailable = false;
     }
-    console.log(`[TranslationEngine] API利用可能: ${this._apiAvailable}`);
+
   },
 
   /* ============================================
@@ -482,7 +480,7 @@ const TranslationEngine = {
    */
   clearCache() {
     this.cache.clear();
-    console.log('[TranslationEngine] キャッシュクリア');
+
   },
 
   /**

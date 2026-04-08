@@ -65,28 +65,20 @@ const StripePayment = {
      ============================================ */
 
   async init() {
-    console.log('[StripePayment] 初期化開始');
-
     // Stripe.js がまだ読み込まれていなければ最大5秒待つ
     if (typeof Stripe === 'undefined') {
       await this._waitForStripe(5000);
     }
 
-    // Stripe.js の存在チェック
+    // Stripe.js の存在チェック + プラン情報取得（同一APIを1回で処理）
     if (typeof Stripe !== 'undefined') {
       await this._initStripe();
     } else {
-      console.warn('[StripePayment] Stripe.js 未検出（モックモードで動作）');
       this._stripeAvailable = false;
     }
 
-    // Workers API からプラン情報を取得
-    await this._fetchPlanInfo();
-
     // Payment Request API（Apple Pay / Google Pay）の初期化
     await this.initPaymentRequest();
-
-    console.log('[StripePayment] 初期化完了', this._stripeAvailable ? '(Stripe有効)' : '(モックモード)');
   },
 
   /**
@@ -106,46 +98,27 @@ const StripePayment = {
   },
 
   /**
-   * Stripe設定状況を確認（リダイレクト型のためStripe.jsインスタンスは不要）
+   * Stripe設定状況を確認 + プラン情報を取得（1回のAPIコールで処理）
    */
   async _initStripe() {
     try {
-      // Workers API からStripe設定状況を確認
       const res = await fetch(STRIPE_API_ENDPOINTS.WEBHOOK_STATUS);
 
       if (res.ok) {
         const data = await res.json();
         if (data.publishableKey || data.configured) {
           this._stripeAvailable = true;
-          console.log('[StripePayment] Stripe設定確認完了（リダイレクト型）');
-          return;
         }
+        if (data.plans) {
+          this._serverPlansAvailable = true;
+        }
+        return;
       }
-    } catch (err) {
-      console.warn('[StripePayment] Stripe設定確認に失敗:', err.message);
+    } catch {
+      // 取得失敗はモックモードで継続
     }
 
     this._stripeAvailable = false;
-  },
-
-  /**
-   * Workers API からプラン情報を取得（Price IDはサーバー側で管理）
-   */
-  async _fetchPlanInfo() {
-    try {
-      const res = await fetch(STRIPE_API_ENDPOINTS.WEBHOOK_STATUS);
-      if (!res.ok) return;
-
-      const data = await res.json();
-      if (data.plans) {
-        // サーバー側でプランが設定済みかどうかのみ確認
-        this._serverPlansAvailable = true;
-        console.log('[StripePayment] プラン情報取得完了');
-      }
-    } catch (err) {
-      // 取得失敗はモックモードで継続
-      console.warn('[StripePayment] プラン情報取得スキップ');
-    }
   },
 
   /* ============================================
@@ -176,11 +149,11 @@ const StripePayment = {
       if (result) {
         this._paymentRequest = paymentRequest;
         this._paymentRequestAvailable = true;
-        console.log('[StripePayment] Payment Request API利用可能:', result);
+
         // Apple Pay: result.applePay === true
         // Google Pay: result.googlePay === true
       } else {
-        console.log('[StripePayment] Payment Request API非対応');
+
       }
     } catch (err) {
       console.warn('[StripePayment] Payment Request API初期化エラー:', err.message);
@@ -647,8 +620,6 @@ const StripePayment = {
       // 選択された決済方法を取得
       const selectedMethod = modal.querySelector('input[name="mock-payment-method"]:checked')?.value || 'card';
       const methodNames = { card: 'クレジットカード', paypay: 'PayPay', applepay: 'Apple Pay', googlepay: 'Google Pay' };
-      console.log('[StripePayment] モック決済方法:', selectedMethod);
-
       // モックプラン変更
       if (typeof Auth !== 'undefined' && Auth.currentUser) {
         Auth.currentUser.plan = planId;
