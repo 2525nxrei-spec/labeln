@@ -891,7 +891,7 @@
             <svg class="btn__icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             下書き保存
           </button>
-          <button type="button" class="btn btn--ghost" id="header-logout-btn" style="display:none;" onclick="if(typeof Auth!=='undefined'){Auth.logout();location.reload();}">ログアウト</button>
+          <button type="button" class="btn btn--ghost" id="header-logout-btn" style="display:none;" onclick="if(typeof Auth!=='undefined'){Auth.logout(true);}">ログアウト</button>
         </div>
       </header>
 
@@ -1006,7 +1006,7 @@
               <p class="form-label form-label--required">特定原材料（義務8品目）</p>
               <div class="checkbox-grid" data-allergen-group="mandatory">
                 <label class="checkbox-item checkbox-item--mandatory">
-                  <input type="checkbox" name="allergen" value="egg" data-allergen="egg"> えび
+                  <input type="checkbox" name="allergen" value="shrimp" data-allergen="shrimp"> えび
                 </label>
                 <label class="checkbox-item checkbox-item--mandatory">
                   <input type="checkbox" name="allergen" value="crab" data-allergen="crab"> かに
@@ -1288,10 +1288,11 @@
               <button type="button" class="btn btn--secondary" id="btn-deselect-all-langs" aria-label="全選択解除">全解除</button>
             </div>
 
+            <p id="language-limit-msg" style="display:none;color:var(--color-warning);font-size:.85rem;margin-bottom:12px;font-weight:500;"></p>
             <div class="language-grid" id="language-grid" role="group" aria-label="言語選択">
               <!-- 日本語 -->
               <label class="language-card" aria-checked="false" data-lang="ja">
-                <input type="checkbox" name="target-lang" value="ja">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="ja">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1EF;&#x1F1F5;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">日本語</span>
@@ -1302,7 +1303,7 @@
               </label>
               <!-- 英語 -->
               <label class="language-card" aria-checked="false" data-lang="en">
-                <input type="checkbox" name="target-lang" value="en">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="en">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1EC;&#x1F1E7;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">English</span>
@@ -1313,7 +1314,7 @@
               </label>
               <!-- 中国語（簡体） -->
               <label class="language-card" aria-checked="false" data-lang="zh-CN">
-                <input type="checkbox" name="target-lang" value="zh-CN">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="zh-CN">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1E8;&#x1F1F3;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">简体中文</span>
@@ -1324,7 +1325,7 @@
               </label>
               <!-- 中国語（繁体） -->
               <label class="language-card" aria-checked="false" data-lang="zh-TW">
-                <input type="checkbox" name="target-lang" value="zh-TW">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="zh-TW">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1F9;&#x1F1FC;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">繁體中文</span>
@@ -1335,7 +1336,7 @@
               </label>
               <!-- 韓国語 -->
               <label class="language-card" aria-checked="false" data-lang="ko">
-                <input type="checkbox" name="target-lang" value="ko">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="ko">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1F0;&#x1F1F7;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">한국어</span>
@@ -1346,7 +1347,7 @@
               </label>
               <!-- タイ語 -->
               <label class="language-card" aria-checked="false" data-lang="th">
-                <input type="checkbox" name="target-lang" value="th">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="th">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1F9;&#x1F1ED;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">ไทย</span>
@@ -1357,7 +1358,7 @@
               </label>
               <!-- ベトナム語 -->
               <label class="language-card" aria-checked="false" data-lang="vi">
-                <input type="checkbox" name="target-lang" value="vi">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="vi">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1FB;&#x1F1F3;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">Tiếng Việt</span>
@@ -1368,7 +1369,7 @@
               </label>
               <!-- インドネシア語 -->
               <label class="language-card" aria-checked="false" data-lang="id">
-                <input type="checkbox" name="target-lang" value="id">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="id">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1EE;&#x1F1E9;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">Bahasa Indonesia</span>
@@ -1379,7 +1380,7 @@
               </label>
               <!-- マレー語 -->
               <label class="language-card" aria-checked="false" data-lang="ms">
-                <input type="checkbox" name="target-lang" value="ms">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="ms">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1F2;&#x1F1FE;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">Bahasa Melayu</span>
@@ -1390,7 +1391,7 @@
               </label>
               <!-- フランス語 -->
               <label class="language-card" aria-checked="false" data-lang="fr">
-                <input type="checkbox" name="target-lang" value="fr">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="fr">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1EB;&#x1F1F7;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">Francais</span>
@@ -1401,7 +1402,7 @@
               </label>
               <!-- ドイツ語 -->
               <label class="language-card" aria-checked="false" data-lang="de">
-                <input type="checkbox" name="target-lang" value="de">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="de">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1E9;&#x1F1EA;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">Deutsch</span>
@@ -1412,7 +1413,7 @@
               </label>
               <!-- スペイン語 -->
               <label class="language-card" aria-checked="false" data-lang="es">
-                <input type="checkbox" name="target-lang" value="es">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="es">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1EA;&#x1F1F8;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">Espanol</span>
@@ -1423,7 +1424,7 @@
               </label>
               <!-- ポルトガル語 -->
               <label class="language-card" aria-checked="false" data-lang="pt">
-                <input type="checkbox" name="target-lang" value="pt">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="pt">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1F5;&#x1F1F9;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">Portugues</span>
@@ -1434,7 +1435,7 @@
               </label>
               <!-- イタリア語 -->
               <label class="language-card" aria-checked="false" data-lang="it">
-                <input type="checkbox" name="target-lang" value="it">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="it">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1EE;&#x1F1F9;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">Italiano</span>
@@ -1445,7 +1446,7 @@
               </label>
               <!-- アラビア語 -->
               <label class="language-card" aria-checked="false" data-lang="ar">
-                <input type="checkbox" name="target-lang" value="ar">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="ar">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1F8;&#x1F1E6;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">العربية</span>
@@ -1456,7 +1457,7 @@
               </label>
               <!-- ヒンディー語 -->
               <label class="language-card" aria-checked="false" data-lang="hi">
-                <input type="checkbox" name="target-lang" value="hi">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="hi">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1EE;&#x1F1F3;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">हिन्दी</span>
@@ -1467,7 +1468,7 @@
               </label>
               <!-- ロシア語 -->
               <label class="language-card" aria-checked="false" data-lang="ru">
-                <input type="checkbox" name="target-lang" value="ru">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="ru">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1F7;&#x1F1FA;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">Русский</span>
@@ -1478,7 +1479,7 @@
               </label>
               <!-- オランダ語 -->
               <label class="language-card" aria-checked="false" data-lang="nl">
-                <input type="checkbox" name="target-lang" value="nl">
+                <input type="checkbox" class="language-checkbox" name="target-lang" value="nl">
                 <span class="language-card__flag" aria-hidden="true">&#x1F1F3;&#x1F1F1;</span>
                 <span class="language-card__info">
                   <span class="language-card__name">Nederlands</span>
@@ -1908,6 +1909,30 @@
         authTitle.textContent = 'ログイン';
       });
 
+      // URLパラメータ解析（ログイン/登録後のリダイレクト、表示モード切替用）
+      var urlParams = new URLSearchParams(window.location.search);
+      var redirectAfterAuth = urlParams.get('redirect');
+      var redirectPlan = urlParams.get('plan');
+
+      function handlePostAuthRedirect() {
+        authModal.style.display = 'none';
+        // セッションタイムアウト開始
+        if (typeof Auth !== 'undefined') Auth.startSessionTimeout();
+        // リダイレクトパラメータがある場合は元のページに戻る
+        if (redirectAfterAuth === 'pricing' && redirectPlan) {
+          // pricing→ログイン→決済の流れ
+          if (typeof StripePayment !== 'undefined') {
+            StripePayment.init().then(function() {
+              StripePayment.checkout(redirectPlan);
+            });
+          }
+          // URLパラメータをクリーンアップ
+          window.history.replaceState({}, '', window.location.pathname);
+        } else if (redirectAfterAuth) {
+          window.location.href = redirectAfterAuth + '.html';
+        }
+      }
+
       // ログインフォーム送信
       loginForm.addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -1918,7 +1943,7 @@
             document.getElementById('login-email').value,
             document.getElementById('login-password').value
           );
-          authModal.style.display = 'none';
+          handlePostAuthRedirect();
         } catch (err) {
           errorEl.textContent = err.message;
           errorEl.style.display = 'block';
@@ -1954,7 +1979,7 @@
             document.getElementById('register-email').value,
             pw
           );
-          authModal.style.display = 'none';
+          handlePostAuthRedirect();
         } catch (err) {
           errorEl.textContent = err.message;
           errorEl.style.display = 'block';
@@ -1962,7 +1987,6 @@
       });
 
       // URLパラメータで新規登録フォームを初期表示するか判定
-      var urlParams = new URLSearchParams(window.location.search);
       var showRegisterFirst = urlParams.get('mode') === 'register';
 
       /**
@@ -1982,12 +2006,18 @@
         authModal.style.display = 'flex';
       }
 
+      // 認証モーダル背景クリック無効化（未ログイン時にモーダルを閉じてアプリ操作できないようにする）
+      // authModal自体のクリックイベントは何もしない（閉じない）
+
       // Auth初期化（auth.js は同期読み込み済みなので typeof チェックは念のため）
       if (typeof Auth !== 'undefined') {
         Auth.init().then(function () {
           // 未ログインなら認証モーダルを表示
           if (!Auth.isLoggedIn()) {
             showAuthModal(showRegisterFirst);
+          } else {
+            // ログイン済みならセッションタイムアウト開始
+            Auth.startSessionTimeout();
           }
           // StripePayment初期化（Stripe.js CDNはasyncなので後から読み込まれる場合あり）
           if (typeof StripePayment !== 'undefined') {

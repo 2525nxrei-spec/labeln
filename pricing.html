@@ -509,9 +509,9 @@
         btn.addEventListener('click', function () {
           if (btn.disabled || btn.classList.contains('is-loading')) return;
           var planId = btn.getAttribute('data-plan');
-          // ログインチェック
+          // ログインチェック（未ログインなら登録画面へ誘導）
           if (typeof Auth !== 'undefined' && !Auth.isLoggedIn()) {
-            window.location.href = 'app.html?redirect=pricing&plan=' + planId;
+            window.location.href = 'app.html?mode=register&redirect=pricing&plan=' + planId;
             return;
           }
           // Stripe決済モジュールが利用可能なら呼び出し（ボタン参照を渡す）

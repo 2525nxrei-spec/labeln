@@ -1437,9 +1437,30 @@ const LabelunApp = {
       logoInput.addEventListener('change', () => this.handleLogoUpload(logoInput));
     }
 
-    // 言語チェックボックス変更で翻訳トリガー
+    // 言語チェックボックス変更でプラン制限チェック＋翻訳トリガー
     document.querySelectorAll('.language-checkbox').forEach(cb => {
       cb.addEventListener('change', () => {
+        // プラン別の言語数上限チェック
+        if (typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
+          const langCheck = Auth.checkLanguageLimit(
+            document.querySelectorAll('.language-checkbox:checked').length
+          );
+          if (!langCheck.allowed && cb.checked) {
+            cb.checked = false;
+            // ユーザーにわかりやすく制限を伝える
+            const planName = Auth.getPlanDetails().name;
+            const msg = `${planName}では翻訳先言語は${langCheck.max}言語までです。\nさらに多くの言語を利用するにはプランのアップグレードが必要です。`;
+            // 専用のメッセージ領域があればそこに表示、なければalert
+            const msgEl = document.getElementById('language-limit-msg');
+            if (msgEl) {
+              msgEl.textContent = `${planName}: ${langCheck.max}言語まで選択可能`;
+              msgEl.style.display = 'block';
+            } else {
+              alert(msg);
+            }
+            return;
+          }
+        }
         this._collectLanguageSelection();
       });
     });
