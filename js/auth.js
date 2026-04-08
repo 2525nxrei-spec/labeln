@@ -145,7 +145,7 @@ const Auth = {
   /**
    * 新規登録
    */
-  async register(email, password, plan) {
+  async register(email, password) {
     if (!email || !password) {
       throw new Error('メールアドレスとパスワードを入力してください。');
     }
@@ -160,13 +160,17 @@ const Auth = {
       throw new Error('パスワードは8文字以上にしてください。');
     }
 
-    const selectedPlan = plan || 'free';
+    // パスワードに英字と数字の両方を含むか
+    if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) {
+      throw new Error('パスワードは英字と数字の両方を含めてください。');
+    }
 
     try {
+      // サーバー側で常にfreeプランで登録される。有料プランはStripe決済後にのみ変更。
       const res = await fetch(AUTH_API_ENDPOINTS.REGISTER, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, plan: selectedPlan }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {
@@ -196,8 +200,9 @@ const Auth = {
 
   /**
    * ログアウト
+   * @param {boolean} redirect - ログアウト後にトップページへリダイレクトするか（デフォルトfalse）
    */
-  logout() {
+  logout(redirect) {
     // サーバー側にもログアウト通知（非同期・結果を待たない）
     if (this._apiAvailable && this.token) {
       fetch(AUTH_API_ENDPOINTS.LOGOUT, {
@@ -214,9 +219,14 @@ const Auth = {
 
     localStorage.removeItem(AUTH_STORAGE_KEYS.TOKEN);
     localStorage.removeItem(AUTH_STORAGE_KEYS.USER);
+    localStorage.removeItem('labelun_last_activity');
 
     this._updateUI();
 
+    if (redirect) {
+      // ブラウザバックでキャッシュされた認証済みページに戻れないようreplaceを使用
+      window.location.replace('index.html');
+    }
   },
 
   /* ============================================
@@ -456,13 +466,12 @@ const Auth = {
 
     const email = document.getElementById('register-email')?.value;
     const password = document.getElementById('register-password')?.value;
-    const plan = document.getElementById('register-plan')?.value || 'free';
     const errorEl = document.getElementById('register-error');
 
     if (errorEl) errorEl.style.display = 'none';
 
     try {
-      await this.register(email, password, plan);
+      await this.register(email, password);
       const modal = document.getElementById('register-modal');
       if (modal) modal.style.display = 'none';
     } catch (err) {
@@ -511,7 +520,8 @@ const Auth = {
       return 'このメールアドレスは既に登録されています。ログインをお試しください。';
     }
     if (status === 400) {
-      return '入力内容に問題があります。メールアドレスの形式やパスワードの長さをご確認ください。';
+      // サーバーからの具体的なバリデーションメッセージがあればそちらを優先
+      return serverMsg || '入力内容に問題があります。メールアドレスの形式やパスワードの長さをご確認ください。';
     }
     if (status === 429) {
       return '登録試行回数が上限に達しました。しばらく時間をおいてからお試しください。';
@@ -520,6 +530,58 @@ const Auth = {
       return 'サーバーで一時的な問題が発生しています。しばらくしてから再度お試しください。';
     }
     return serverMsg || '登録に失敗しました。入力内容を確認して再度お試しください。';
+  },
+
+  /* ============================================
+     認証ガード（ページ単位で呼び出し）
+     ============================================ */
+
+  /**
+   * 認証が必要なページで呼び出す。
+   * トークンがない場合はapp.htmlにリダイレクトし、ページコンテンツを非表示にする。
+   * @returns {boolean} 認証済みならtrue
+   */
+  requireAuth() {
+    const token = localStorage.getItem(AUTH_STORAGE_KEYS.TOKEN);
+    if (!token) {
+      document.body.style.visibility = 'hidden';
+      window.location.replace('app.html');
+      return false;
+    }
+    return true;
+  },
+
+  /* ============================================
+     セッションタイムアウト（全ページ共通）
+     ============================================ */
+
+  /**
+   * セッションタイムアウトを開始する。
+   * 認証が必要な全ページで呼び出す。
+   * 24時間操作がなければ自動ログアウト。
+   */
+  startSessionTimeout() {
+    var TIMEOUT = 24 * 60 * 60 * 1000;
+    var self = this;
+
+    function resetTimer() {
+      localStorage.setItem('labelun_last_activity', Date.now());
+    }
+
+    function checkTimeout() {
+      var last = parseInt(localStorage.getItem('labelun_last_activity') || '0', 10);
+      if (last && Date.now() - last > TIMEOUT && localStorage.getItem(AUTH_STORAGE_KEYS.TOKEN)) {
+        self.logout();
+        alert('長時間操作がなかったため、セキュリティのためログアウトしました。');
+        window.location.replace('index.html');
+      }
+    }
+
+    checkTimeout();
+    resetTimer();
+    ['click', 'keydown', 'scroll', 'touchstart'].forEach(function(e) {
+      document.addEventListener(e, resetTimer, { passive: true });
+    });
   },
 };
 

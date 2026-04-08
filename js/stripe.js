@@ -416,14 +416,15 @@ const StripePayment = {
 
       const data = await res.json();
 
-      // ユーザー情報を更新
-      if (typeof Auth !== 'undefined' && Auth.currentUser) {
-        Auth.currentUser.plan = 'free';
-        Auth._saveSession();
-        Auth._updateUI();
-      }
+      // 解約予約であり即座に無料にはならない。
+      // UIには「解約予約済み」と表示し、プランはサーバー側が管理するので変更しない。
+      // 次回のAuth.init()→_validateToken()でサーバーから最新プランを取得する。
+      this._showMessage('解約が完了しました。現在の請求期間の���了までサービスをご利用いただけます。');
 
-      this._showMessage('解約が完了しました。現在の請求期間の終了までサービスをご利用いただけます。');
+      // アカウントページにいる場合はリロードして最新情報を反映
+      if (window.location.pathname.includes('account.html')) {
+        setTimeout(function() { location.reload(); }, 2000);
+      }
     } catch (err) {
       console.error('[StripePayment] 解約エラー:', err);
       this._hideLoading();

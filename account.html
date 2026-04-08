@@ -394,8 +394,9 @@
               <p class="form-hint">メールアドレスの変更はサポートまでお問い合わせください。</p>
             </div>
             <div class="actions-row">
-              <button type="button" class="btn btn--primary btn--sm">保存する</button>
+              <button type="button" class="btn btn--primary btn--sm" id="btn-save-profile">保存する</button>
             </div>
+            <p id="profile-save-msg" style="display:none;font-size:.85rem;margin-top:8px;"></p>
           </form>
         </section>
 
@@ -475,6 +476,8 @@
     </main>
   </div>
 
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
   <script>
     (function() {
       var hamburger = document.getElementById('hamburger-btn');
@@ -504,10 +507,45 @@
     /* ログアウト（確認付き） */
     document.getElementById('btn-logout').addEventListener('click', function() {
       if (!confirm('ログアウトしますか？')) return;
-      localStorage.removeItem('labelun_auth_token');
-      localStorage.removeItem('labelun_auth_user');
-      location.href = 'index.html';
+      if (typeof Auth !== 'undefined') {
+        Auth.logout(true);
+      } else {
+        localStorage.removeItem('labelun_auth_token');
+        localStorage.removeItem('labelun_auth_user');
+        window.location.replace('index.html');
+      }
     });
+
+    /* プロフィール保存（表示名・会社名をローカルに保存） */
+    document.getElementById('btn-save-profile').addEventListener('click', function() {
+      var name = document.getElementById('account-name').value.trim();
+      var company = document.getElementById('account-company').value.trim();
+      try {
+        var profile = JSON.parse(localStorage.getItem('labelun_profile') || '{}');
+        profile.name = name;
+        profile.company = company;
+        localStorage.setItem('labelun_profile', JSON.stringify(profile));
+        var msg = document.getElementById('profile-save-msg');
+        msg.textContent = '保存しました';
+        msg.style.color = '#16a34a';
+        msg.style.display = 'block';
+        setTimeout(function() { msg.style.display = 'none'; }, 3000);
+      } catch(e) {
+        var msg = document.getElementById('profile-save-msg');
+        msg.textContent = '保存に失敗しました';
+        msg.style.color = '#dc2626';
+        msg.style.display = 'block';
+      }
+    });
+
+    /* ページ読み込み時にローカル保存済みプロフィールを復元 */
+    (function() {
+      try {
+        var profile = JSON.parse(localStorage.getItem('labelun_profile') || '{}');
+        if (profile.name) document.getElementById('account-name').value = profile.name;
+        if (profile.company) document.getElementById('account-company').value = profile.company;
+      } catch(e) {}
+    })();
 
     /* パスワード強度チェック（リアルタイム） */
     document.getElementById('new-password').addEventListener('input', function() {
@@ -578,31 +616,18 @@
       finally { btn.disabled = false; btn.textContent = 'アカウントを削除'; }
     });
 
-    /* セッションタイムアウト（24時間操作なしでログアウト） */
-    (function() {
-      var TIMEOUT = 24 * 60 * 60 * 1000;
-      function resetTimer() { localStorage.setItem('labelun_last_activity', Date.now()); }
-      function checkTimeout() {
-        var last = parseInt(localStorage.getItem('labelun_last_activity') || '0', 10);
-        if (last && Date.now() - last > TIMEOUT && localStorage.getItem('labelun_auth_token')) {
-          localStorage.removeItem('labelun_auth_token');
-          localStorage.removeItem('labelun_auth_user');
-          alert('長時間操作がなかったため、セキュリティのためログアウトしました。');
-          location.href = 'index.html';
-        }
-      }
-      checkTimeout();
-      resetTimer();
-      ['click', 'keydown', 'scroll', 'touchstart'].forEach(function(e) {
-        document.addEventListener(e, resetTimer, { passive: true });
-      });
-    })();
-
     /* アカウント情報をAPIから取得 */
     (async function() {
+      // Auth初期化
+      if (typeof Auth !== 'undefined') {
+        await Auth.init();
+        if (!Auth.requireAuth()) return;
+        // セッションタイムアウト開始（Auth初期化後に呼ぶ）
+        Auth.startSessionTimeout();
+      }
       var token = localStorage.getItem('labelun_auth_token');
       if (!token) {
-        window.location.href = 'app.html';
+        window.location.replace('app.html');
         return;
       }
       var headers = { 'Authorization': 'Bearer ' + token };
@@ -625,7 +650,7 @@
         } else if (meRes.status === 401) {
           localStorage.removeItem('labelun_auth_token');
           localStorage.removeItem('labelun_auth_user');
-          window.location.href = 'app.html';
+          window.location.replace('app.html');
           return;
         }
       } catch (e) {
@@ -653,8 +678,6 @@
     })();
   </script>
 
-  <script src="js/auth.js" defer></script>
-  <script src="js/app.js" defer></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function () {});

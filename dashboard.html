@@ -463,8 +463,8 @@
     })();
   </script>
 
-  <script src="js/auth.js" defer></script>
-  <script src="js/app.js" defer></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function () {});
@@ -475,12 +475,16 @@
       // Auth初期化
       if (typeof Auth !== 'undefined') {
         await Auth.init();
+        // 認証ガード: 未ログインなら即リダイレクト
+        if (!Auth.requireAuth()) return;
+        // セッションタイムアウト開始
+        Auth.startSessionTimeout();
       }
 
       var token = localStorage.getItem('labelun_auth_token');
       if (!token) {
-        // 未ログインならログイン画面へ
-        window.location.href = 'app.html';
+        // 未ログインならログイン画面へ（Auth未読み込み時のフォールバック）
+        window.location.replace('app.html');
         return;
       }
 
@@ -493,6 +497,12 @@
       // 利用量API取得
       try {
         var usageRes = await fetch('/api/usage', { headers: headers });
+        if (usageRes.status === 401) {
+          localStorage.removeItem('labelun_auth_token');
+          localStorage.removeItem('labelun_auth_user');
+          window.location.replace('app.html');
+          return;
+        }
         if (usageRes.ok) {
           var usage = await usageRes.json();
           document.getElementById('usage-count').innerHTML =
